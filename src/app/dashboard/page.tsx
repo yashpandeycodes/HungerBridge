@@ -4,6 +4,7 @@ import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
+import DonorView from "@/components/dashboard/DonorView";
 
 export default function Dashboard() {
   const { data: session, status } = useSession();
@@ -48,10 +49,9 @@ export default function Dashboard() {
         </div>
 
         <div className="bg-white p-8 rounded-xl shadow-sm border border-slate-100 min-h-[400px]">
-          {session.user.role === "DONOR" && (
-            <div>
-              <h2 className="text-2xl font-bold mb-4">Donor Dashboard</h2>
-              <p>Yahan hum AI Food Upload ka form banayenge.</p>
+         {session.user.role === "DONOR" && (
+            <div className="w-full">
+              <DonorView />
             </div>
           )}
 

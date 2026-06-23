@@ -33,7 +33,7 @@ export async function POST(req: Request) {
       );
     }
 
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-3.5-flash' });
 
     const prompt = `You are an expert NGO campaign copywriter fighting hunger. 
     Write content for a food donation campaign based on this brief topic: "${topic}". 
