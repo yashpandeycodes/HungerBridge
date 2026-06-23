@@ -15,8 +15,22 @@ export interface DonationType {
   isUrgent?: boolean;
   status?: string;
 }
+
+export interface CampaignType {
+  _id: string;
+  ngoId: string;
+  title: string;
+  description: string;
+  targetMeals: number;
+  mealsCollected: number;
+  status: 'ACTIVE' | 'CLOSED';
+  createdAt: string;
+}
+
+
 export default function NgoView() {
   const [isGenerating, setIsGenerating] = useState(false);
+  const [liveCampaigns, setLiveCampaigns] = useState<CampaignType[]>([]);
   const [campaignText, setCampaignText] = useState("");
   const [activeCard, setActiveCard] = useState<string | null>(null);
   
@@ -52,6 +66,15 @@ export default function NgoView() {
       }
     };
 
+    const fetchCampaigns = async () => {
+      try {
+        const res = await fetch("/api/campaigns");
+        const json = await res.json();
+        if (json.success) setLiveCampaigns(json.data);
+      } catch (error) {}
+    };
+    fetchCampaigns();
+
     fetchDonations();
   }, []);
 
@@ -86,7 +109,7 @@ export default function NgoView() {
       toast.error("Network error during AI generation.");
     } finally {
       setIsGenerating(false);
-      setActiveCard(null);
+    //   setActiveCard(null);
     }
   };
 
@@ -112,6 +135,48 @@ export default function NgoView() {
     }
   };
 
+  const publishCampaign = async () => {
+    if (!campaignText) {
+      toast.error("Please generate an AI appeal first!");
+      return;
+    }
+
+    const currentDonation = donations.find(d => d._id === activeCard);
+    
+    if (!currentDonation) {
+      toast.error("Please select a donation first!");
+      return;
+    }
+
+    const parsedQuantity = parseInt(currentDonation.quantity.replace(/\D/g, '')) || 50;
+
+    toast("Publishing Campaign...", { duration: 2000 });
+
+    try {
+      const res = await fetch("/api/campaigns", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: `Urgent Food Relief: ${currentDonation.foodCategory}`,
+          description: campaignText,
+          targetMeals: parsedQuantity,
+        }),
+      });
+      
+      const json = await res.json();
+      
+      if (json.success) {
+        toast.success(" Campaign published successfully!");
+       
+        setCampaignText("");
+        setActiveCard(null);
+      } else {
+        toast.error(json.message || "Failed to publish campaign.");
+      }
+    } catch (error) {
+      toast.error("Network error while publishing.");
+    }
+  };
   const copyToClipboard = () => {
     navigator.clipboard.writeText(campaignText);
     toast.success("Copied to clipboard! 📋 Ready to share.");
@@ -120,7 +185,7 @@ export default function NgoView() {
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
       
-      {/* Top Metrics Row */}
+
       <div className="grid gap-4 md:grid-cols-3">
         <Card className="bg-gradient-to-br from-emerald-50 to-teal-100 border-none shadow-sm">
           <CardContent className="p-6 flex items-center space-x-4">
@@ -153,7 +218,7 @@ export default function NgoView() {
             </div>
             <div>
               <p className="text-sm font-medium text-purple-800">Active AI Campaigns</p>
-              <h3 className="text-2xl font-bold text-purple-900">3 Running</h3>
+              <h3 className="text-2xl font-bold text-purple-900">{liveCampaigns.length} Running</h3>
             </div>
           </CardContent>
         </Card>
@@ -230,7 +295,7 @@ export default function NgoView() {
           )}
         </div>
 
-       
+
         <div className="md:col-span-5">
           <Card className="border-none shadow-lg bg-white sticky top-6 border-t-4 border-t-purple-600">
             <CardHeader className="bg-purple-50/50 rounded-t-xl pb-4">
@@ -249,12 +314,24 @@ export default function NgoView() {
                     onChange={(e) => setCampaignText(e.target.value)}
                     className="w-full min-h-[220px] text-sm p-4 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none leading-relaxed"
                   />
-                  <Button 
-                    className="w-full bg-purple-600 hover:bg-purple-700 text-white flex items-center gap-2 font-semibold" 
-                    onClick={copyToClipboard}
-                  >
-                    <Copy size={18} /> Copy for WhatsApp / X
-                  </Button>
+                  
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <Button 
+                      variant="outline"
+                      className="w-full sm:w-1/2 border-purple-200 text-purple-700 hover:bg-purple-50 flex items-center gap-2 font-semibold" 
+                      onClick={copyToClipboard}
+                    >
+                      <Copy size={18} /> Copy Text
+                    </Button>
+                    
+                    <Button 
+                      onClick={publishCampaign}
+                      className="w-full sm:w-1/2 bg-purple-600 hover:bg-purple-700 text-white flex items-center gap-2 font-semibold shadow-md"
+                    >
+                      <Megaphone size={18} /> Publish to DB
+                    </Button>
+                  </div>
+
                 </div>
               ) : (
                 <div className="flex flex-col items-center justify-center h-[220px] text-slate-400 border-2 border-dashed border-slate-200 rounded-lg bg-slate-50/50">

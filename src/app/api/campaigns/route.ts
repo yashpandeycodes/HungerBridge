@@ -62,3 +62,14 @@ export async function POST(request: Request) {
     );
   }
 }
+
+export async function GET() {
+  try {
+    await dbConnect();
+    // Sirf Active campaigns fetch karo
+    const campaigns = await CampaignModel.find({ status: 'ACTIVE' }).sort({ createdAt: -1 });
+    return NextResponse.json({ success: true, data: campaigns });
+  } catch (error) {
+    return NextResponse.json({ success: false, message: 'Failed to fetch campaigns' }, { status: 500 });
+  }
+}

@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import DonorView from "@/components/dashboard/DonorView";
 import NgoView from "@/components/dashboard/NgoView";
+import VolunteerView from "@/components/dashboard/VolunteerView"; 
 
 export default function Dashboard() {
   const { data: session, status } = useSession();
@@ -62,10 +63,9 @@ export default function Dashboard() {
             </div>
           )}
 
-          {session.user.role === "VOLUNTEER" && (
-            <div>
-              <h2 className="text-2xl font-bold mb-4">Volunteer Dashboard</h2>
-              <p>.</p>
+           {session.user.role === "VOLUNTEER" && (
+            <div className="w-full">
+              <VolunteerView />
             </div>
           )}
         </div>

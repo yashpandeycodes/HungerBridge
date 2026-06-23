@@ -5,7 +5,8 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { MapPin, Navigation, CheckCircle2, Award, Bike, Loader2 } from "lucide-react";
-import { DonationType } from "./NgoView"; // Puraana type reuse kar rahe hain
+import { DonationType } from "./NgoView"; 
+
 
 export default function VolunteerView() {
   const [missions, setMissions] = useState<DonationType[]>([]);
@@ -38,7 +39,7 @@ export default function VolunteerView() {
       const json = await res.json();
       
       if (json.success) {
-        toast.success("🎉 Mission Completed! You earned 50 Karma Points.");
+        toast.success(" Mission Completed! You earned 50 Karma Points.");
         setMissions((prev) => prev.filter((m) => m._id !== donationId));
       } else {
         toast.error(json.message);
@@ -53,7 +54,7 @@ export default function VolunteerView() {
   return (
     <div className="space-y-8 animate-in fade-in duration-500 max-w-4xl mx-auto">
       
-      {/* Gamification Header */}
+      
       <Card className="bg-gradient-to-r from-orange-500 to-amber-500 border-none text-white shadow-lg">
         <CardContent className="p-8 flex flex-col md:flex-row items-center justify-between gap-6">
           <div>
@@ -80,7 +81,7 @@ export default function VolunteerView() {
           </div>
         ) : missions.length === 0 ? (
           <div className="text-center p-12 border-2 border-dashed rounded-xl bg-slate-50 text-slate-500">
-            No active missions right now. Relax, hero! 🦸‍♂️
+            No active missions right now. Relax, hero! 
           </div>
         ) : (
           <div className="grid gap-4 sm:grid-cols-2">
