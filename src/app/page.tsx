@@ -1,65 +1,105 @@
-import Image from "next/image";
+// src/app/page.tsx
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <div className="min-h-screen flex flex-col bg-slate-50">
+      {/* Navbar */}
+      <header className="px-6 lg:px-14 h-16 flex items-center justify-between border-b bg-white shadow-sm">
+        <Link className="flex items-center justify-center" href="/">
+          <span className="font-bold text-2xl text-orange-600 tracking-tight">HungerBridge</span>
+        </Link>
+        <nav className="flex gap-4 sm:gap-6 items-center">
+          <Link href="/sign-in">
+            <Button variant="ghost" className="font-semibold">Log In</Button>
+          </Link>
+          <Link href="/sign-up">
+            <Button className="bg-orange-600 hover:bg-orange-700 text-white">Join the Cause</Button>
+          </Link>
+        </nav>
+      </header>
+
+      {/* Hero Section */}
+      <main className="flex-1 flex flex-col items-center justify-center text-center px-4 md:px-6 py-12 md:py-24 lg:py-32">
+        <div className="space-y-6 max-w-3xl">
+          <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl text-slate-900">
+            Rescue Food. <span className="text-orange-600">Fight Hunger.</span>
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+          <p className="mx-auto max-w-[700px] text-slate-600 md:text-xl leading-relaxed">
+            A community-driven platform connecting food donors, NGOs, and volunteers. Don`t let surplus food go to waste when it can feed a community.
           </p>
+          <div className="flex flex-col sm:flex-row justify-center gap-4 mt-8">
+            <Link href="/sign-up">
+              <Button size="lg" className="w-full sm:w-auto bg-orange-600 hover:bg-orange-700 text-white text-lg px-8">
+                Donate Food Now
+              </Button>
+            </Link>
+            <Link href="/sign-up">
+              <Button size="lg" variant="outline" className="w-full sm:w-auto text-lg px-8 border-orange-200 text-orange-700 hover:bg-orange-50">
+                Register as NGO / Volunteer
+              </Button>
+            </Link>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+        <div className="w-full max-w-6xl mt-20">
+          <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-8">Live Impact Dashboard</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+            <Card className="border-none shadow-md bg-white">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium text-slate-500 uppercase">Meals Served</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-4xl font-bold text-emerald-600">12,450+</div>
+                <p className="text-xs text-slate-500 mt-1">Across 15 cities</p>
+              </CardContent>
+            </Card>
+
+            <Card className="border-none shadow-md bg-white">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium text-slate-500 uppercase">Food Rescued (kg)</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-4xl font-bold text-orange-600">8,230</div>
+                <p className="text-xs text-slate-500 mt-1">Diverted from landfills</p>
+              </CardContent>
+            </Card>
+
+            <Card className="border-none shadow-md bg-white">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium text-slate-500 uppercase">Active Campaigns</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-4xl font-bold text-blue-600">24</div>
+                <p className="text-xs text-slate-500 mt-1">Needing immediate support</p>
+              </CardContent>
+            </Card>
+
+            <Card className="border-none shadow-md bg-white">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium text-slate-500 uppercase">Volunteer Hours</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-4xl font-bold text-purple-600">3,100+</div>
+                <p className="text-xs text-slate-500 mt-1">Logged by 450+ heroes</p>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </main>
+
+      
+      <footer className="py-6 w-full shrink-0 items-center px-4 md:px-6 border-t bg-white flex flex-col md:flex-row justify-between text-center md:text-left">
+        <p className="text-sm text-slate-500">
+          © {new Date().getFullYear()} HungerBridge. Built for the Hackathon.
+        </p>
+        <div className="flex gap-4 mt-4 md:mt-0 justify-center">
+          <span className="text-sm text-slate-500 hover:text-orange-600 cursor-pointer">Terms of Service</span>
+          <span className="text-sm text-slate-500 hover:text-orange-600 cursor-pointer">Privacy Policy</span>
+        </div>
+      </footer>
     </div>
   );
 }
