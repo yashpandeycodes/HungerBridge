@@ -40,9 +40,8 @@ export default function SignInPage() {
     setIsSubmitting(true);
 
     try {
-      // NextAuth ka signIn function call kar rahe hain
       const result = await signIn("credentials", {
-        redirect: false, // Hum khud redirect karenge taaki error handle kar sakein
+        redirect: false, 
         email: data.email,
         password: data.password,
       });
@@ -50,8 +49,8 @@ export default function SignInPage() {
       if (result?.error) {
         toast.error(result.error || "Invalid email or password");
       } else if (result?.url) {
-        toast.success("Welcome back! 🚀");
-        router.push("/dashboard"); // Login successful hone par dashboard bhej do
+        toast.success("Welcome back! ");
+        router.push("/dashboard"); 
       }
     } catch (error) {
       toast.error("An error occurred during login.");
