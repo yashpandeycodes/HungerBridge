@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import DonorView from "@/components/dashboard/DonorView";
+import NgoView from "@/components/dashboard/NgoView";
 
 export default function Dashboard() {
   const { data: session, status } = useSession();
@@ -55,10 +56,9 @@ export default function Dashboard() {
             </div>
           )}
 
-          {session.user.role === "NGO" && (
-            <div>
-              <h2 className="text-2xl font-bold mb-4">NGO Dashboard</h2>
-              <p>Yahan hum AI Campaign Assistant banayenge.</p>
+         {session.user.role === "NGO" && (
+            <div className="w-full">
+              <NgoView />
             </div>
           )}
 
