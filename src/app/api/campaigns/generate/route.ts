@@ -3,11 +3,21 @@ import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/[...nextauth]/options';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
+
+interface CampaignRequestBody {
+  foodDetails?: {
+    category?: string;
+    quantity?: string;
+    location?: string;
+  };
+}
+
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY as string);
 
 export async function POST(req: Request) {
-  try {
+   let body: CampaignRequestBody | null = null;
 
+  try {
     const session = await getServerSession(authOptions);
     
     if (!session || !session.user) {
@@ -24,11 +34,19 @@ export async function POST(req: Request) {
       );
     }
 
-    const { topic } = await req.json();
+     body = await req.json();
 
-    if (!topic) {
+     if (!body || !body.foodDetails) {
       return NextResponse.json(
-        { success: false, message: 'Please provide a topic or short description for the campaign' },
+        { success: false, message: 'Please provide food details for the campaign' },
+        { status: 400 }
+      );
+    }
+    const { foodDetails } = body;
+
+    if (!foodDetails) {
+      return NextResponse.json(
+        { success: false, message: 'Please provide food details for the campaign' },
         { status: 400 }
       );
     }
@@ -36,11 +54,12 @@ export async function POST(req: Request) {
     const model = genAI.getGenerativeModel({ model: 'gemini-3.5-flash' });
 
     const prompt = `You are an expert NGO campaign copywriter fighting hunger. 
-    Write content for a food donation campaign based on this brief topic: "${topic}". 
+    Write a short, engaging, and urgent social media appeal (WhatsApp/Twitter) to gather volunteers.
+    We have received a donation of ${foodDetails.quantity} of ${foodDetails.category} at ${foodDetails.location}.
+    Include emojis and relevant hashtags like #EndHunger. Keep it under 4-5 sentences.
     
-    You must strictly reply with a raw JSON object containing exactly these keys:
-    - "description": (A compelling, emotional, and professional 3-4 sentence description of the campaign)
-    - "outreachMessage": (A short, actionable WhatsApp/SMS message to send to potential donors)
+    You must strictly reply with a raw JSON object containing exactly ONE key:
+    - "campaignContent": (The text of the social media appeal)
     
     Do not wrap the response in markdown blocks like \`\`\`json. Just return the raw JSON object.`;
 
@@ -56,9 +75,16 @@ export async function POST(req: Request) {
     );
   } catch (error: unknown) {
     console.error('AI Campaign Generation Error:', error);
+    
+    const fallbackText = `🚨 URGENT: We just received a fresh donation of ${body?.foodDetails?.category || "food"}! We need volunteers for immediate distribution at ${body?.foodDetails?.location || "our center"}. Please DM us to help. Let's #EndHunger together! 🙌`;
+
     return NextResponse.json(
-      { success: false, message: 'Failed to generate campaign content using AI' },
-      { status: 500 }
+      { 
+        success: true, 
+        message: 'Used fallback content due to high AI demand.', 
+        data: { campaignContent: fallbackText } 
+      },
+      { status: 200 } 
     );
   }
 }

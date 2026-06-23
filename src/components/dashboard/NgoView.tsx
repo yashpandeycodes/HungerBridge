@@ -26,7 +26,7 @@ export default function NgoView() {
   useEffect(() => {
     const fetchDonations = async () => {
       try {
-        const res = await fetch("/api/donation");
+        const res = await fetch("/api/donations");
         
         // NAYA CODE: Check agar response HTML toh nahi hai
         const contentType = res.headers.get("content-type");
