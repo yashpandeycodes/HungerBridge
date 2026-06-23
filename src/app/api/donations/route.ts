@@ -66,12 +66,10 @@ export async function POST(request: Request) {
   }
 }
 
-// Yeh function POST function ke theek neeche paste karna
 export async function GET() {
   try {
     await dbConnect();
     
-    // Sirf 'PENDING' donations fetch karo, aur sabse nayi pehle dikhao
     const donations = await DonationModel.find({ status: 'PENDING' }).sort({ createdAt: -1 });
     
     return NextResponse.json({ success: true, data: donations });
@@ -79,6 +77,54 @@ export async function GET() {
     console.error('Error fetching donations:', error);
     return NextResponse.json(
       { success: false, message: 'Internal server error while fetching donations' },
+      { status: 500 }
+    );
+  }
+}
+
+export async function PATCH(request: Request) {
+  try {
+    await dbConnect();
+    
+    const session = await getServerSession(authOptions);
+    if (!session || !session.user || session.user.role !== 'NGO') {
+      return NextResponse.json(
+        { success: false, message: 'Unauthorized. Only NGOs can claim donations.' },
+        { status: 403 }
+      );
+    }
+
+    const body = await request.json();
+    const { donationId } = body;
+
+    if (!donationId) {
+      return NextResponse.json(
+        { success: false, message: 'Donation ID is required' },
+        { status: 400 }
+      );
+    }
+
+    const updatedDonation = await DonationModel.findByIdAndUpdate(
+      donationId,
+      { status: 'ACCEPTED', ngoId: session.user._id }, 
+      { new: true }
+    );
+
+    if (!updatedDonation) {
+      return NextResponse.json(
+        { success: false, message: 'Donation not found' },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json(
+      { success: true, message: 'Donation claimed successfully', data: updatedDonation },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error('Error claiming donation:', error);
+    return NextResponse.json(
+      { success: false, message: 'Internal server error while claiming donation' },
       { status: 500 }
     );
   }

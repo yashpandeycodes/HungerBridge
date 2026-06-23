@@ -28,14 +28,13 @@ export default function NgoView() {
       try {
         const res = await fetch("/api/donations");
         
-        // NAYA CODE: Check agar response HTML toh nahi hai
         const contentType = res.headers.get("content-type");
         if (contentType && contentType.indexOf("application/json") === -1) {
           const text = await res.text();
           console.error("Oops! API ne JSON ki jagah HTML bheja. Response:", text);
           toast.error("API routing error! Check console.");
           setIsLoadingDB(false);
-          return; // Yahan se wapas laut jao, .json() mat chalao
+          return; 
         }
 
         const json = await res.json();
@@ -91,6 +90,28 @@ export default function NgoView() {
     }
   };
 
+  const claimDonation = async (donationId: string) => {
+    toast("Claiming donation...", { duration: 2000 });
+    try {
+      const res = await fetch("/api/donations", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ donationId }),
+      });
+      
+      const json = await res.json();
+      
+      if (json.success) {
+        toast.success(" Donation claimed successfully!");
+        setDonations((prev) => prev.filter((d) => d._id !== donationId));
+      } else {
+        toast.error(json.message || "Failed to claim donation.");
+      }
+    } catch (error) {
+      toast.error("Network error while claiming.");
+    }
+  };
+
   const copyToClipboard = () => {
     navigator.clipboard.writeText(campaignText);
     toast.success("Copied to clipboard! 📋 Ready to share.");
@@ -139,7 +160,7 @@ export default function NgoView() {
       </div>
 
       <div className="grid gap-6 md:grid-cols-12">
-        {/* Left Column: DB Donation Feed */}
+        
         <div className="md:col-span-7 space-y-4">
           <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
             <Package className="text-orange-500" /> Live Donation Feed
@@ -180,19 +201,27 @@ export default function NgoView() {
                     </div>
                   </div>
                   
-                  <div className="flex items-end">
+                  <div className="flex flex-col sm:flex-row items-end gap-3 justify-end mt-4 sm:mt-0">
                     <Button 
                       onClick={() => generateCampaign(donation)} 
                       disabled={isGenerating}
-                      className="w-full sm:w-auto bg-slate-900 hover:bg-slate-800 text-white flex items-center gap-2"
+                      variant="outline"
+                      className="w-full sm:w-auto border-slate-300 text-slate-700 hover:bg-slate-50 flex items-center gap-2"
                     >
                       {isGenerating && activeCard === donation._id ? (
                         "Drafting..."
                       ) : (
                         <>
-                          <Sparkles size={16} className="text-yellow-400" /> AI Appeal
+                          <Sparkles size={16} className="text-purple-500" /> AI Appeal
                         </>
                       )}
+                    </Button>
+                    
+                    <Button 
+                      onClick={() => claimDonation(donation._id)}
+                      className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white flex items-center gap-2 shadow-md"
+                    >
+                      <HeartHandshake size={16} /> Claim Donation
                     </Button>
                   </div>
                 </CardContent>
