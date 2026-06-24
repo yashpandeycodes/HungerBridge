@@ -37,7 +37,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const { title, description, targetMeals } = parsedData.data;
+    const {title, description, targetMeals } = parsedData.data;
 
     const newCampaign = new CampaignModel({
       ngoId: session.user._id, 
@@ -51,7 +51,7 @@ export async function POST(request: Request) {
     await newCampaign.save();
 
     return NextResponse.json(
-      { success: true, message: 'Campaign created successfully', campaign: newCampaign },
+      { success: true, message: 'Campaign created successfully', data: newCampaign },
       { status: 201 }
     );
   } catch (error) {

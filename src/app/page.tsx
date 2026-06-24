@@ -114,22 +114,24 @@ export default function Home() {
               </CardContent>
             </Card>
 
-            <Card className="relative overflow-hidden border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 backdrop-blur-xl shadow-lg hover:shadow-xl dark:hover:border-orange-500/30 transition-all duration-300 group rounded-2xl">
+           
+             
+             <Card className="relative overflow-hidden border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 backdrop-blur-xl shadow-lg hover:shadow-xl dark:hover:border-orange-500/30 transition-all duration-300 group rounded-2xl">
               <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Food Rescued</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="flex items-baseline gap-1">
-                  <div className="text-5xl font-black text-orange-600 dark:text-orange-400 tracking-tight">
-                    {loading ? "..." : stats.totalFoodRescuedKg}
-                  </div>
-                  <span className="text-xl font-bold text-orange-600/60 dark:text-orange-400/60">kg</span>
+                <div className="text-5xl font-black text-orange-600 dark:text-orange-400 tracking-tight">
+                  {loading ? "..." : stats.totalFoodRescuedKg}
+                  <div/>
+                   <span className="text-xl font-bold text-orange-600/60 dark:text-orange-400/60">kg/servings</span>
                 </div>
                 <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 font-medium">Diverted from landfills</p>
               </CardContent>
             </Card>
 
+              
             <Card className="relative overflow-hidden border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 backdrop-blur-xl shadow-lg hover:shadow-xl dark:hover:border-blue-500/30 transition-all duration-300 group rounded-2xl">
               <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
               <CardHeader className="pb-2">

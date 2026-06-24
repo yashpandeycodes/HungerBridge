@@ -15,14 +15,28 @@ export async function POST(req: Request) {
       );
     }
 
-    const model = genAI.getGenerativeModel({ model: 'gemini-3.5-flash' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
     const prompt = `Analyze this food image for a donation platform. 
     You must strictly reply with a raw JSON object containing exactly these keys:
     - "foodCategory": (suggested category like 'Cooked Rice', 'Raw Vegetables', 'Baked Goods', etc.)
     - "estimatedQuantity": (approximate quantity based on visual scale, e.g., 'approx 2 kg', '5 servings')
-   
-    Do not wrap the response in markdown blocks like \`\`\`json. Just return the raw JSON object.`;
+
+    Return ONLY valid JSON.
+
+{
+  "foodCategory": "string",
+  "estimatedQuantity": "string"
+}
+   Rules:
+
+- No markdown
+- No explanation
+- No extra text
+- No code block
+- No comments
+
+    Do not wrap the response in markdown blocks like \`\`\`json. Just return the raw JSON object.  If unsure, make your best reasonable estimate.`;
 
     const imagePart = {
       inlineData: {
@@ -47,7 +61,7 @@ export async function POST(req: Request) {
     console.log("Triggering Fallback Mock AI...");
     
     const mockData = {
-      foodCategory: "Fresh Apples (Auto-detected)",
+      foodCategory: "Cooked Meal",
       estimatedQuantity: "Approx. 2 kg",
     };
 

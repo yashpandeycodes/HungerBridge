@@ -51,13 +51,23 @@ export async function POST(req: Request) {
       );
     }
 
-    const model = genAI.getGenerativeModel({ model: 'gemini-3.5-flash' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
     const prompt = `You are an expert NGO campaign copywriter fighting hunger. 
     Write a short, engaging, and urgent social media appeal (WhatsApp/Twitter) to gather volunteers.
     We have received a donation of ${foodDetails.quantity} of ${foodDetails.category} at ${foodDetails.location}.
     Include emojis and relevant hashtags like #EndHunger. Keep it under 4-5 sentences.
-    
+    Length: 80-120 words
+
+Tone:
+- Compassionate
+- Professional
+- Action-oriented
+
+Return plain text only.
+No markdown.
+No heading.
+No bullet points.
     You must strictly reply with a raw JSON object containing exactly ONE key:
     - "campaignContent": (The text of the social media appeal)
     
