@@ -3,7 +3,7 @@
 > **An AI-powered food donation and logistics platform connecting Food Donors, NGOs, and Volunteers to reduce food waste and fight hunger.**
 
 **Live Demo:**  
-**https://vercel-link.vercel.app**
+**https://hunger-bridge-kappa.vercel.app/**
 
 ---
 
@@ -199,7 +199,7 @@ Together, we can build a future with:
 
 ---
 
-# 👨‍💻 Developed For
+# Developed For
 
 **Hackathon Submission**
 
