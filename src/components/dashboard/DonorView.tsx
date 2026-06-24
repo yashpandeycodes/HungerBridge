@@ -7,9 +7,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Image as ImageIcon, Sparkles, AlertCircle, HeartHandshake, Loader2, UploadCloud, History, PlusCircle, Trash2, Package, Clock, Award, Download, X, Share2 } from "lucide-react";
+import { Image as ImageIcon, Sparkles, AlertCircle, HeartHandshake, Loader2, UploadCloud, History, PlusCircle, Trash2, Package, Clock, Award, Download, X, Share2, Check } from "lucide-react";
 import Image from "next/image";
-import * as htmlToImage from "html-to-image"; // Naya import certificate download ke liye
+import * as htmlToImage from "html-to-image";
 
 export interface CampaignDropdownType {
   _id: string;
@@ -68,49 +68,27 @@ export default function DonorView() {
   }, []); 
 
    useEffect(() => {
-
     const fetchCampaigns = async () => {
-
       try {
-
         const res = await fetch("/api/campaigns");
-
         const json = await res.json();
-
         if (json.success) setActiveCampaigns(json.data);
-
       } catch (error) {
-
         console.error("Failed to fetch campaigns");
-
       }
-
     };
-
-
 
     let isMounted = true;
 
-
-
     Promise.resolve().then(() => {
-
       if (!isMounted) return;
-
       fetchCampaigns();
-
       fetchMyDonations();
-
     });
 
-
-
     return () => {
-
       isMounted = false;
-
     };
-
   }, [fetchMyDonations]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -442,22 +420,53 @@ export default function DonorView() {
               {myDonations.map((donation) => (
                 <Card key={donation._id} className="border border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-slate-900/90 shadow-sm hover:shadow-md rounded-2xl overflow-hidden flex flex-col transition-all">
                   <CardHeader className="bg-slate-50/50 dark:bg-slate-800/50 pb-4 border-b border-slate-100 dark:border-slate-800 flex flex-row items-center justify-between space-y-0">
-                    <CardTitle className="text-lg font-bold text-slate-900 dark:text-white capitalize truncate pr-4">
+                    <CardTitle className="text-lg font-bold text-slate-900 dark:text-white capitalize truncate">
                       {donation.foodCategory}
                     </CardTitle>
-                    {/* Status Badge */}
-                    <span className={`px-3 py-1 text-xs font-black uppercase tracking-wider rounded-md border shrink-0
-                      ${donation.status === 'PENDING' ? 'bg-yellow-100 text-yellow-700 border-yellow-200 dark:bg-yellow-900/30 dark:text-yellow-400 dark:border-yellow-800' : 
-                        donation.status === 'ACCEPTED' || donation.status === 'ASSIGNED' ? 'bg-blue-100 text-blue-700 border-blue-200 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800' : 
-                        'bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400 dark:border-emerald-800'}`}
-                    >
-                      {donation.status}
-                    </span>
                   </CardHeader>
-                  <CardContent className="p-5 flex-1 flex flex-col space-y-4">
-                    <div className="space-y-2 text-sm text-slate-600 dark:text-slate-300 flex-1">
-                      <p className="flex items-center gap-2"><Package size={16} className="text-orange-500" /> {donation.quantity}</p>
-                      <p className="flex items-center gap-2"><Clock size={16} className="text-slate-400" /> Exp: {new Date(donation.expiryTime).toLocaleString()}</p>
+                  <CardContent className="p-5 flex-1 flex flex-col space-y-5">
+                    
+                    {/* 🔥 THE SWIGGY-STYLE TIMELINE 🔥 */}
+                    <div className="relative w-full mt-2 mb-2">
+                      <div className="absolute top-3.5 left-[15%] right-[15%]">
+                        <div className="w-full h-1.5 bg-slate-200 dark:bg-slate-800 rounded-full"></div>
+                        <div 
+                          className="absolute top-0 left-0 h-1.5 bg-emerald-500 rounded-full transition-all duration-1000 ease-in-out" 
+                          style={{ width: donation.status === 'PENDING' ? '0%' : (donation.status === 'ACCEPTED' || donation.status === 'ASSIGNED' ? '50%' : '100%') }}
+                        ></div>
+                      </div>
+                      
+                      <div className="flex justify-between relative z-10 px-2">
+                        {/* Step 1: Listed */}
+                        <div className="flex flex-col items-center gap-2">
+                          <div className="w-8 h-8 rounded-full flex items-center justify-center text-white bg-emerald-500 shadow-lg shadow-emerald-500/30 ring-4 ring-white dark:ring-slate-900">
+                            <Check size={16} strokeWidth={3} />
+                          </div>
+                          <span className="text-[10px] font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider">Listed</span>
+                        </div>
+                        
+                        {/* Step 2: Claimed */}
+                        <div className="flex flex-col items-center gap-2">
+                          <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white transition-all duration-700 ring-4 ring-white dark:ring-slate-900 ${donation.status !== 'PENDING' ? 'bg-emerald-500 shadow-lg shadow-emerald-500/30' : 'bg-slate-200 dark:bg-slate-800 text-slate-400'}`}>
+                            {donation.status !== 'PENDING' ? <Check size={16} strokeWidth={3} /> : <span className="text-xs font-bold">2</span>}
+                          </div>
+                          <span className={`text-[10px] font-bold uppercase tracking-wider ${donation.status !== 'PENDING' ? 'text-slate-800 dark:text-slate-200' : 'text-slate-400'}`}>Claimed</span>
+                        </div>
+
+                        {/* Step 3: Rescued */}
+                        <div className="flex flex-col items-center gap-2">
+                          <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white transition-all duration-700 ring-4 ring-white dark:ring-slate-900 ${(donation.status !== 'PENDING' && donation.status !== 'ACCEPTED' && donation.status !== 'ASSIGNED') ? 'bg-emerald-500 shadow-lg shadow-emerald-500/30' : 'bg-slate-200 dark:bg-slate-800 text-slate-400'}`}>
+                            {(donation.status !== 'PENDING' && donation.status !== 'ACCEPTED' && donation.status !== 'ASSIGNED') ? <Check size={16} strokeWidth={3} /> : <span className="text-xs font-bold">3</span>}
+                          </div>
+                          <span className={`text-[10px] font-bold uppercase tracking-wider ${(donation.status !== 'PENDING' && donation.status !== 'ACCEPTED' && donation.status !== 'ASSIGNED') ? 'text-slate-800 dark:text-slate-200' : 'text-slate-400'}`}>Rescued</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Food Details */}
+                    <div className="space-y-2 text-sm text-slate-600 dark:text-slate-300 flex-1 bg-slate-50 dark:bg-slate-800/40 p-4 rounded-xl border border-slate-100 dark:border-slate-800/50">
+                      <p className="flex items-center gap-3"><Package size={16} className="text-orange-500" /> <span className="font-medium">{donation.quantity}</span></p>
+                      <p className="flex items-center gap-3"><Clock size={16} className="text-slate-400" /> <span className="font-medium">Exp: {new Date(donation.expiryTime).toLocaleString()}</span></p>
                     </div>
 
                     {/* Show Delete Button ONLY if status is PENDING, else show IMPACT CERTIFICATE */}
@@ -509,10 +518,10 @@ export default function DonorView() {
               className="bg-white dark:bg-slate-900 rounded-3xl overflow-hidden shadow-2xl relative"
             >
             {/* Premium Gradient Header */}
-  <div className="h-32 bg-gradient-to-br from-amber-400 via-orange-500 to-rose-500 relative flex items-center justify-center">
-    <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay pointer-events-none" />
-    <Award size={64} className="text-white drop-shadow-md absolute -bottom-8 bg-white/20 p-2 rounded-full backdrop-blur-md border border-white/30" />
-  </div>
+            <div className="h-32 bg-gradient-to-br from-amber-400 via-orange-500 to-rose-500 relative flex items-center justify-center">
+              <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay pointer-events-none" />
+              <Award size={64} className="text-white drop-shadow-md absolute -bottom-8 bg-white/20 p-2 rounded-full backdrop-blur-md border border-white/30 z-10" />
+            </div>
               
               <div className="pt-12 pb-8 px-8 text-center space-y-4 relative">
                 <h3 className="text-xs font-black uppercase tracking-widest text-orange-500 mb-2">Certificate of Impact</h3>
