@@ -10,6 +10,7 @@ import { DonationType } from "./NgoView";
 
 export default function VolunteerView() {
   const [missions, setMissions] = useState<DonationType[]>([]);
+  const [history, setHistory] = useState<DonationType[]>([]); // Naya state history ke liye
   const [isLoading, setIsLoading] = useState(true);
   const [isAccepting, setIsAccepting] = useState<string | null>(null);
 
@@ -27,6 +28,16 @@ export default function VolunteerView() {
         if (statsJson.success) {
           setStats(statsJson.data); 
         }
+
+        // Try to fetch history (agar backend mein endpoint nahi hoga toh silent fail ho jayega)
+        try {
+          const histRes = await fetch("/api/volunteer/historyy");
+          const histJson = await histRes.json();
+          if (histJson.success) setHistory(histJson.data);
+        } catch (e) {
+          console.log("No history endpoint found, relying on local session history.");
+        }
+
       } catch (error) {
         toast.error("Failed to load missions.");
       } finally {
@@ -48,6 +59,13 @@ export default function VolunteerView() {
       
       if (json.success) {
         toast.success("Mission Completed! You earned 50 Karma Points. 🏆");
+        
+        // Find the completed mission and move it to History
+        const completedMission = missions.find((m) => m._id === donationId);
+        if (completedMission) {
+          setHistory((prev) => [completedMission, ...prev]);
+        }
+        
         setMissions((prev) => prev.filter((m) => m._id !== donationId));
         
         // INSTANT UI UPDATE
@@ -62,12 +80,31 @@ export default function VolunteerView() {
     }
   };
 
-  // Mock Data for Leaderboard
-  const topVolunteers = [
-    { id: 1, name: "Rahul Sharma", points: 1250, deliveries: 45, badge: "Food Savior" },
-    { id: 2, name: "Priya Singh", points: 980, deliveries: 32, badge: "Speedy Rider" },
-    { id: 3, name: "Amit Kumar", points: 850, deliveries: 28, badge: "Community Hero" },
-  ];
+  // 🔥 DYNAMIC LEADERBOARD LOGIC 🔥
+  const getLeaderboard = () => {
+    const staticVolunteers = [
+      { id: "1", name: "Rahul Sharma", points: 1250, deliveries: 45, badge: "Food Savior" },
+      { id: "2", name: "Priya Singh", points: 980, deliveries: 32, badge: "Speedy Rider" },
+      { id: "3", name: "Amit Kumar", points: 850, deliveries: 28, badge: "Community Hero" },
+    ];
+    
+    const allVolunteers = [
+      ...staticVolunteers,
+      // Current User dynamically added
+      { 
+        id: "me", 
+        name: "You (Volunteer)", 
+        points: stats.karma, 
+        deliveries: stats.deliveries, 
+        badge: stats.karma >= 1000 ? "Food Savior" : "Rising Hero" 
+      }
+    ];
+    
+    // Sort array by highest points
+    return allVolunteers.sort((a, b) => b.points - a.points);
+  };
+
+  const topVolunteers = getLeaderboard();
 
   return (
     <div className="space-y-10 animate-in fade-in slide-in-from-bottom-8 duration-700 w-full mx-auto relative z-10 block">
@@ -209,13 +246,15 @@ export default function VolunteerView() {
                 <Trophy className="text-amber-500" /> City Top Heroes
               </CardTitle>
               <CardDescription className="text-slate-500 dark:text-slate-400 font-medium">
-                Volunteers with the highest karma points this month.
+                Volunteers with the highest karma points this month. Keep delivering to rise up!
               </CardDescription>
             </CardHeader>
             <CardContent className="p-0">
               <div className="divide-y divide-slate-100 dark:divide-slate-800">
                 {topVolunteers.map((vol, index) => (
-                  <div key={vol.id} className="flex items-center justify-between p-6 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                  <div key={vol.id} className={`flex items-center justify-between p-6 transition-colors 
+                    ${vol.id === 'me' ? 'bg-amber-50 dark:bg-amber-900/20 border-l-4 border-amber-500' : 'hover:bg-slate-50 dark:hover:bg-slate-800/50'}
+                  `}>
                     <div className="flex items-center gap-4">
                       <div className={`w-12 h-12 rounded-full flex items-center justify-center font-black text-xl shadow-inner
                         ${index === 0 ? 'bg-yellow-100 text-yellow-600 dark:bg-yellow-500/20 dark:text-yellow-400' : 
@@ -225,7 +264,12 @@ export default function VolunteerView() {
                         #{index + 1}
                       </div>
                       <div>
-                        <h4 className="font-bold text-slate-900 dark:text-white text-lg">{vol.name}</h4>
+                        <h4 className={`font-bold text-lg flex items-center gap-2 ${vol.id === 'me' ? 'text-amber-700 dark:text-amber-400' : 'text-slate-900 dark:text-white'}`}>
+                          {vol.name}
+                          {vol.id === 'me' && (
+                            <span className="text-[10px] bg-amber-200 text-amber-800 dark:bg-amber-800 dark:text-amber-200 px-2 py-0.5 rounded-full uppercase tracking-wider">You</span>
+                          )}
+                        </h4>
                         <p className="text-sm text-slate-500 dark:text-slate-400 font-medium flex items-center gap-1">
                           <Star size={14} className="text-amber-500" /> {vol.badge} • {vol.deliveries} Deliveries
                         </p>
@@ -244,14 +288,46 @@ export default function VolunteerView() {
 
         {/* TAB 3: HISTORY */}
         <TabsContent value="history" className="w-full animate-in fade-in duration-500 block">
-          <Card className="w-full border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900 backdrop-blur-xl shadow-sm rounded-3xl overflow-hidden text-center p-12">
-             <div className="w-20 h-20 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4">
-                <History className="text-slate-400 w-10 h-10" />
-             </div>
-             <h4 className="text-xl font-bold text-slate-800 dark:text-slate-200">Your Impact History</h4>
-             <p className="text-slate-500 dark:text-slate-400 font-medium mt-2 max-w-md mx-auto">
-                Your recent deliveries and earned badges will appear here. Keep rescuing food to build your timeline!
-             </p>
+          <Card className="w-full border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900 backdrop-blur-xl shadow-sm rounded-3xl overflow-hidden">
+            {history.length === 0 ? (
+              <div className="text-center p-12">
+                 <div className="w-20 h-20 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <History className="text-slate-400 w-10 h-10" />
+                 </div>
+                 <h4 className="text-xl font-bold text-slate-800 dark:text-slate-200">Your Impact History</h4>
+                 <p className="text-slate-500 dark:text-slate-400 font-medium mt-2 max-w-md mx-auto">
+                    Your recent deliveries and earned badges will appear here. Keep rescuing food to build your timeline!
+                 </p>
+              </div>
+            ) : (
+              <>
+                <CardHeader className="bg-amber-50/50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 pb-5">
+                  <CardTitle className="text-xl font-extrabold text-slate-900 dark:text-white">Your Past Deliveries</CardTitle>
+                </CardHeader>
+                <CardContent className="p-6 space-y-4">
+                   {history.map((donation, idx) => (
+                     <div key={idx} className="flex items-center justify-between p-5 bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-md transition-shadow">
+                        <div className="flex items-center gap-4">
+                          <div className="bg-emerald-100 dark:bg-emerald-900/30 p-3 rounded-full text-emerald-600 dark:text-emerald-400 shrink-0">
+                            <CheckCircle2 size={24} />
+                          </div>
+                          <div>
+                            <h4 className="font-bold text-slate-900 dark:text-white capitalize text-lg">{donation.foodCategory}</h4>
+                            <p className="text-sm text-slate-500 dark:text-slate-400 flex items-center gap-1.5 mt-1">
+                              <MapPin size={14}/> {donation.pickupLocation}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="text-right shrink-0">
+                           <span className="bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400 font-black px-3 py-1.5 rounded-full text-sm flex items-center gap-1 shadow-sm border border-orange-200 dark:border-orange-800/50">
+                             <Flame size={14} /> +50 Karma
+                           </span>
+                        </div>
+                     </div>
+                   ))}
+                </CardContent>
+              </>
+            )}
           </Card>
         </TabsContent>
       </Tabs>
