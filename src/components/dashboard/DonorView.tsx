@@ -7,8 +7,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Image as ImageIcon, Sparkles, AlertCircle, HeartHandshake, Loader2, UploadCloud, History, PlusCircle, Trash2, Package, Clock } from "lucide-react";
+import { Image as ImageIcon, Sparkles, AlertCircle, HeartHandshake, Loader2, UploadCloud, History, PlusCircle, Trash2, Package, Clock, Award, Download, X, Share2 } from "lucide-react";
 import Image from "next/image";
+import * as htmlToImage from "html-to-image"; // Naya import certificate download ke liye
 
 export interface CampaignDropdownType {
   _id: string;
@@ -34,6 +35,11 @@ export default function DonorView() {
   const [previewBase64, setPreviewBase64] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Certificate Modal States
+  const [showCertificate, setShowCertificate] = useState<MyDonationType | null>(null);
+  const [isDownloading, setIsDownloading] = useState(false);
+  const certificateRef = useRef<HTMLDivElement>(null);
+
   const [formData, setFormData] = useState({
     foodCategory: "",
     foodSource: "Households",
@@ -48,8 +54,8 @@ export default function DonorView() {
   const [myDonations, setMyDonations] = useState<MyDonationType[]>([]);
   const [isLoadingHistory, setIsLoadingHistory] = useState(true);
 
-  const fetchMyDonations = useCallback(async () => {
-    setIsLoadingHistory(true);
+  const fetchMyDonations = useCallback(async (isRefresh = false) => {
+    if (isRefresh) setIsLoadingHistory(true);
     try {
       const res = await fetch("/api/donations/me");
       const json = await res.json();
@@ -61,28 +67,50 @@ export default function DonorView() {
     }
   }, []); 
 
-  useEffect(() => {
+   useEffect(() => {
+
     const fetchCampaigns = async () => {
+
       try {
+
         const res = await fetch("/api/campaigns");
+
         const json = await res.json();
+
         if (json.success) setActiveCampaigns(json.data);
+
       } catch (error) {
+
         console.error("Failed to fetch campaigns");
+
       }
+
     };
+
+
 
     let isMounted = true;
 
+
+
     Promise.resolve().then(() => {
+
       if (!isMounted) return;
+
       fetchCampaigns();
+
       fetchMyDonations();
+
     });
 
+
+
     return () => {
+
       isMounted = false;
+
     };
+
   }, [fetchMyDonations]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -108,7 +136,7 @@ export default function DonorView() {
     }
 
     setIsAnalyzing(true);
-    toast(" AI is analyzing the food...", { duration: 3000 });
+    toast("🤖 AI is analyzing the food...", { duration: 3000 });
 
     try {
       const base64Data = previewBase64.split(",")[1];
@@ -168,7 +196,7 @@ export default function DonorView() {
         setPreviewBase64(null);
         if (fileInputRef.current) fileInputRef.current.value = "";
         
-        fetchMyDonations();
+        fetchMyDonations(true); // Refresh history
       } else {
         const errData = await res.json();
         toast.error(errData.message || "Failed to create donation.");
@@ -187,8 +215,6 @@ export default function DonorView() {
     try {
       const res = await fetch(`/api/donations?id=${id}`, { method: "DELETE" });
       const json = await res.json();
-
-      console.log("Delete donation response", { id, status: res.status, success: json.success, message: json.message });
       
       if (res.ok && json.success) {
         toast.success("Donation removed successfully.");
@@ -198,6 +224,34 @@ export default function DonorView() {
       }
     } catch (error) {
       toast.error("Network error while deleting.");
+    }
+  };
+
+  // 🏆 Download Certificate Logic
+  const downloadCertificate = async () => {
+    if (!certificateRef.current) return;
+    setIsDownloading(true);
+    toast("Generating high-res certificate...", { duration: 2000 });
+    
+    try {
+      // html-to-image automatically modern CSS, shadows aur colors ko handle kar leta hai
+      const dataUrl = await htmlToImage.toPng(certificateRef.current, {
+        quality: 1,
+        pixelRatio: 3, // High resolution HD image ke liye
+        backgroundColor: undefined
+      });
+      
+      const link = document.createElement("a");
+      link.download = `HungerBridge-Impact-${showCertificate?._id.substring(0,6)}.png`;
+      link.href = dataUrl;
+      link.click();
+      
+      toast.success("Certificate downloaded! Ready to share. 🚀");
+    } catch (error) {
+      console.error("Image generation error:", error);
+      toast.error("Failed to download certificate.");
+    } finally {
+      setIsDownloading(false);
     }
   };
 
@@ -296,7 +350,7 @@ export default function DonorView() {
                             </div>
                         </div>
                       ) : (
-                        <div className="h-32 w-full" /> /* Empty space for dropzone */
+                        <div className="h-32 w-full" /> 
                       )}
                   </div>
                 </div>
@@ -406,15 +460,25 @@ export default function DonorView() {
                       <p className="flex items-center gap-2"><Clock size={16} className="text-slate-400" /> Exp: {new Date(donation.expiryTime).toLocaleString()}</p>
                     </div>
 
-                    {/* Show Delete Button ONLY if status is PENDING */}
-                    {donation.status === 'PENDING' && (
+                    {/* Show Delete Button ONLY if status is PENDING, else show IMPACT CERTIFICATE */}
+                    {donation.status === 'PENDING' ? (
                       <div className="pt-4 border-t border-slate-100 dark:border-slate-800">
                         <Button 
                           variant="outline" 
                           onClick={() => deleteDonation(donation._id)}
-                          className="w-full border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700 dark:border-red-900/50 dark:text-red-400 dark:hover:bg-red-950/30 font-bold transition-all"
+                          className="w-full border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700 dark:border-red-900/50 dark:text-red-400 dark:hover:bg-red-950/30 font-bold transition-all h-11 rounded-xl"
                         >
                           <Trash2 size={16} className="mr-2" /> Remove Posting
+                        </Button>
+                      </div>
+                    ) : (
+                      <div className="pt-4 border-t border-slate-100 dark:border-slate-800">
+                        <Button 
+                          variant="outline" 
+                          onClick={() => setShowCertificate(donation)}
+                          className="w-full border-amber-300 text-amber-700 hover:bg-amber-50 hover:text-amber-800 dark:border-amber-900/50 dark:text-amber-400 dark:hover:bg-amber-950/40 font-bold transition-all h-11 rounded-xl bg-amber-50/30 dark:bg-amber-900/10 shadow-sm"
+                        >
+                          <Award size={18} className="mr-2 text-amber-500" /> View Impact Certificate
                         </Button>
                       </div>
                     )}
@@ -424,8 +488,86 @@ export default function DonorView() {
             </div>
           )}
         </TabsContent>
-
       </Tabs>
+
+      {/* 🏆 THE VIRAL IMPACT CERTIFICATE MODAL 🏆 */}
+      {showCertificate && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-in fade-in duration-300">
+          <div className="relative w-full max-w-md mx-auto">
+            
+            {/* Close Button */}
+            <button 
+              onClick={() => setShowCertificate(null)}
+              className="absolute -top-12 right-0 p-2 bg-white/10 hover:bg-white/20 text-white rounded-full backdrop-blur-md transition-all"
+            >
+              <X size={24} />
+            </button>
+
+            {/* Certificate Card (This is what gets converted to image) */}
+            <div 
+              ref={certificateRef}
+              className="bg-white dark:bg-slate-900 rounded-3xl overflow-hidden shadow-2xl relative"
+            >
+            {/* Premium Gradient Header */}
+  <div className="h-32 bg-gradient-to-br from-amber-400 via-orange-500 to-rose-500 relative flex items-center justify-center">
+    <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay pointer-events-none" />
+    <Award size={64} className="text-white drop-shadow-md absolute -bottom-8 bg-white/20 p-2 rounded-full backdrop-blur-md border border-white/30" />
+  </div>
+              
+              <div className="pt-12 pb-8 px-8 text-center space-y-4 relative">
+                <h3 className="text-xs font-black uppercase tracking-widest text-orange-500 mb-2">Certificate of Impact</h3>
+                <h2 className="text-2xl font-black text-slate-900 dark:text-white leading-tight">
+                  You are a Hunger Hero!
+                </h2>
+                
+                <p className="text-slate-600 dark:text-slate-300 font-medium leading-relaxed">
+                  This certifies that you successfully rescued and donated <br/>
+                  <strong className="text-orange-600 dark:text-orange-400 text-lg">{showCertificate.quantity}</strong> of <strong className="text-slate-900 dark:text-white">{showCertificate.foodCategory}</strong>.
+                </p>
+
+                <div className="pt-6 mt-4 border-t border-slate-100 dark:border-slate-800 flex justify-between items-center text-left">
+                  <div>
+                    <p className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Date of Impact</p>
+                    <p className="text-sm font-bold text-slate-800 dark:text-slate-200">
+                      {new Date(showCertificate.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Issued By</p>
+                    <p className="text-sm font-black text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-rose-500 flex items-center gap-1 justify-end">
+                      <HeartHandshake size={14} className="text-orange-500" /> HungerBridge
+                    </p>
+                  </div>
+                </div>
+
+                {/* Watermark/Stamp */}
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-[0.03] pointer-events-none dark:opacity-[0.05]">
+                  <Award size={200} />
+                </div>
+              </div>
+            </div>
+
+            {/* Modal Action Buttons (Not included in image) */}
+            <div className="flex gap-3 mt-4">
+              <Button 
+                onClick={downloadCertificate}
+                disabled={isDownloading}
+                className="flex-1 bg-gradient-to-r from-orange-500 to-rose-500 hover:from-orange-600 hover:to-rose-600 text-white font-bold h-12 rounded-xl shadow-lg border-0 transition-all hover:scale-[1.02] active:scale-[0.98]"
+              >
+                {isDownloading ? (
+                  <span className="flex items-center gap-2"><Loader2 size={18} className="animate-spin" /> Saving...</span>
+                ) : (
+                  <span className="flex items-center gap-2"><Download size={18} /> Download Certificate</span>
+                )}
+              </Button>
+            </div>
+            <p className="text-center text-white/60 text-xs mt-3 font-medium flex items-center justify-center gap-1">
+              <Share2 size={12} /> Share this on LinkedIn or Instagram!
+            </p>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }
