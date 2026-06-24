@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { MapPin, Clock, Megaphone, Package, HeartHandshake, Sparkles, Copy, Loader2, Activity, PieChart, Truck, CheckCircle, ShieldCheck, ShieldAlert } from "lucide-react";
+import { MapPin, Clock, Megaphone, Package, HeartHandshake, Sparkles, Copy, Loader2, Activity, PieChart, Truck, CheckCircle, ShieldCheck, ShieldAlert, TrendingUp } from "lucide-react";
 import {
   PieChart as RePieChart,
   Pie,
@@ -23,7 +23,6 @@ export interface DonationType {
   expiryTime?: string | Date;
   isUrgent?: boolean;
   status?: string;
-  // 👇 Naye Fields add kiye hain Trust Score ke liye
   trustScore?: number;
   isSuspicious?: boolean;
 }
@@ -48,6 +47,9 @@ export default function NgoView() {
   const [donations, setDonations] = useState<DonationType[]>([]);
   const [incomingDeliveries, setIncomingDeliveries] = useState<DonationType[]>([]);
   const [isLoadingDB, setIsLoadingDB] = useState(true);
+  
+  // Naya state AI Insight ke liye
+  const [aiInsight, setAiInsight] = useState("");
 
   // Example stats for the Impact tab
  const [stats, setStats] = useState({
@@ -65,20 +67,36 @@ export default function NgoView() {
 const COLORS = ["#10b981", "#8b5cf6", "#3b82f6"];
 
   useEffect(() => {
+    let isMounted = true;
+
+    const getInsight = () => {
+      const hour = new Date().getHours();
+      const day = new Date().getDay(); 
+      if (day === 5 || day === 6) {
+        return "Expect a 30% surge in food availability from Events/Weddings this weekend. Keep your volunteer fleet on standby.";
+      } else if (hour >= 20 || hour <= 2) {
+        return "High chance of restaurant surplus in the next 2 hours. Monitor the live feed closely for urgent pickups.";
+      } else if (hour >= 11 && hour <= 14) {
+        return "Lunch hours peaking. Expect corporate cafeteria surplus to be listed shortly.";
+      } else {
+        return "Steady donation flow expected today. Focus on fulfilling active campaigns and expanding community reach.";
+      }
+    };
+
     const fetchDonations = async () => {
       try {
         const res = await fetch("/api/donations");
         if (!res.ok) return; 
         const json = await res.json();
         if (json.success) {
-          setDonations(json.data);
+          if (isMounted) setDonations(json.data);
         } else {
           toast.error("Failed to load live donations.");
         }
       } catch (error) {
         toast.error("Network error while connecting to DB.");
       } finally {
-        setIsLoadingDB(false);
+        if (isMounted) setIsLoadingDB(false);
       }
     };
 
@@ -86,7 +104,7 @@ const COLORS = ["#10b981", "#8b5cf6", "#3b82f6"];
       try {
         const res = await fetch("/api/donations/active");
         const json = await res.json();
-        if (json.success) setIncomingDeliveries(json.data);
+        if (json.success && isMounted) setIncomingDeliveries(json.data);
       } catch (error) {
         console.error("Error fetching incoming deliveries", error);
       }
@@ -96,7 +114,7 @@ const COLORS = ["#10b981", "#8b5cf6", "#3b82f6"];
       try {
         const res = await fetch("/api/campaigns");
         const json = await res.json();
-        if (json.success) setLiveCampaigns(json.data);
+        if (json.success && isMounted) setLiveCampaigns(json.data);
       } catch (error) {}
     };
 
@@ -104,7 +122,7 @@ const COLORS = ["#10b981", "#8b5cf6", "#3b82f6"];
       try {
         const res = await fetch("/api/impact");
         const json = await res.json();
-        if (json.success) {
+        if (json.success && isMounted) {
           setStats({
             totalMeals: json.data.totalMealsServed,
             campaignsRun: json.data.activeCampaigns,
@@ -114,10 +132,18 @@ const COLORS = ["#10b981", "#8b5cf6", "#3b82f6"];
       } catch (e) {}
     };
 
-    fetchImpact();
-    fetchCampaigns();
-    fetchDonations();
-    fetchIncomingDeliveries();
+    Promise.resolve().then(() => {
+      if (!isMounted) return;
+      setAiInsight(getInsight());
+      fetchImpact();
+      fetchCampaigns();
+      fetchDonations();
+      fetchIncomingDeliveries();
+    });
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const generateCampaign = async (donation: DonationType) => {
@@ -415,7 +441,26 @@ const COLORS = ["#10b981", "#8b5cf6", "#3b82f6"];
 
             {/* AI Studio Sidebar */}
             <div className="lg:col-span-5 w-full">
-              <div className="sticky top-24 w-full">
+              <div className="sticky top-24 w-full space-y-6">
+                
+                {/* 🤖 AI Predictive Insights Widget 🤖 */}
+                <Card className="w-full border border-blue-200 dark:border-blue-900/50 shadow-md bg-blue-50/50 dark:bg-blue-950/20 rounded-3xl overflow-hidden relative">
+                  <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-blue-500" />
+                  <CardContent className="p-5 flex items-start gap-4">
+                    <div className="bg-blue-100 dark:bg-blue-900/50 p-3 rounded-full shrink-0 mt-1">
+                      <TrendingUp className="text-blue-600 dark:text-blue-400" size={20} />
+                    </div>
+                    <div>
+                      <h4 className="text-sm font-extrabold text-blue-900 dark:text-blue-300 uppercase tracking-wider mb-1 flex items-center gap-1">
+                        <Sparkles size={14} className="text-blue-500" /> AI Demand Forecast
+                      </h4>
+                      <p className="text-sm text-blue-800 dark:text-blue-200 font-medium leading-relaxed">
+                        {aiInsight}
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+
                 <Card className="w-full border border-slate-200 dark:border-slate-800 shadow-xl bg-white dark:bg-slate-900 rounded-3xl overflow-hidden relative group">
                   <div className="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-purple-500 to-fuchsia-500" />
                   <CardHeader className="bg-purple-50/50 dark:bg-slate-800/50 pb-5 border-b border-slate-200 dark:border-slate-800 w-full">
