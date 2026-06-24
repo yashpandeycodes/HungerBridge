@@ -14,27 +14,23 @@ const calculateTrustScore = (source: string, qtyText: string, expiry: string) =>
   let isSuspicious = false;
   let reason = "";
 
-  // Extract number from quantity text (e.g., "50 boxes" -> 50)
   const qtyMatch = String(qtyText).match(/\d+/);
   const quantityNum = qtyMatch ? parseInt(qtyMatch[0]) : 20;
   
   const hoursToExpiry = (new Date(expiry).getTime() - new Date().getTime()) / (1000 * 60 * 60);
 
-  // Rule 1: High quantity from a normal household is suspicious
   if (source === 'Households' && quantityNum > 50) {
     score -= 60;
     isSuspicious = true;
     reason = "Unusually high quantity for a household.";
   }
   
-  // Rule 2: Very short expiry for large quantities
   if (hoursToExpiry < 1 && quantityNum > 20) {
     score -= 40;
     isSuspicious = true;
     reason = "Very short expiry time for large quantity.";
   }
 
-  // Slight randomization to make it feel organic (like true ML models)
   score += Math.floor(Math.random() * 5) - 2; 
 
   return { 
@@ -72,7 +68,7 @@ export async function POST(request: Request) {
     const hoursDifference = (expiryDate.getTime() - currentTime.getTime()) / (1000 * 60 * 60);
     const isUrgent = hoursDifference > 0 && hoursDifference <= 4;
 
-    // 👇 RUN FRAUD DETECTION ENGINE
+
     const fraudAnalysis = calculateTrustScore(foodSource, quantity, expiryTime);
 
     const newDonation = new DonationModel({
@@ -87,7 +83,6 @@ export async function POST(request: Request) {
       campaignId: campaignId || undefined,
       status: 'PENDING',
       
-      // 👇 SAVE AI TRUST SCORE IN DATABASE
       trustScore: fraudAnalysis.score,
       isSuspicious: fraudAnalysis.isSuspicious
     });
@@ -164,6 +159,40 @@ export async function PATCH(request: Request) {
     return NextResponse.json({ success: true, message: 'Donation claimed', data: updatedDonation }, { status: 200 });
   } catch (error) {
     console.error('Error claiming donation:', error);
+    return NextResponse.json({ success: false, message: 'Internal server error' }, { status: 500 });
+  }
+}
+
+// 4. DELETE: Remove pending donation by Donor
+export async function DELETE(request: Request) {
+  try {
+    await dbConnect();
+    const session = await getServerSession(authOptions);
+    if (!session || !session.user || session.user.role !== 'DONOR') {
+      return NextResponse.json({ success: false, message: 'Unauthorized.' }, { status: 403 });
+    }
+
+    const { searchParams } = new URL(request.url);
+    const donationId = searchParams.get('id');
+
+    if (!donationId) {
+      return NextResponse.json({ success: false, message: 'Donation ID is required' }, { status: 400 });
+    }
+
+    const deletedDonation = await DonationModel.findOneAndDelete({
+      _id: donationId,
+      donorId: session.user._id,
+      status: 'PENDING',
+    });
+
+    if (!deletedDonation) {
+      return NextResponse.json({ success: false, message: 'Donation not found or unauthorized or not pending' }, { status: 404 });
+    }
+
+    return NextResponse.json({ success: true, message: 'Donation removed successfully' }, { status: 200 });
+
+  } catch (error) {
+    console.error('Error deleting donation:', error);
     return NextResponse.json({ success: false, message: 'Internal server error' }, { status: 500 });
   }
 }
