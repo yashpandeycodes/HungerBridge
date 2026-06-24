@@ -3,6 +3,7 @@ import mongoose, { Schema, Document } from 'mongoose';
 export interface Donation extends Document {
   donorId: mongoose.Types.ObjectId;
   foodCategory: string;
+  foodSource: string;
   quantity: string;
   expiryTime: Date;
   pickupLocation: string;
@@ -18,6 +19,7 @@ export interface Donation extends Document {
 const DonationSchema: Schema<Donation> = new Schema({
   donorId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   foodCategory: { type: String, required: true },
+  foodSource: { type: String, required: true },
   quantity: { type: String, required: true },
   expiryTime: { type: Date, required: true },
   pickupLocation: { type: String, required: true },

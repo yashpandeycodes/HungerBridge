@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/[...nextauth]/options';
 import dbConnect from '@/lib/dbConnect';
 import DonationModel from '@/model/Donation';
+import CampaignModel from '@/model/Campaign';
 
 export async function GET() {
   try {
@@ -27,12 +28,30 @@ export async function PATCH(request: Request) {
 
     const updatedDonation = await DonationModel.findByIdAndUpdate(
       donationId,
-      { status: 'COMPLETED', volunteerId: session.user._id },
+      { 
+        status: 'COMPLETED', 
+        volunteerId: session.user._id 
+      },
       { new: true }
     );
 
+    if (!updatedDonation) {
+      return NextResponse.json({ success: false, message: 'Donation not found' }, { status: 404 });
+    }
+
+    if (updatedDonation.campaignId) {
+    
+      const parsedQuantity = parseInt(updatedDonation.quantity.replace(/\D/g, '')) || 20; 
+      
+      await CampaignModel.findByIdAndUpdate(
+        updatedDonation.campaignId,
+        { $inc: { mealsCollected: parsedQuantity } } 
+      );
+    }
+
     return NextResponse.json({ success: true, data: updatedDonation }, { status: 200 });
   } catch (error) {
-    return NextResponse.json({ success: false, message: 'Failed to accept mission' }, { status: 500 });
+    console.error("Mission Complete Error:", error);
+    return NextResponse.json({ success: false, message: 'Failed to complete mission' }, { status: 500 });
   }
 }

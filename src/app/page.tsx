@@ -1,9 +1,38 @@
-// src/app/page.tsx
+"use client";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function Home() {
+  const [stats, setStats] = useState({
+    totalDonations: 0,
+    completedDeliveries: 0,
+    activeCampaigns: 0,
+    totalMealsServed: 0,
+    totalFoodRescuedKg: 0,
+    volunteerHours: 0
+  });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const res = await fetch("/api/impact");
+        if (!res.ok) return;
+        const json = await res.json();
+        if (json.success) {
+          setStats(json.data);
+        }
+      } catch (error) {
+        console.error("Failed to fetch stats", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchStats();
+  }, []);
+
   return (
     <div className="min-h-screen flex flex-col bg-slate-50">
       {/* Navbar */}
@@ -44,16 +73,20 @@ export default function Home() {
           </div>
         </div>
 
+        {/* Live Impact Dashboard */}
         <div className="w-full max-w-6xl mt-20">
           <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-8">Live Impact Dashboard</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+            
             <Card className="border-none shadow-md bg-white">
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm font-medium text-slate-500 uppercase">Meals Served</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-4xl font-bold text-emerald-600">12,450+</div>
-                <p className="text-xs text-slate-500 mt-1">Across 15 cities</p>
+                <div className="text-4xl font-bold text-emerald-600">
+                  {loading ? "..." : stats.totalMealsServed}
+                </div>
+                <p className="text-xs text-slate-500 mt-1">Across our network</p>
               </CardContent>
             </Card>
 
@@ -62,7 +95,9 @@ export default function Home() {
                 <CardTitle className="text-sm font-medium text-slate-500 uppercase">Food Rescued (kg)</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-4xl font-bold text-orange-600">8,230</div>
+                <div className="text-4xl font-bold text-orange-600">
+                  {loading ? "..." : stats.totalFoodRescuedKg}
+                </div>
                 <p className="text-xs text-slate-500 mt-1">Diverted from landfills</p>
               </CardContent>
             </Card>
@@ -72,7 +107,9 @@ export default function Home() {
                 <CardTitle className="text-sm font-medium text-slate-500 uppercase">Active Campaigns</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-4xl font-bold text-blue-600">24</div>
+                <div className="text-4xl font-bold text-blue-600">
+                  {loading ? "..." : stats.activeCampaigns}
+                </div>
                 <p className="text-xs text-slate-500 mt-1">Needing immediate support</p>
               </CardContent>
             </Card>
@@ -82,15 +119,18 @@ export default function Home() {
                 <CardTitle className="text-sm font-medium text-slate-500 uppercase">Volunteer Hours</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-4xl font-bold text-purple-600">3,100+</div>
-                <p className="text-xs text-slate-500 mt-1">Logged by 450+ heroes</p>
+                <div className="text-4xl font-bold text-purple-600">
+                  {loading ? "..." : stats.volunteerHours}
+                </div>
+                <p className="text-xs text-slate-500 mt-1">Logged by our heroes</p>
               </CardContent>
             </Card>
+
           </div>
         </div>
       </main>
 
-      
+      {/* Footer */}
       <footer className="py-6 w-full shrink-0 items-center px-4 md:px-6 border-t bg-white flex flex-col md:flex-row justify-between text-center md:text-left">
         <p className="text-sm text-slate-500">
           © {new Date().getFullYear()} HungerBridge. Built for the Hackathon.

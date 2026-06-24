@@ -1,12 +1,19 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef,useEffect } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import Image from "next/image";
+
+export interface CampaignDropdownType {
+  _id: string;
+  title: string;
+  targetMeals: number;
+  mealsCollected: number;
+}
 
 export default function DonorView() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -16,11 +23,28 @@ export default function DonorView() {
 
   const [formData, setFormData] = useState({
     foodCategory: "",
+    foodSource: "Households",
     quantity: "",
     expiryTime: "",
     pickupLocation: "",
     isUrgent: false,
+    campaignId: "",
   });
+
+   const [activeCampaigns, setActiveCampaigns] = useState<CampaignDropdownType[]>([]);
+
+   useEffect(() => {
+    const fetchCampaigns = async () => {
+      try {
+        const res = await fetch("/api/campaigns");
+        const json = await res.json();
+        if (json.success) setActiveCampaigns(json.data);
+      } catch (error) {
+        console.error("Failed to fetch campaigns");
+      }
+    };
+    fetchCampaigns();
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -66,7 +90,7 @@ export default function DonorView() {
           foodCategory: data.data.foodCategory,
           quantity: data.data.estimatedQuantity,
         });
-        toast.success("✨ AI successfully categorized the food!");
+        toast.success(" AI successfully categorized the food!");
       } else {
         toast.error("AI Analysis failed. You can enter details manually.");
       }
@@ -77,7 +101,7 @@ export default function DonorView() {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
@@ -93,9 +117,11 @@ export default function DonorView() {
       });
 
       if (res.ok) {
-        toast.success("Donation created successfully! 🎉 NGOs will be notified.");
-        // Reset form
-        setFormData({ foodCategory: "", quantity: "", expiryTime: "", pickupLocation: "", isUrgent: false });
+        toast.success("Donation created successfully!  NGOs will be notified.");
+       
+        setFormData({ foodCategory: "",
+           foodSource: "Households", quantity: "", expiryTime: "", pickupLocation: "", campaignId: "", isUrgent: false });
+
         setPreviewBase64(null);
         if (fileInputRef.current) fileInputRef.current.value = "";
       } else {
@@ -167,6 +193,39 @@ export default function DonorView() {
               <Label>Pickup Location (Address)</Label>
               <Input required name="pickupLocation" placeholder="Full address" value={formData.pickupLocation} onChange={handleChange} />
             </div>
+
+            <div className="space-y-2">
+          <label className="text-sm font-semibold text-slate-700">Food Source <span className="text-red-500">*</span></label>
+          <select
+            className="w-full p-3 bg-white border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+            value={formData.foodSource}
+            onChange={(e) => setFormData({ ...formData, foodSource: e.target.value })}
+            required
+          >
+            <option value="Households">Households (Home cooked)</option>
+            <option value="Restaurant surplus">Restaurant Surplus</option>
+            <option value="Events/Weddings">Events / Weddings</option>
+            <option value="Corporate cafeterias">Corporate Cafeterias</option>
+          </select>
+        </div>
+
+        <div className="space-y-2">
+          <label className="text-sm font-semibold text-slate-700">Support an NGO Campaign (Optional)</label>
+        <select
+            className="w-full p-3 bg-white border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+            value={formData.campaignId}
+            onChange={(e) => setFormData({ ...formData, campaignId: e.target.value })}
+          >
+            <option value="">-- General Donation (Open to all) --</option>
+            {activeCampaigns.map((camp) => (
+              <option key={camp._id} value={camp._id}>
+                {camp.title} (Progress: {camp.mealsCollected} / {camp.targetMeals} meals)
+              </option>
+            ))}
+          </select>
+          <p className="text-xs text-slate-500 mt-1">If selected, this food goes directly to fulfilling this campaign`s target.</p>
+        </div>
+
             <div className="space-y-2">
               <Label>Expiry Time</Label>
               <Input required type="datetime-local" name="expiryTime" value={formData.expiryTime} onChange={handleChange} />

@@ -42,15 +42,11 @@ export default function NgoView() {
       try {
         const res = await fetch("/api/donations");
         
-        const contentType = res.headers.get("content-type");
-        if (contentType && contentType.indexOf("application/json") === -1) {
-          const text = await res.text();
-          console.error("Oops! API ne JSON ki jagah HTML bheja. Response:", text);
-          toast.error("API routing error! Check console.");
-          setIsLoadingDB(false);
-          return; 
-        }
-
+      if (!res.ok) {
+      console.error("API failed with status:", res.status);
+      return; 
+    }
+    
         const json = await res.json();
         
         if (json.success) {
