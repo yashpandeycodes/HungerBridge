@@ -34,13 +34,13 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
-          enableSystem
+          defaultTheme="dark"
+          enableSystem={false}
           disableTransitionOnChange
         >
           <AuthProvider>
             {children}
-            <Toaster />
+           <Toaster richColors theme="system" position="bottom-right" />
           </AuthProvider>
         </ThemeProvider>
       </body>
