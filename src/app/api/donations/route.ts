@@ -4,6 +4,8 @@ import { authOptions } from '@/app/api/auth/[...nextauth]/options';
 import dbConnect from '@/lib/dbConnect';
 import DonationModel from '@/model/Donation';
 import { donationSchema } from '@/schemas/donationSchema';
+import UserModel from '@/model/User';
+import { sendEventEmail } from '@/helpers/sendEventEmail';
 
 // 1. POST: Create a new donation
 export async function POST(request: Request) {
@@ -91,6 +93,16 @@ export async function PATCH(request: Request) {
 
     if (!updatedDonation) {
       return NextResponse.json({ success: false, message: 'Donation not found' }, { status: 404 });
+    }
+
+    const donor = await UserModel.findById(updatedDonation.donorId);
+    if (donor && donor.email) {
+      sendEventEmail(
+        donor.email,
+        donor.username || "Generous Donor",
+        "Donation Accepted",
+        `Great news! An NGO has accepted your donation. A volunteer will be assigned shortly to pick it up.`
+      ).catch(err => console.error("Email sending failed:", err));
     }
 
     return NextResponse.json({ success: true, message: 'Donation claimed', data: updatedDonation }, { status: 200 });

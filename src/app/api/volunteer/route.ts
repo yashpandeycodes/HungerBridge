@@ -3,8 +3,8 @@ import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/[...nextauth]/options';
 import dbConnect from '@/lib/dbConnect';
 import DonationModel from '@/model/Donation';
-import CampaignModel from '@/model/Campaign';
 import UserModel from "@/model/User";
+import { sendEventEmail } from '@/helpers/sendEventEmail'; 
 
 export async function GET() {
   try {
@@ -27,10 +27,11 @@ export async function PATCH(request: Request) {
 
     const { donationId } = await request.json();
 
+    
     const updatedDonation = await DonationModel.findByIdAndUpdate(
       donationId,
       { 
-        status: 'COMPLETED', 
+        status: 'ASSIGNED', 
         volunteerId: session.user._id 
       },
       { new: true }
@@ -40,28 +41,20 @@ export async function PATCH(request: Request) {
       return NextResponse.json({ success: false, message: 'Donation not found' }, { status: 404 });
     }
 
-    if (updatedDonation.campaignId) {
-      const parsedQuantity = parseInt(updatedDonation.quantity.replace(/\D/g, '')) || 20; 
-      
-      await CampaignModel.findByIdAndUpdate(
-        updatedDonation.campaignId,
-        { $inc: { mealsCollected: parsedQuantity } } 
-      );
-    }
+    const donor = await UserModel.findById(updatedDonation.donorId); 
 
-    await UserModel.findByIdAndUpdate(
-      session.user._id,
-      { 
-        $inc: { 
-          karma: 50, 
-          deliveries: 1 
-        } 
-      }
-    );
+    if (donor && donor.email) {
+      sendEventEmail(
+        donor.email,
+        donor.username || "Generous Donor", 
+        "Volunteer Assigned",
+        `Good news! A volunteer has been assigned to pick up your donation. They are on their way to collect the food. Thank you for your patience!`
+      ).catch(err => console.error("Email sending failed:", err)); 
+    }
 
     return NextResponse.json({ success: true, data: updatedDonation }, { status: 200 });
   } catch (error) {
-    console.error("Mission Complete Error:", error);
-    return NextResponse.json({ success: false, message: 'Failed to complete mission' }, { status: 500 });
+    console.error("Mission Accept Error:", error);
+    return NextResponse.json({ success: false, message: 'Failed to assign mission' }, { status: 500 });
   }
 }
