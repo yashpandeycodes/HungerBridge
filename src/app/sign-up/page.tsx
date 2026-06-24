@@ -50,8 +50,9 @@ export default function SignUpPage() {
       const responseData = await res.json();
 
       if (res.ok) {
-        toast.success("Account created successfully!");
-        router.push("/sign-in");
+        toast.success("Account created! Please verify your email.");
+        // Redirecting to the verify page with the encoded email
+        router.replace(`/verify/${encodeURIComponent(data.email)}`);
       } else {
         toast.error(responseData.message || "Something went wrong!");
       }
