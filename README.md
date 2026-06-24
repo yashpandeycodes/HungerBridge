@@ -59,6 +59,15 @@ Modern SaaS-inspired dashboard featuring:
 
 ---
 
+## Email Notification for Otp and Alerts for key events: donation accepted, volunteer assigned, delivery completed
+
+- Donor receives email when food is accepted by NGO
+- NGO receives email when volunteer is assigned
+- NGO can mark if the food is accepted
+- Donor recieves email when food is recieved by the NGO
+
+---
+
 ## Secure Role-Based Authentication
 
 Different experiences for:
