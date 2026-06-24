@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 export default function Home() {
   const [stats, setStats] = useState({
@@ -34,39 +35,55 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50">
-      {/* Navbar */}
-      <header className="px-6 lg:px-14 h-16 flex items-center justify-between border-b bg-white shadow-sm">
-        <Link className="flex items-center justify-center" href="/">
-          <span className="font-bold text-2xl text-orange-600 tracking-tight">HungerBridge</span>
+    <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-[#0a0a0a] transition-colors duration-500 text-slate-900 dark:text-slate-100">
+      
+      {/* Premium Glassmorphism Navbar */}
+      <header className="sticky top-0 z-50 px-6 lg:px-14 h-16 flex items-center justify-between border-b border-slate-200 dark:border-white/10 bg-white/70 dark:bg-black/50 backdrop-blur-lg shadow-sm transition-all duration-500">
+        <Link className="flex items-center justify-center group" href="/">
+          <span className="font-extrabold text-2xl bg-clip-text text-transparent bg-gradient-to-r from-orange-600 to-rose-500 tracking-tight group-hover:opacity-80 transition-opacity">
+            HungerBridge
+          </span>
         </Link>
         <nav className="flex gap-4 sm:gap-6 items-center">
+          <ThemeToggle />
           <Link href="/sign-in">
-            <Button variant="ghost" className="font-semibold">Log In</Button>
+            <Button variant="ghost" className="font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/10 transition-colors">
+              Log In
+            </Button>
           </Link>
           <Link href="/sign-up">
-            <Button className="bg-orange-600 hover:bg-orange-700 text-white">Join the Cause</Button>
+            <Button className="bg-gradient-to-r from-orange-600 to-rose-600 hover:from-orange-700 hover:to-rose-700 text-white shadow-lg shadow-orange-500/25 border-0 transition-all hover:scale-105">
+              Join the Cause
+            </Button>
           </Link>
         </nav>
       </header>
 
-      {/* Hero Section */}
-      <main className="flex-1 flex flex-col items-center justify-center text-center px-4 md:px-6 py-12 md:py-24 lg:py-32">
-        <div className="space-y-6 max-w-3xl">
-          <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl text-slate-900">
-            Rescue Food. <span className="text-orange-600">Fight Hunger.</span>
+      {/* Hero Section with Glowing Effects */}
+      <main className="flex-1 flex flex-col items-center justify-center text-center px-4 md:px-6 py-20 md:py-32 relative overflow-hidden">
+        
+        {/* Background Ambient Glow */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-orange-500/20 dark:bg-orange-600/10 rounded-full blur-[120px] pointer-events-none" />
+
+        <div className="space-y-8 max-w-4xl relative z-10">
+          <h1 className="text-5xl font-extrabold tracking-tight sm:text-6xl md:text-7xl text-slate-900 dark:text-white drop-shadow-sm">
+            Rescue Food. <br className="hidden sm:block" />
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-orange-500 via-rose-500 to-orange-500 animate-gradient-x">
+              Fight Hunger.
+            </span>
           </h1>
-          <p className="mx-auto max-w-[700px] text-slate-600 md:text-xl leading-relaxed">
+          <p className="mx-auto max-w-[700px] text-slate-600 dark:text-slate-400 md:text-xl leading-relaxed font-medium">
             A community-driven platform connecting food donors, NGOs, and volunteers. Don`t let surplus food go to waste when it can feed a community.
           </p>
-          <div className="flex flex-col sm:flex-row justify-center gap-4 mt-8">
+          
+          <div className="flex flex-col sm:flex-row justify-center gap-5 mt-10">
             <Link href="/sign-up">
-              <Button size="lg" className="w-full sm:w-auto bg-orange-600 hover:bg-orange-700 text-white text-lg px-8">
+              <Button size="lg" className="w-full sm:w-auto bg-gradient-to-r from-orange-600 to-rose-600 hover:from-orange-700 hover:to-rose-700 text-white text-lg px-10 py-6 rounded-full shadow-xl shadow-orange-500/20 transition-all hover:scale-105 border-0">
                 Donate Food Now
               </Button>
             </Link>
             <Link href="/sign-up">
-              <Button size="lg" variant="outline" className="w-full sm:w-auto text-lg px-8 border-orange-200 text-orange-700 hover:bg-orange-50">
+              <Button size="lg" variant="outline" className="w-full sm:w-auto text-lg px-10 py-6 rounded-full border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5 bg-transparent backdrop-blur-sm transition-all">
                 Register as NGO / Volunteer
               </Button>
             </Link>
@@ -74,55 +91,68 @@ export default function Home() {
         </div>
 
         {/* Live Impact Dashboard */}
-        <div className="w-full max-w-6xl mt-20">
-          <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-8">Live Impact Dashboard</h2>
+        <div className="w-full max-w-6xl mt-32 relative z-10">
+          <div className="flex flex-col items-center mb-12">
+            <div className="inline-block px-4 py-1.5 rounded-full bg-orange-100 dark:bg-orange-500/10 border border-orange-200 dark:border-orange-500/20 text-orange-600 dark:text-orange-400 text-sm font-semibold tracking-wide uppercase mb-4">
+              Real-time Metrics
+            </div>
+            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white">Live Impact Dashboard</h2>
+          </div>
+          
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
             
-            <Card className="border-none shadow-md bg-white">
+            <Card className="relative overflow-hidden border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 backdrop-blur-xl shadow-lg hover:shadow-xl dark:hover:border-emerald-500/30 transition-all duration-300 group rounded-2xl">
+              <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
               <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-slate-500 uppercase">Meals Served</CardTitle>
+                <CardTitle className="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Meals Served</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-4xl font-bold text-emerald-600">
+                <div className="text-5xl font-black text-emerald-600 dark:text-emerald-400 tracking-tight">
                   {loading ? "..." : stats.totalMealsServed}
                 </div>
-                <p className="text-xs text-slate-500 mt-1">Across our network</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 font-medium">Across our network</p>
               </CardContent>
             </Card>
 
-            <Card className="border-none shadow-md bg-white">
+            <Card className="relative overflow-hidden border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 backdrop-blur-xl shadow-lg hover:shadow-xl dark:hover:border-orange-500/30 transition-all duration-300 group rounded-2xl">
+              <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
               <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-slate-500 uppercase">Food Rescued (kg)</CardTitle>
+                <CardTitle className="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Food Rescued</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-4xl font-bold text-orange-600">
-                  {loading ? "..." : stats.totalFoodRescuedKg}
+                <div className="flex items-baseline gap-1">
+                  <div className="text-5xl font-black text-orange-600 dark:text-orange-400 tracking-tight">
+                    {loading ? "..." : stats.totalFoodRescuedKg}
+                  </div>
+                  <span className="text-xl font-bold text-orange-600/60 dark:text-orange-400/60">kg</span>
                 </div>
-                <p className="text-xs text-slate-500 mt-1">Diverted from landfills</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 font-medium">Diverted from landfills</p>
               </CardContent>
             </Card>
 
-            <Card className="border-none shadow-md bg-white">
+            <Card className="relative overflow-hidden border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 backdrop-blur-xl shadow-lg hover:shadow-xl dark:hover:border-blue-500/30 transition-all duration-300 group rounded-2xl">
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
               <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-slate-500 uppercase">Active Campaigns</CardTitle>
+                <CardTitle className="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Active Campaigns</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-4xl font-bold text-blue-600">
+                <div className="text-5xl font-black text-blue-600 dark:text-blue-400 tracking-tight">
                   {loading ? "..." : stats.activeCampaigns}
                 </div>
-                <p className="text-xs text-slate-500 mt-1">Needing immediate support</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 font-medium">Needing immediate support</p>
               </CardContent>
             </Card>
 
-            <Card className="border-none shadow-md bg-white">
+            <Card className="relative overflow-hidden border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 backdrop-blur-xl shadow-lg hover:shadow-xl dark:hover:border-purple-500/30 transition-all duration-300 group rounded-2xl">
+              <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
               <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-slate-500 uppercase">Volunteer Hours</CardTitle>
+                <CardTitle className="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Volunteer Hours</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-4xl font-bold text-purple-600">
+                <div className="text-5xl font-black text-purple-600 dark:text-purple-400 tracking-tight">
                   {loading ? "..." : stats.volunteerHours}
                 </div>
-                <p className="text-xs text-slate-500 mt-1">Logged by our heroes</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 font-medium">Logged by our heroes</p>
               </CardContent>
             </Card>
 
@@ -131,13 +161,13 @@ export default function Home() {
       </main>
 
       {/* Footer */}
-      <footer className="py-6 w-full shrink-0 items-center px-4 md:px-6 border-t bg-white flex flex-col md:flex-row justify-between text-center md:text-left">
-        <p className="text-sm text-slate-500">
+      <footer className="py-8 w-full shrink-0 items-center px-6 md:px-14 border-t border-slate-200 dark:border-white/10 bg-white dark:bg-black flex flex-col md:flex-row justify-between text-center md:text-left transition-colors duration-500">
+        <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
           © {new Date().getFullYear()} HungerBridge. Built for the Hackathon.
         </p>
-        <div className="flex gap-4 mt-4 md:mt-0 justify-center">
-          <span className="text-sm text-slate-500 hover:text-orange-600 cursor-pointer">Terms of Service</span>
-          <span className="text-sm text-slate-500 hover:text-orange-600 cursor-pointer">Privacy Policy</span>
+        <div className="flex gap-6 mt-4 md:mt-0 justify-center">
+          <span className="text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-orange-600 dark:hover:text-orange-400 cursor-pointer transition-colors">Terms of Service</span>
+          <span className="text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-orange-600 dark:hover:text-orange-400 cursor-pointer transition-colors">Privacy Policy</span>
         </div>
       </footer>
     </div>

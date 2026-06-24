@@ -27,7 +27,6 @@ export interface CampaignType {
   createdAt: string;
 }
 
-
 export default function NgoView() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [liveCampaigns, setLiveCampaigns] = useState<CampaignType[]>([]);
@@ -77,7 +76,7 @@ export default function NgoView() {
   const generateCampaign = async (donation: DonationType) => {
     setIsGenerating(true);
     setActiveCard(donation._id); 
-    toast("🤖 Gemini AI is drafting your campaign...", { duration: 3000 });
+    toast("🤖 AI is drafting your campaign...", { duration: 3000 });
 
     try {
       const res = await fetch("/api/campaigns/generate", {
@@ -86,7 +85,7 @@ export default function NgoView() {
         
         body: JSON.stringify({ 
           foodDetails: {
-            category: donation.foodCategory || donation.foodCategory,
+            category: donation.foodCategory,
             quantity: donation.quantity,
             location: donation.pickupLocation || "Community Center", 
           }
@@ -105,7 +104,6 @@ export default function NgoView() {
       toast.error("Network error during AI generation.");
     } finally {
       setIsGenerating(false);
-    //   setActiveCard(null);
     }
   };
 
@@ -121,7 +119,7 @@ export default function NgoView() {
       const json = await res.json();
       
       if (json.success) {
-        toast.success(" Donation claimed successfully!");
+        toast.success("Donation claimed successfully!");
         setDonations((prev) => prev.filter((d) => d._id !== donationId));
       } else {
         toast.error(json.message || "Failed to claim donation.");
@@ -162,8 +160,7 @@ export default function NgoView() {
       const json = await res.json();
       
       if (json.success) {
-        toast.success(" Campaign published successfully!");
-       
+        toast.success("Campaign published successfully!");
         setCampaignText("");
         setActiveCard(null);
       } else {
@@ -173,172 +170,229 @@ export default function NgoView() {
       toast.error("Network error while publishing.");
     }
   };
+
   const copyToClipboard = () => {
     navigator.clipboard.writeText(campaignText);
     toast.success("Copied to clipboard! 📋 Ready to share.");
   };
 
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="space-y-10 animate-in fade-in slide-in-from-bottom-8 duration-700 relative w-full">
       
+      {/* Background Ambience */}
+      <div className="absolute top-1/4 right-0 w-[400px] h-[400px] bg-purple-500/10 dark:bg-purple-600/10 rounded-full blur-[100px] pointer-events-none -translate-y-1/2 translate-x-1/3" />
+      <div className="absolute bottom-1/4 left-0 w-[400px] h-[400px] bg-emerald-500/10 dark:bg-emerald-600/10 rounded-full blur-[100px] pointer-events-none translate-y-1/2 -translate-x-1/3" />
 
-      <div className="grid gap-4 md:grid-cols-3">
-        <Card className="bg-gradient-to-br from-emerald-50 to-teal-100 border-none shadow-sm">
-          <CardContent className="p-6 flex items-center space-x-4">
-            <div className="p-3 bg-emerald-500 rounded-full text-white">
-              <Package size={24} />
+      {/* Stats Grid */}
+      <div className="grid gap-6 md:grid-cols-3 relative z-10">
+        <Card className="bg-gradient-to-br from-emerald-50 to-teal-100 dark:from-emerald-500/10 dark:to-teal-500/5 border border-emerald-200 dark:border-emerald-500/20 shadow-lg dark:shadow-emerald-500/5 backdrop-blur-xl overflow-hidden group">
+          <div className="absolute inset-0 bg-white/40 dark:bg-transparent" />
+          <CardContent className="p-6 flex items-center space-x-5 relative z-10">
+            <div className="p-4 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-2xl text-white shadow-lg shadow-emerald-500/30 group-hover:scale-110 transition-transform duration-300">
+              <Package size={28} />
             </div>
             <div>
-              <p className="text-sm font-medium text-emerald-800">Available Donations</p>
-              <h3 className="text-2xl font-bold text-emerald-900">
-                {isLoadingDB ? <Loader2 className="animate-spin w-5 h-5 mt-1" /> : donations.length}
+              <p className="text-sm font-bold text-emerald-800 dark:text-emerald-400 uppercase tracking-wider">Available Donations</p>
+              <h3 className="text-4xl font-black text-emerald-950 dark:text-emerald-50 mt-1">
+                {isLoadingDB ? <Loader2 className="animate-spin w-8 h-8 mt-1 text-emerald-600 dark:text-emerald-400" /> : donations.length}
               </h3>
             </div>
           </CardContent>
         </Card>
-        <Card className="bg-gradient-to-br from-blue-50 to-indigo-100 border-none shadow-sm">
-          <CardContent className="p-6 flex items-center space-x-4">
-            <div className="p-3 bg-blue-500 rounded-full text-white">
-              <HeartHandshake size={24} />
+
+        <Card className="bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-blue-500/10 dark:to-indigo-500/5 border border-blue-200 dark:border-blue-500/20 shadow-lg dark:shadow-blue-500/5 backdrop-blur-xl overflow-hidden group">
+          <div className="absolute inset-0 bg-white/40 dark:bg-transparent" />
+          <CardContent className="p-6 flex items-center space-x-5 relative z-10">
+            <div className="p-4 bg-gradient-to-br from-blue-400 to-blue-600 rounded-2xl text-white shadow-lg shadow-blue-500/30 group-hover:scale-110 transition-transform duration-300">
+              <HeartHandshake size={28} />
             </div>
             <div>
-              <p className="text-sm font-medium text-blue-800">People Fed Today</p>
-              <h3 className="text-2xl font-bold text-blue-900">1,204</h3>
+              <p className="text-sm font-bold text-blue-800 dark:text-blue-400 uppercase tracking-wider">People Fed Today</p>
+              <h3 className="text-4xl font-black text-blue-950 dark:text-blue-50 mt-1">1,204</h3>
             </div>
           </CardContent>
         </Card>
-        <Card className="bg-gradient-to-br from-purple-50 to-fuchsia-100 border-none shadow-sm">
-          <CardContent className="p-6 flex items-center space-x-4">
-            <div className="p-3 bg-purple-500 rounded-full text-white">
-              <Megaphone size={24} />
+
+        <Card className="bg-gradient-to-br from-purple-50 to-fuchsia-100 dark:from-purple-500/10 dark:to-fuchsia-500/5 border border-purple-200 dark:border-purple-500/20 shadow-lg dark:shadow-purple-500/5 backdrop-blur-xl overflow-hidden group">
+          <div className="absolute inset-0 bg-white/40 dark:bg-transparent" />
+          <CardContent className="p-6 flex items-center space-x-5 relative z-10">
+            <div className="p-4 bg-gradient-to-br from-purple-400 to-purple-600 rounded-2xl text-white shadow-lg shadow-purple-500/30 group-hover:scale-110 transition-transform duration-300">
+              <Megaphone size={28} />
             </div>
             <div>
-              <p className="text-sm font-medium text-purple-800">Active AI Campaigns</p>
-              <h3 className="text-2xl font-bold text-purple-900">{liveCampaigns.length} Running</h3>
+              <p className="text-sm font-bold text-purple-800 dark:text-purple-400 uppercase tracking-wider">Active Campaigns</p>
+              <h3 className="text-4xl font-black text-purple-950 dark:text-purple-50 mt-1">{liveCampaigns.length}</h3>
             </div>
           </CardContent>
         </Card>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-12">
+      <div className="grid gap-8 md:grid-cols-12 relative z-10">
         
-        <div className="md:col-span-7 space-y-4">
-          <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
-            <Package className="text-orange-500" /> Live Donation Feed
-          </h2>
+        {/* Live Feed Section */}
+        <div className="md:col-span-7 space-y-6">
+          <div className="flex items-center gap-3 mb-2">
+            <div className="relative flex h-4 w-4">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-4 w-4 bg-orange-500"></span>
+            </div>
+            <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+              Live Donation Feed
+            </h2>
+          </div>
           
           {isLoadingDB ? (
-            <div className="flex flex-col items-center justify-center p-10 space-y-4 border border-dashed rounded-xl bg-slate-50">
-              <Loader2 className="w-8 h-8 animate-spin text-slate-400" />
-              <p className="text-slate-500">Fetching live database...</p>
+            <div className="flex flex-col items-center justify-center p-16 space-y-5 border border-slate-200 dark:border-white/10 rounded-3xl bg-white/50 dark:bg-white/5 backdrop-blur-sm">
+              <div className="relative">
+                <div className="w-12 h-12 border-4 border-orange-200 dark:border-orange-500/20 border-t-orange-600 dark:border-t-orange-500 rounded-full animate-spin"></div>
+              </div>
+              <p className="text-slate-500 dark:text-slate-400 font-medium">Scanning network for donations...</p>
             </div>
           ) : donations.length === 0 ? (
-            <div className="p-8 text-center border rounded-xl bg-slate-50">
-              <p className="text-slate-500">No active donations at the moment.</p>
+            <div className="p-12 text-center border border-slate-200 dark:border-white/10 rounded-3xl bg-white/50 dark:bg-white/5 backdrop-blur-sm">
+              <Package className="w-16 h-16 text-slate-300 dark:text-slate-600 mx-auto mb-4" />
+              <p className="text-slate-500 dark:text-slate-400 font-medium text-lg">No active donations at the moment.</p>
             </div>
           ) : (
-            donations.map((donation) => (
-              <Card key={donation._id} className="border border-slate-200 shadow-sm hover:shadow-md transition-all bg-white">
-                <CardContent className="p-5 flex flex-col sm:flex-row justify-between gap-4">
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2">
-                      
-                      <h3 className="font-bold text-lg text-slate-800">{donation.foodCategory || donation.foodCategory || "Food Donation"}</h3>
-                      {donation.isUrgent && (
-                        <span className="px-2 py-1 bg-red-100 text-red-700 text-xs font-bold rounded-full animate-pulse">
-                          URGENT
-                        </span>
-                      )}
-                    </div>
-                    <div className="text-sm text-slate-600 flex items-center gap-2">
-                      <Package size={16} className="text-slate-400" /> {donation.quantity}
-                    </div>
-                    <div className="text-sm text-slate-600 flex items-center gap-2">
-                      <MapPin size={16} className="text-slate-400" /> {donation.pickupLocation || "Donor Location Hidden"}
-                    </div>
-                    <div className="text-sm text-orange-600 flex items-center gap-2 font-medium">
-                      <Clock size={16} /> 
-                      {donation.expiryTime ? new Date(donation.expiryTime).toLocaleString() : "Contact for expiry"}
-                    </div>
-                  </div>
-                  
-                  <div className="flex flex-col sm:flex-row items-end gap-3 justify-end mt-4 sm:mt-0">
-                    <Button 
-                      onClick={() => generateCampaign(donation)} 
-                      disabled={isGenerating}
-                      variant="outline"
-                      className="w-full sm:w-auto border-slate-300 text-slate-700 hover:bg-slate-50 flex items-center gap-2"
-                    >
-                      {isGenerating && activeCard === donation._id ? (
-                        "Drafting..."
-                      ) : (
-                        <>
-                          <Sparkles size={16} className="text-purple-500" /> AI Appeal
-                        </>
-                      )}
-                    </Button>
+            <div className="space-y-5">
+              {donations.map((donation) => (
+                <Card 
+                  key={donation._id} 
+                  className={`border transition-all duration-300 bg-white/80 dark:bg-[#121212]/80 backdrop-blur-xl shadow-md hover:shadow-xl rounded-2xl overflow-hidden
+                    ${activeCard === donation._id 
+                      ? 'border-purple-500 dark:border-purple-500 shadow-purple-500/20 dark:shadow-purple-500/10 ring-1 ring-purple-500' 
+                      : 'border-slate-200 dark:border-white/10 hover:border-orange-500/50 dark:hover:border-orange-500/50'
+                    }`}
+                >
+                  <CardContent className="p-6 flex flex-col sm:flex-row justify-between gap-6 relative">
+                    {/* Background gradient hint */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 to-transparent opacity-0 hover:opacity-100 transition-opacity pointer-events-none" />
                     
-                    <Button 
-                      onClick={() => claimDonation(donation._id)}
-                      className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white flex items-center gap-2 shadow-md"
-                    >
-                      <HeartHandshake size={16} /> Claim Donation
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))
+                    <div className="space-y-4 relative z-10 flex-1">
+                      <div className="flex items-center gap-3">
+                        <h3 className="font-extrabold text-xl text-slate-900 dark:text-white capitalize tracking-tight">
+                          {donation.foodCategory || "Food Donation"}
+                        </h3>
+                        {donation.isUrgent && (
+                          <span className="px-3 py-1 bg-red-100 dark:bg-red-500/20 text-red-700 dark:text-red-400 text-xs font-black tracking-widest uppercase rounded-full animate-pulse border border-red-200 dark:border-red-500/30">
+                            URGENT
+                          </span>
+                        )}
+                      </div>
+                      
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div className="text-sm font-medium text-slate-600 dark:text-slate-300 flex items-center gap-2.5 bg-slate-100 dark:bg-white/5 p-2.5 rounded-lg border border-slate-200 dark:border-white/5">
+                          <Package size={18} className="text-emerald-500" /> 
+                          <span className="truncate">{donation.quantity}</span>
+                        </div>
+                        <div className="text-sm font-medium text-slate-600 dark:text-slate-300 flex items-center gap-2.5 bg-slate-100 dark:bg-white/5 p-2.5 rounded-lg border border-slate-200 dark:border-white/5">
+                          <MapPin size={18} className="text-blue-500" /> 
+                          <span className="truncate">{donation.pickupLocation || "Donor Location"}</span>
+                        </div>
+                        <div className="text-sm font-medium text-orange-700 dark:text-orange-400 flex items-center gap-2.5 bg-orange-50 dark:bg-orange-500/10 p-2.5 rounded-lg border border-orange-100 dark:border-orange-500/20 sm:col-span-2">
+                          <Clock size={18} /> 
+                          <span>{donation.expiryTime ? new Date(donation.expiryTime).toLocaleString() : "Contact for expiry"}</span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="flex flex-col gap-3 justify-center sm:w-48 relative z-10 shrink-0 border-t sm:border-t-0 sm:border-l border-slate-200 dark:border-white/10 pt-4 sm:pt-0 sm:pl-6">
+                      <Button 
+                        onClick={() => generateCampaign(donation)} 
+                        disabled={isGenerating}
+                        variant="outline"
+                        className={`w-full border-purple-200 dark:border-purple-500/30 text-purple-700 dark:text-purple-300 hover:bg-purple-50 dark:hover:bg-purple-500/10 flex items-center gap-2 font-bold transition-all h-11 rounded-xl
+                          ${activeCard === donation._id ? 'bg-purple-50 dark:bg-purple-500/20 border-purple-400 dark:border-purple-400' : ''}
+                        `}
+                      >
+                        {isGenerating && activeCard === donation._id ? (
+                          <span className="flex items-center gap-2">
+                            <Loader2 className="w-4 h-4 animate-spin" /> Drafting
+                          </span>
+                        ) : (
+                          <>
+                            <Sparkles size={18} className="text-purple-500 dark:text-purple-400" /> AI Appeal
+                          </>
+                        )}
+                      </Button>
+                      
+                      <Button 
+                        onClick={() => claimDonation(donation._id)}
+                        className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white flex items-center gap-2 font-bold shadow-lg shadow-emerald-500/25 border-0 transition-all hover:scale-[1.02] active:scale-[0.98] h-11 rounded-xl"
+                      >
+                        <HeartHandshake size={18} /> Claim Food
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
           )}
         </div>
 
-
+        {/* Campaign Studio Sidebar */}
         <div className="md:col-span-5">
-          <Card className="border-none shadow-lg bg-white sticky top-6 border-t-4 border-t-purple-600">
-            <CardHeader className="bg-purple-50/50 rounded-t-xl pb-4">
-              <CardTitle className="text-xl font-bold flex items-center gap-2">
-                <Sparkles className="text-purple-600" /> Campaign Studio
-              </CardTitle>
-              <CardDescription>
-                Select a live donation to auto-generate a high-conversion social media post.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="p-6 space-y-4">
-              {campaignText ? (
-                <div className="space-y-4 animate-in fade-in duration-300">
-                  <textarea 
-                    value={campaignText} 
-                    onChange={(e) => setCampaignText(e.target.value)}
-                    className="w-full min-h-[220px] text-sm p-4 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none leading-relaxed"
-                  />
-                  
-                  <div className="flex flex-col sm:flex-row gap-3">
-                    <Button 
-                      variant="outline"
-                      className="w-full sm:w-1/2 border-purple-200 text-purple-700 hover:bg-purple-50 flex items-center gap-2 font-semibold" 
-                      onClick={copyToClipboard}
-                    >
-                      <Copy size={18} /> Copy Text
-                    </Button>
+          <div className="sticky top-24">
+            <Card className="border border-slate-200 dark:border-white/10 shadow-2xl bg-white/80 dark:bg-[#121212]/90 backdrop-blur-2xl rounded-3xl overflow-hidden relative group">
+              
+              <div className="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-purple-500 via-fuchsia-500 to-purple-500" />
+              
+              <CardHeader className="bg-purple-50/50 dark:bg-purple-500/5 pb-5 border-b border-slate-200 dark:border-white/5">
+                <CardTitle className="text-2xl font-extrabold flex items-center gap-2 text-slate-900 dark:text-white">
+                  <Sparkles className="text-purple-600 dark:text-purple-400" size={24} /> 
+                  Campaign Studio
+                </CardTitle>
+                <CardDescription className="text-slate-500 dark:text-slate-400 font-medium mt-2 leading-relaxed">
+                  Select a live donation to auto-generate a high-conversion social media post using AI.
+                </CardDescription>
+              </CardHeader>
+              
+              <CardContent className="p-6 space-y-6">
+                {campaignText ? (
+                  <div className="space-y-5 animate-in fade-in slide-in-from-right-4 duration-500">
+                    <div className="relative">
+                      <div className="absolute top-3 left-3 flex gap-1">
+                        <div className="w-2.5 h-2.5 rounded-full bg-red-400/50 dark:bg-red-500/30"></div>
+                        <div className="w-2.5 h-2.5 rounded-full bg-yellow-400/50 dark:bg-yellow-500/30"></div>
+                        <div className="w-2.5 h-2.5 rounded-full bg-green-400/50 dark:bg-green-500/30"></div>
+                      </div>
+                      <textarea 
+                        value={campaignText} 
+                        onChange={(e) => setCampaignText(e.target.value)}
+                        className="w-full min-h-[260px] text-sm p-5 pt-10 bg-slate-50 dark:bg-black/50 border border-slate-200 dark:border-white/10 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-500 resize-none leading-relaxed text-slate-700 dark:text-slate-300 font-medium transition-all"
+                      />
+                    </div>
                     
-                    <Button 
-                      onClick={publishCampaign}
-                      className="w-full sm:w-1/2 bg-purple-600 hover:bg-purple-700 text-white flex items-center gap-2 font-semibold shadow-md"
-                    >
-                      <Megaphone size={18} /> Publish to DB
-                    </Button>
+                    <div className="flex flex-col sm:flex-row gap-4">
+                      <Button 
+                        variant="outline"
+                        className="w-full sm:w-1/2 border-purple-200 dark:border-purple-500/30 text-purple-700 dark:text-purple-300 hover:bg-purple-50 dark:hover:bg-purple-500/10 flex items-center justify-center gap-2 font-bold h-12 rounded-xl transition-all" 
+                        onClick={copyToClipboard}
+                      >
+                        <Copy size={18} /> Copy Text
+                      </Button>
+                      
+                      <Button 
+                        onClick={publishCampaign}
+                        className="w-full sm:w-1/2 bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700 text-white flex items-center justify-center gap-2 font-bold shadow-lg shadow-purple-500/25 border-0 transition-all hover:scale-[1.02] active:scale-[0.98] h-12 rounded-xl"
+                      >
+                        <Megaphone size={18} /> Publish to DB
+                      </Button>
+                    </div>
                   </div>
-
-                </div>
-              ) : (
-                <div className="flex flex-col items-center justify-center h-[220px] text-slate-400 border-2 border-dashed border-slate-200 rounded-lg bg-slate-50/50">
-                  <Megaphone size={48} className="mb-4 text-slate-300" />
-                  <p className="text-sm text-center px-4">
-                    Click `AI Appeal` on any live donation feed to generate your campaign.
-                  </p>
-                </div>
-              )}
-            </CardContent>
-          </Card>
+                ) : (
+                  <div className="flex flex-col items-center justify-center h-[260px] text-slate-400 dark:text-slate-500 border-2 border-dashed border-slate-200 dark:border-white/10 rounded-2xl bg-slate-50/50 dark:bg-white/5 group-hover:border-purple-300 dark:group-hover:border-purple-500/30 transition-colors">
+                    <div className="w-16 h-16 rounded-full bg-purple-100 dark:bg-purple-500/10 flex items-center justify-center mb-4">
+                      <Sparkles size={32} className="text-purple-400 dark:text-purple-500" />
+                    </div>
+                    <p className="text-sm font-medium text-center px-8 text-slate-500 dark:text-slate-400">
+                      Click <strong className="text-purple-600 dark:text-purple-400">AI Appeal</strong> on any live donation to magically generate your campaign.
+                    </p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
         </div>
 
       </div>
