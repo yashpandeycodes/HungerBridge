@@ -6,6 +6,14 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MapPin, Clock, Megaphone, Package, HeartHandshake, Sparkles, Copy, Loader2, Activity, PieChart } from "lucide-react";
+import {
+  PieChart as RePieChart,
+  Pie,
+  Cell,
+  Tooltip,
+  ResponsiveContainer,
+  Legend,
+} from "recharts";
 
 export interface DonationType {
   _id: string;
@@ -38,7 +46,28 @@ export default function NgoView() {
   const [isLoadingDB, setIsLoadingDB] = useState(true);
 
   // Example stats for the Impact tab
-  const [stats, setStats] = useState({ totalMeals: 1204, activeVolunteers: 45, campaignsRun: 12 });
+ const [stats, setStats] = useState({
+  totalMeals: 0,
+  activeVolunteers: 0,
+  campaignsRun: 0
+});
+
+  const chartData = [
+  {
+    name: "Completed",
+    value: stats.totalMeals,
+  },
+  {
+    name: "Campaigns",
+    value: stats.campaignsRun,
+  },
+  {
+    name: "Volunteers",
+    value: stats.activeVolunteers,
+  },
+];
+
+const COLORS = ["#10b981", "#8b5cf6", "#3b82f6"];
 
   useEffect(() => {
     const fetchDonations = async () => {
@@ -72,7 +101,24 @@ export default function NgoView() {
         if (json.success) setLiveCampaigns(json.data);
       } catch (error) {}
     };
-    
+    const fetchImpact = async () => {
+  try {
+    const res = await fetch("/api/impact");
+    const json = await res.json();
+
+    if (json.success) {
+      setStats({
+        totalMeals: json.data.totalMealsServed,
+        campaignsRun: json.data.activeCampaigns,
+        activeVolunteers: json.data.volunteerHours,
+      });
+    }
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+fetchImpact();
     fetchCampaigns();
     fetchDonations();
   }, []);
@@ -454,6 +500,42 @@ export default function NgoView() {
                 <h4 className="text-slate-500 dark:text-slate-400 font-bold uppercase tracking-widest text-sm mb-2">Campaigns Run</h4>
                 <p className="text-5xl font-black text-slate-900 dark:text-white">{stats.campaignsRun}</p>
              </Card>
+             <div className="mt-8">
+  <Card className="w-full border border-slate-200 dark:border-white/10 shadow-lg rounded-3xl bg-white/50 dark:bg-white/5">
+    <CardHeader>
+      <CardTitle className="text-slate-500 dark:text-slate-400 font-bold uppercase tracking-widest text-sm mb-2">NGO Analytics</CardTitle>
+      <CardDescription className="text-slate-500 dark:text-slate-400 font-bold uppercase tracking-widest text-sm mb-2">
+        Live distribution from database
+      </CardDescription>
+    </CardHeader>
+
+    <CardContent className="h-[350px]">
+      <ResponsiveContainer width="100%" height="100%">
+        <RePieChart>
+          <Pie
+            data={chartData}
+            dataKey="value"
+            nameKey="name"
+            outerRadius={110}
+            innerRadius={60}
+            paddingAngle={4}
+          >
+            {chartData.map((entry, index) => (
+              <Cell
+                key={index}
+                fill={COLORS[index % COLORS.length]}
+              />
+            ))}
+          </Pie>
+
+          <Tooltip />
+
+          <Legend />
+        </RePieChart>
+      </ResponsiveContainer>
+    </CardContent>
+  </Card>
+</div>
           </div>
         </TabsContent>
 
