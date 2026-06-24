@@ -87,6 +87,7 @@ export default function DonorView() {
           ...formData,
           foodCategory: data.data.foodCategory,
           quantity: data.data.estimatedQuantity,
+          foodSource:data.data.suggestedSource,
         });
         toast.success("AI successfully categorized the food!");
       } else {
