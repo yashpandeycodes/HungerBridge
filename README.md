@@ -67,6 +67,8 @@ Different experiences for:
 - NGOs
 - Volunteers
 
+Also it has the dark mode toggle to view the project in dark mode
+
 Built using **NextAuth.js**, **Zod Validation**, and **BcryptJS**.
 
 ---
@@ -86,7 +88,7 @@ If the AI endpoint is unavailable or rate-limited:
 
 | Category              | Technologies                   |
 | --------------------- | ------------------------------ |
-| **Framework**         | Next.js 14 (App Router)        |
+| **Framework**         | Next.js 16 (App Router)        |
 | **Language**          | TypeScript                     |
 | **Frontend**          | React, Tailwind CSS, Shadcn UI |
 | **Icons**             | Lucide React                   |
