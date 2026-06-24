@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { MapPin, Navigation, CheckCircle2, Award, Bike, Loader2, Sparkles, Trophy, Star, History, Flame } from "lucide-react";
+import { MapPin, Navigation, CheckCircle2, Award, Bike, Loader2, Sparkles, Trophy, Star, History, Flame,Clock } from "lucide-react";
 import { DonationType } from "./NgoView"; 
 
 export default function VolunteerView() {
@@ -305,27 +305,36 @@ export default function VolunteerView() {
                   <CardTitle className="text-xl font-extrabold text-slate-900 dark:text-white">Your Past Deliveries</CardTitle>
                 </CardHeader>
                 <CardContent className="p-6 space-y-4">
-                   {history.map((donation, idx) => (
-                     <div key={idx} className="flex items-center justify-between p-5 bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-md transition-shadow">
-                        <div className="flex items-center gap-4">
-                          <div className="bg-emerald-100 dark:bg-emerald-900/30 p-3 rounded-full text-emerald-600 dark:text-emerald-400 shrink-0">
-                            <CheckCircle2 size={24} />
-                          </div>
-                          <div>
-                            <h4 className="font-bold text-slate-900 dark:text-white capitalize text-lg">{donation.foodCategory}</h4>
-                            <p className="text-sm text-slate-500 dark:text-slate-400 flex items-center gap-1.5 mt-1">
-                              <MapPin size={14}/> {donation.pickupLocation}
-                            </p>
-                          </div>
-                        </div>
-                        <div className="text-right shrink-0">
-                           <span className="bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400 font-black px-3 py-1.5 rounded-full text-sm flex items-center gap-1 shadow-sm border border-orange-200 dark:border-orange-800/50">
-                             <Flame size={14} /> +50 Karma
-                           </span>
-                        </div>
-                     </div>
-                   ))}
-                </CardContent>
+          {history.map((donation, idx) => (
+            <div key={idx} className="flex items-center justify-between p-5 bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-md transition-shadow">
+              <div className="flex items-center gap-4">
+                {/* DYNAMIC ICON LOGIC */}
+                <div className={`p-3 rounded-full shrink-0 ${
+                  donation.status === 'COMPLETED' 
+                    ? 'bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400' 
+                    : 'bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400'
+                }`}>
+                  {donation.status === 'COMPLETED' ? <CheckCircle2 size={24} /> : <Clock size={24} />}
+                </div>
+                <div>
+                  <h4 className="font-bold text-slate-900 dark:text-white capitalize text-lg">{donation.foodCategory}</h4>
+                  <p className="text-sm text-slate-500 dark:text-slate-400 flex items-center gap-1.5 mt-1">
+                    <MapPin size={14}/> {donation.pickupLocation} • <span className="uppercase font-bold">{donation.status}</span>
+                  </p>
+                </div>
+              </div>
+              <div className="text-right shrink-0">
+                <span className={`font-black px-3 py-1.5 rounded-full text-sm flex items-center gap-1 shadow-sm border ${
+                  donation.status === 'COMPLETED' 
+                    ? 'bg-orange-100 text-orange-700 border-orange-200 dark:bg-orange-900/30 dark:text-orange-400'
+                    : 'bg-slate-100 text-slate-600 border-slate-200 dark:bg-slate-700 dark:text-slate-300'
+                }`}>
+                  <Flame size={14} /> {donation.status === 'COMPLETED' ? '+50 Karma' : 'Pending'}
+                </span>
+              </div>
+            </div>
+          ))}
+        </CardContent>
               </>
             )}
           </Card>
