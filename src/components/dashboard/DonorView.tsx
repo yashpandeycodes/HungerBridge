@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Image as ImageIcon, Sparkles, AlertCircle, HeartHandshake, Loader2, UploadCloud } from "lucide-react";
 import Image from "next/image";
 
 export interface CampaignDropdownType {
@@ -46,7 +47,7 @@ export default function DonorView() {
     fetchCampaigns();
   }, []);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
@@ -69,11 +70,10 @@ export default function DonorView() {
     }
 
     setIsAnalyzing(true);
-    toast("AI is analyzing the food...", { duration: 3000 });
+    toast("🤖 AI is analyzing the food...", { duration: 3000 });
 
     try {
       const base64Data = previewBase64.split(",")[1];
-
       const res = await fetch("/api/donations/analyze", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -87,9 +87,9 @@ export default function DonorView() {
           ...formData,
           foodCategory: data.data.foodCategory,
           quantity: data.data.estimatedQuantity,
-          foodSource:data.data.suggestedSource,
+          foodSource: data.data.suggestedSource,
         });
-        toast.success("AI successfully categorized the food!");
+        toast.success("✨ AI successfully categorized the food!");
       } else {
         toast.error("AI Analysis failed. You can enter details manually.");
       }
@@ -116,7 +116,7 @@ export default function DonorView() {
       });
 
       if (res.ok) {
-        toast.success("Donation created successfully! NGOs will be notified.");
+        toast.success("🎉 Donation created successfully! NGOs will be notified.");
         
         setFormData({ 
           foodCategory: "",
@@ -127,7 +127,6 @@ export default function DonorView() {
           campaignId: "", 
           isUrgent: false 
         });
-
         setPreviewBase64(null);
         if (fileInputRef.current) fileInputRef.current.value = "";
       } else {
@@ -142,187 +141,205 @@ export default function DonorView() {
   };
 
   return (
-    <div className="w-full max-w-3xl mx-auto relative group">
-      {/* Glow Effect behind the card */}
-      <div className="absolute inset-0 bg-gradient-to-r from-orange-500/20 to-rose-500/20 rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+    <div className="w-full max-w-3xl mx-auto relative group animate-in fade-in slide-in-from-bottom-8 duration-700">
+      
+      {/* Dynamic Glow Background */}
+      <div className="absolute inset-0 bg-gradient-to-r from-orange-500/30 to-rose-500/30 dark:from-orange-600/20 dark:to-rose-600/20 rounded-3xl blur-2xl opacity-50 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none -z-10" />
 
-      <Card className="w-full shadow-2xl border border-slate-200 dark:border-white/10 bg-white/80 dark:bg-black/40 backdrop-blur-2xl rounded-3xl relative overflow-hidden">
+      <Card className="w-full shadow-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-3xl relative overflow-hidden">
         
-        <CardHeader className="pb-6 border-b border-slate-200/50 dark:border-white/5">
-          <CardTitle className="text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-orange-600 to-rose-500 tracking-tight">
-            Donate Food
-          </CardTitle>
-          <CardDescription className="text-slate-500 dark:text-slate-400 font-medium text-base mt-2">
-            Upload a photo of the food, and let our GenAI fill in the details.
-          </CardDescription>
+        {/* Decorative Top Accent */}
+        <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-orange-500 via-rose-500 to-orange-500" />
+
+        <CardHeader className="pb-6 pt-8 border-b border-slate-100 dark:border-slate-800/80 text-center md:text-left">
+          <div className="flex flex-col md:flex-row items-center gap-4">
+             <div className="w-12 h-12 bg-orange-100 dark:bg-orange-900/30 rounded-2xl flex items-center justify-center shrink-0">
+                <HeartHandshake className="text-orange-600 dark:text-orange-500" size={24} />
+             </div>
+             <div>
+                <CardTitle className="text-2xl md:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+                  List Food for Donation
+                </CardTitle>
+                <CardDescription className="text-slate-500 dark:text-slate-400 font-medium text-base mt-1">
+                  Upload a photo and let our AI magically extract the details.
+                </CardDescription>
+             </div>
+          </div>
         </CardHeader>
         
-        <CardContent className="pt-8">
+        <CardContent className="pt-8 px-6 md:px-8 pb-8">
           <form onSubmit={handleSubmit} className="space-y-8">
             
             {/* Image Upload Section */}
-            <div className="space-y-4 p-6 border-2 border-dashed border-orange-300 dark:border-orange-500/30 rounded-2xl bg-orange-50/50 dark:bg-orange-500/5 transition-colors relative overflow-hidden group/upload">
-              <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 to-transparent opacity-0 group-hover/upload:opacity-100 transition-opacity" />
-              
-              <div className="space-y-3 relative z-10">
-                <Label className="text-slate-700 dark:text-slate-300 font-bold text-sm uppercase tracking-wider">Food Photo</Label>
-                <Input 
-                  type="file" 
-                  accept="image/*" 
-                  onChange={handleImageChange}
-                  ref={fileInputRef}
-                  className="bg-white/80 dark:bg-black/50 border-slate-200 dark:border-white/10 file:bg-orange-100 file:text-orange-700 file:border-0 file:rounded-full file:px-4 file:py-1 file:font-semibold file:mr-4 hover:file:bg-orange-200 dark:file:bg-orange-500/20 dark:file:text-orange-400 cursor-pointer h-14 pt-3 rounded-xl transition-all"
-                />
-              </div>
-              
-              {previewBase64 && (
-                <div className="flex flex-col sm:flex-row gap-5 items-center mt-6 p-4 bg-white/60 dark:bg-black/40 rounded-xl border border-slate-200 dark:border-white/5 backdrop-blur-md">
-                  <div className="relative w-32 h-32 rounded-xl overflow-hidden shadow-lg border-2 border-white/20">
-                    <Image 
-                      src={previewBase64} 
-                      alt="Food Preview" 
-                      fill
-                      className="object-cover" 
-                    />
-                  </div>
-                  <div className="flex-1 w-full space-y-3">
-                    <p className="text-sm text-slate-600 dark:text-slate-400 font-medium">Image ready for processing</p>
-                    <Button 
-                      type="button" 
-                      onClick={analyzeImage} 
-                      disabled={isAnalyzing}
-                      className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white shadow-lg shadow-purple-500/25 border-0 transition-all hover:scale-[1.02] active:scale-[0.98] w-full h-12 rounded-xl font-bold"
-                    >
-                      {isAnalyzing ? (
-                        <span className="flex items-center gap-2">
-                          <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                          Analyzing...
-                        </span>
-                      ) : "✨ Auto-Fill with AI"}
-                    </Button>
-                  </div>
-                </div>
-              )}
+            <div className="space-y-4">
+               <Label className="text-slate-700 dark:text-slate-300 font-bold text-sm uppercase tracking-wider flex items-center gap-2">
+                  <ImageIcon size={16} /> Upload Food Photo
+               </Label>
+               
+               <div className={`relative border-2 border-dashed rounded-2xl transition-all duration-300 overflow-hidden group/upload
+                  ${previewBase64 
+                     ? 'border-orange-200 dark:border-orange-900/50 bg-orange-50/50 dark:bg-orange-950/10' 
+                     : 'border-slate-300 dark:border-slate-700 hover:border-orange-400 dark:hover:border-orange-600 bg-slate-50 dark:bg-slate-800/50'
+                  }`}
+               >
+                  {!previewBase64 && (
+                     <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none text-slate-400 dark:text-slate-500">
+                        <UploadCloud size={32} className="mb-2 group-hover/upload:text-orange-500 transition-colors" />
+                        <span className="text-sm font-medium">Click to browse or drag & drop</span>
+                     </div>
+                  )}
+                  
+                  <Input 
+                     type="file" 
+                     accept="image/*" 
+                     onChange={handleImageChange}
+                     ref={fileInputRef}
+                     className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                  />
+                  
+                  {previewBase64 ? (
+                     <div className="p-4 flex flex-col sm:flex-row items-center gap-6 relative z-20">
+                        <div className="relative w-32 h-32 rounded-xl overflow-hidden shadow-md border-2 border-white dark:border-slate-700 shrink-0">
+                           <Image src={previewBase64} alt="Food Preview" fill className="object-cover" />
+                        </div>
+                        <div className="flex-1 w-full space-y-4 text-center sm:text-left">
+                           <p className="text-sm text-slate-600 dark:text-slate-400 font-medium">Image uploaded. Ready for AI extraction.</p>
+                           <Button 
+                              type="button" 
+                              onClick={analyzeImage} 
+                              disabled={isAnalyzing}
+                              className="w-full sm:w-auto bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white shadow-lg shadow-purple-500/25 border-0 transition-all active:scale-[0.98] h-11 rounded-xl font-bold px-6"
+                           >
+                              {isAnalyzing ? (
+                              <span className="flex items-center gap-2">
+                                 <Loader2 className="w-4 h-4 animate-spin" /> Analyzing...
+                              </span>
+                              ) : (
+                              <span className="flex items-center gap-2">
+                                 <Sparkles size={18} /> Auto-Fill with AI
+                              </span>
+                              )}
+                           </Button>
+                        </div>
+                     </div>
+                  ) : (
+                     <div className="h-32 w-full" /> /* Empty space for dropzone */
+                  )}
+               </div>
             </div>
+
+            <hr className="border-slate-200 dark:border-slate-800" />
 
             {/* Input Grids */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-3">
-                <Label className="text-slate-700 dark:text-slate-300 font-semibold">Food Category / Name</Label>
+              <div className="space-y-2">
+                <Label className="text-slate-700 dark:text-slate-300 font-bold">Food Category / Name <span className="text-red-500">*</span></Label>
                 <Input 
                   required 
                   name="foodCategory" 
                   placeholder="e.g. 5 boxes of Rice" 
                   value={formData.foodCategory} 
                   onChange={handleChange} 
-                  className="bg-white/50 dark:bg-white/5 border-slate-200 dark:border-white/10 focus:ring-orange-500 dark:focus:ring-orange-500 dark:text-white transition-all h-12 rounded-xl"
+                  className="bg-slate-50 dark:bg-[#121212] border-slate-200 dark:border-slate-800 focus:ring-orange-500 dark:focus:ring-orange-500 dark:text-white transition-all h-12 rounded-xl"
                 />
               </div>
-              <div className="space-y-3">
-                <Label className="text-slate-700 dark:text-slate-300 font-semibold">Estimated Quantity</Label>
+              <div className="space-y-2">
+                <Label className="text-slate-700 dark:text-slate-300 font-bold">Estimated Quantity <span className="text-red-500">*</span></Label>
                 <Input 
                   required 
                   name="quantity" 
                   placeholder="e.g. 10 kg or 20 servings" 
                   value={formData.quantity} 
                   onChange={handleChange} 
-                  className="bg-white/50 dark:bg-white/5 border-slate-200 dark:border-white/10 focus:ring-orange-500 dark:focus:ring-orange-500 dark:text-white transition-all h-12 rounded-xl"
+                  className="bg-slate-50 dark:bg-[#121212] border-slate-200 dark:border-slate-800 focus:ring-orange-500 dark:focus:ring-orange-500 dark:text-white transition-all h-12 rounded-xl"
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-3">
-                <Label className="text-slate-700 dark:text-slate-300 font-semibold">Pickup Location (Address)</Label>
+              <div className="space-y-2">
+                <Label className="text-slate-700 dark:text-slate-300 font-bold">Pickup Location (Address) <span className="text-red-500">*</span></Label>
                 <Input 
                   required 
                   name="pickupLocation" 
-                  placeholder="Full address" 
+                  placeholder="Full precise address" 
                   value={formData.pickupLocation} 
                   onChange={handleChange} 
-                  className="bg-white/50 dark:bg-white/5 border-slate-200 dark:border-white/10 focus:ring-orange-500 dark:focus:ring-orange-500 dark:text-white transition-all h-12 rounded-xl"
+                  className="bg-slate-50 dark:bg-[#121212] border-slate-200 dark:border-slate-800 focus:ring-orange-500 dark:focus:ring-orange-500 dark:text-white transition-all h-12 rounded-xl"
                 />
               </div>
 
-              <div className="space-y-3">
-                <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">Food Source <span className="text-red-500">*</span></label>
-                <div className="relative">
-                  <select
-                    className="flex h-12 w-full appearance-none items-center justify-between rounded-xl border border-slate-200 dark:border-white/10 bg-white/50 dark:bg-[#121212] px-4 py-2 text-sm ring-offset-white dark:ring-offset-black focus:outline-none focus:ring-2 focus:ring-orange-500 dark:text-white transition-all"
-                    value={formData.foodSource}
-                    onChange={(e) => setFormData({ ...formData, foodSource: e.target.value })}
-                    required
-                  >
-                    <option value="Households">Households (Home cooked)</option>
-                    <option value="Restaurant surplus">Restaurant Surplus</option>
-                    <option value="Events/Weddings">Events / Weddings</option>
-                    <option value="Corporate cafeterias">Corporate Cafeterias</option>
-                  </select>
-                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-500 dark:text-slate-400">
-                    <svg className="h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
-                  </div>
-                </div>
+              <div className="space-y-2">
+                <Label className="text-slate-700 dark:text-slate-300 font-bold">Food Source <span className="text-red-500">*</span></Label>
+                <select
+                  name="foodSource"
+                  className="flex h-12 w-full items-center justify-between rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#121212] px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 dark:text-white transition-all appearance-none cursor-pointer"
+                  value={formData.foodSource}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="Households">Households (Home cooked)</option>
+                  <option value="Restaurant surplus">Restaurant Surplus</option>
+                  <option value="Events/Weddings">Events / Weddings</option>
+                  <option value="Corporate cafeterias">Corporate Cafeterias</option>
+                </select>
               </div>
 
-              <div className="space-y-3 md:col-span-2">
-                <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">Support an NGO Campaign <span className="text-slate-400 dark:text-slate-500 font-normal">(Optional)</span></label>
-                <div className="relative">
-                  <select
-                    className="flex h-12 w-full appearance-none items-center justify-between rounded-xl border border-slate-200 dark:border-white/10 bg-white/50 dark:bg-[#121212] px-4 py-2 text-sm ring-offset-white dark:ring-offset-black focus:outline-none focus:ring-2 focus:ring-orange-500 dark:text-white transition-all"
-                    value={formData.campaignId}
-                    onChange={(e) => setFormData({ ...formData, campaignId: e.target.value })}
-                  >
-                    <option value="">-- General Donation (Open to all) --</option>
-                    {activeCampaigns.map((camp) => (
-                      <option key={camp._id} value={camp._id}>
-                        {camp.title} (Progress: {camp.mealsCollected} / {camp.targetMeals} meals)
-                      </option>
-                    ))}
-                  </select>
-                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-500 dark:text-slate-400">
-                    <svg className="h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
-                  </div>
-                </div>
-                <p className="text-xs text-slate-500 dark:text-slate-400 ml-1">If selected, this food goes directly to fulfilling this campaign`s target.</p>
+              <div className="space-y-2 md:col-span-2">
+                <Label className="text-slate-700 dark:text-slate-300 font-bold flex justify-between items-center">
+                   <span>Support an NGO Campaign <span className="text-slate-400 font-normal">(Optional)</span></span>
+                </Label>
+                <select
+                  name="campaignId"
+                  className="flex h-12 w-full items-center justify-between rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#121212] px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 dark:text-white transition-all appearance-none cursor-pointer"
+                  value={formData.campaignId}
+                  onChange={handleChange}
+                >
+                  <option value="">-- General Donation (Open to all NGOs) --</option>
+                  {activeCampaigns.map((camp) => (
+                    <option key={camp._id} value={camp._id}>
+                      {camp.title} (Progress: {camp.mealsCollected} / {camp.targetMeals} meals)
+                    </option>
+                  ))}
+                </select>
               </div>
 
-              <div className="space-y-3 md:col-span-2">
-                <Label className="text-slate-700 dark:text-slate-300 font-semibold">Expiry Time</Label>
+              <div className="space-y-2 md:col-span-2">
+                <Label className="text-slate-700 dark:text-slate-300 font-bold">Expiry Time <span className="text-red-500">*</span></Label>
                 <Input 
                   required 
                   type="datetime-local" 
                   name="expiryTime" 
                   value={formData.expiryTime} 
                   onChange={handleChange} 
-                  className="bg-white/50 dark:bg-white/5 border-slate-200 dark:border-white/10 focus:ring-orange-500 dark:focus:ring-orange-500 dark:text-white transition-all h-12 rounded-xl color-scheme-light dark:color-scheme-dark"
+                  className="bg-slate-50 dark:bg-[#121212] border-slate-200 dark:border-slate-800 focus:ring-orange-500 dark:focus:ring-orange-500 dark:text-white transition-all h-12 rounded-xl"
                   style={{ colorScheme: 'inherit' }}
                 />
               </div>
             </div>
 
-            {/* Urgent Checkbox */}
-            <div className="flex items-center space-x-3 p-4 bg-red-50/50 dark:bg-red-500/5 border border-red-100 dark:border-red-500/20 rounded-xl">
+            {/* Urgent Checkbox - Premium Style */}
+            <div className="flex items-center space-x-3 p-5 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/50 rounded-2xl transition-colors hover:border-red-300 dark:hover:border-red-800/80">
               <input 
                 type="checkbox" 
                 id="isUrgent" 
                 checked={formData.isUrgent}
                 onChange={(e) => setFormData({...formData, isUrgent: e.target.checked})}
-                className="h-5 w-5 text-red-600 dark:text-red-500 rounded-md border-red-300 dark:border-red-500/30 focus:ring-red-500 dark:bg-black/50 transition-all cursor-pointer"
+                className="h-5 w-5 text-red-600 dark:text-red-500 rounded border-red-300 dark:border-red-800 focus:ring-red-500 dark:focus:ring-red-500 dark:bg-black transition-all cursor-pointer accent-red-600"
               />
-              <Label htmlFor="isUrgent" className="text-red-700 dark:text-red-400 font-bold cursor-pointer select-none">
-                Mark as Urgent (Spoils soon - needs immediate pickup)
+              <Label htmlFor="isUrgent" className="text-red-700 dark:text-red-400 font-bold cursor-pointer select-none flex items-center gap-2">
+                <AlertCircle size={18} /> Mark as Urgent (Spoils soon - needs immediate pickup)
               </Label>
             </div>
 
             <Button 
               type="submit" 
-              className="w-full h-14 bg-gradient-to-r from-orange-600 to-rose-600 hover:from-orange-700 hover:to-rose-700 text-white rounded-xl font-bold text-lg shadow-lg shadow-orange-500/25 border-0 transition-all hover:scale-[1.02] active:scale-[0.98] mt-4" 
+              className="w-full h-14 bg-orange-600 hover:bg-orange-700 text-white rounded-xl font-bold text-lg shadow-md border-0 transition-all hover:scale-[1.02] active:scale-[0.98] mt-4" 
               disabled={isSubmitting}
             >
               {isSubmitting ? (
                 <span className="flex items-center justify-center gap-2">
-                  <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  Submitting...
+                  <Loader2 className="w-6 h-6 animate-spin" /> Submitting...
                 </span>
               ) : "List Food for Donation"}
             </Button>
