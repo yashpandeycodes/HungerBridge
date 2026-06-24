@@ -10,6 +10,8 @@ export interface Donation extends Document {
   photoUrl?: string;
   isUrgent: boolean;
   status: 'PENDING' | 'ACCEPTED' | 'ASSIGNED' | 'COMPLETED';
+  trustScore:number;
+  isSuspicious:boolean;
   ngoId?: mongoose.Types.ObjectId;
   volunteerId?: mongoose.Types.ObjectId;
   campaignId?: mongoose.Types.ObjectId;
@@ -29,6 +31,14 @@ const DonationSchema: Schema<Donation> = new Schema({
   ngoId: { type: Schema.Types.ObjectId, ref: 'User' },
   volunteerId: { type: Schema.Types.ObjectId, ref: 'User' },
   campaignId: { type: Schema.Types.ObjectId, ref: 'Campaign' },
+  trustScore: {
+    type: Number,
+    default: 95
+  },
+  isSuspicious: {
+    type: Boolean,
+    default: false
+  },
   createdAt: { type: Date, default: Date.now },
 });
 

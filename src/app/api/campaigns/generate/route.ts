@@ -3,6 +3,8 @@ import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/[...nextauth]/options';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
+export const maxDuration = 60; 
+export const dynamic = 'force-dynamic';
 
 interface CampaignRequestBody {
   foodDetails?: {

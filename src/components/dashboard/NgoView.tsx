@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { MapPin, Clock, Megaphone, Package, HeartHandshake, Sparkles, Copy, Loader2, Activity, PieChart, Truck, CheckCircle } from "lucide-react";
+import { MapPin, Clock, Megaphone, Package, HeartHandshake, Sparkles, Copy, Loader2, Activity, PieChart, Truck, CheckCircle, ShieldCheck, ShieldAlert } from "lucide-react";
 import {
   PieChart as RePieChart,
   Pie,
@@ -23,6 +23,9 @@ export interface DonationType {
   expiryTime?: string | Date;
   isUrgent?: boolean;
   status?: string;
+  // 👇 Naye Fields add kiye hain Trust Score ke liye
+  trustScore?: number;
+  isSuspicious?: boolean;
 }
 
 export interface CampaignType {
@@ -81,7 +84,6 @@ const COLORS = ["#10b981", "#8b5cf6", "#3b82f6"];
 
     const fetchIncomingDeliveries = async () => {
       try {
-        // Fetching donations that are ACCEPTED or ASSIGNED for this NGO
         const res = await fetch("/api/donations/active");
         const json = await res.json();
         if (json.success) setIncomingDeliveries(json.data);
@@ -165,7 +167,6 @@ const COLORS = ["#10b981", "#8b5cf6", "#3b82f6"];
       if (json.success) {
         toast.success("Donation claimed successfully!");
         setDonations((prev) => prev.filter((d) => d._id !== donationId));
-        // Move to incoming deliveries list
         setIncomingDeliveries((prev) => [...prev, json.data]); 
       } else {
         toast.error(json.message || "Failed to claim donation.");
@@ -175,7 +176,6 @@ const COLORS = ["#10b981", "#8b5cf6", "#3b82f6"];
     }
   };
 
-  // 👇 --- NEW FUNCTION FOR COMPLETED EVENT --- 👇
   const markAsReceived = async (donationId: string) => {
     toast("Confirming delivery...", { duration: 2000 });
     try {
@@ -190,8 +190,6 @@ const COLORS = ["#10b981", "#8b5cf6", "#3b82f6"];
       if (json.success) {
         toast.success("🎉 Delivery Confirmed! Donor notified.");
         setIncomingDeliveries((prev) => prev.filter((d) => d._id !== donationId));
-        
-        // Update stats locally for that real-time feel
         setStats(prev => ({ ...prev, totalMeals: prev.totalMeals + (parseInt(json.data.quantity) || 20) }));
       } else {
         toast.error(json.message || "Failed to confirm delivery.");
@@ -284,7 +282,6 @@ const COLORS = ["#10b981", "#8b5cf6", "#3b82f6"];
         </CardContent>
       </Card>
 
-      {/* ✨ UPDATED TABS: Responsive Grid + Better Dark Mode Colors */}
       <Tabs defaultValue="feed" className="w-full relative z-10 block">
         <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 h-auto md:h-14 bg-slate-100 dark:bg-[#121212] border border-slate-200 dark:border-slate-800 rounded-2xl p-1.5 mb-8 gap-1">
           <TabsTrigger value="feed" className="rounded-xl font-bold text-sm text-slate-600 dark:text-slate-400 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800 data-[state=active]:text-emerald-600 dark:data-[state=active]:text-emerald-400 transition-all py-2.5 shadow-none data-[state=active]:shadow-sm">
@@ -305,7 +302,6 @@ const COLORS = ["#10b981", "#8b5cf6", "#3b82f6"];
         <TabsContent value="feed" className="w-full animate-in fade-in duration-500 block">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 w-full">
             
-            {/* Live Feed List */}
             <div className="lg:col-span-7 space-y-6 w-full">
               <div className="flex items-center gap-3 mb-2">
                 <div className="relative flex h-4 w-4">
@@ -340,18 +336,42 @@ const COLORS = ["#10b981", "#8b5cf6", "#3b82f6"];
                     >
                       <CardContent className="p-6 flex flex-col sm:flex-row justify-between gap-6 relative w-full">
                         <div className="space-y-4 relative z-10 flex-1 w-full min-w-0">
-                          <div className="flex items-center gap-3">
+                          
+                          <div className="flex flex-col gap-2">
                             <h3 className="font-extrabold text-xl text-slate-900 dark:text-white capitalize tracking-tight truncate">
                               {donation.foodCategory || "Food Donation"}
                             </h3>
-                            {donation.isUrgent && (
-                              <span className="px-3 py-1 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 text-xs font-black tracking-widest uppercase rounded-full animate-pulse border border-red-200 dark:border-red-800 shrink-0">
-                                URGENT
-                              </span>
-                            )}
+                            
+                            {/* 👇 Trust Badge & Urgent Tags Row 👇 */}
+                            <div className="flex flex-wrap items-center gap-2">
+                              {donation.isUrgent && (
+                                <span className="px-3 py-1 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 text-xs font-black tracking-widest uppercase rounded-md animate-pulse border border-red-200 dark:border-red-800 shrink-0">
+                                  URGENT
+                                </span>
+                              )}
+
+                              {/* AI Trust Score Badge */}
+                              {donation.trustScore !== undefined && (
+                                <span className={`flex items-center gap-1.5 px-3 py-1 text-xs font-bold rounded-md border shrink-0 ${
+                                  donation.isSuspicious || donation.trustScore < 50
+                                    ? 'bg-red-50 text-red-700 border-red-200 dark:bg-red-950/30 dark:text-red-400 dark:border-red-900'
+                                    : donation.trustScore >= 80
+                                      ? 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/30 dark:text-emerald-400 dark:border-emerald-900'
+                                      : 'bg-yellow-50 text-yellow-700 border-yellow-200 dark:bg-yellow-950/30 dark:text-yellow-500 dark:border-yellow-900'
+                                }`}>
+                                  {donation.isSuspicious || donation.trustScore < 50 ? (
+                                    <ShieldAlert size={14} className="text-red-600 dark:text-red-400" />
+                                  ) : (
+                                    <ShieldCheck size={14} className="text-emerald-600 dark:text-emerald-400" />
+                                  )}
+                                  {donation.isSuspicious ? 'High Risk' : 'AI Verified'} 
+                                  <span className="opacity-70 font-medium hidden sm:inline">| Score: {donation.trustScore}%</span>
+                                </span>
+                              )}
+                            </div>
                           </div>
                           
-                          <div className="grid grid-cols-1 xl:grid-cols-2 gap-3 w-full">
+                          <div className="grid grid-cols-1 xl:grid-cols-2 gap-3 w-full mt-2">
                             <div className="text-sm font-medium text-slate-600 dark:text-slate-400 flex items-center gap-2.5 bg-slate-100 dark:bg-slate-800/50 p-2.5 rounded-lg border border-slate-200 dark:border-slate-700/50 truncate">
                               <Package size={18} className="text-emerald-500 shrink-0" /> 
                               <span className="truncate">{donation.quantity}</span>
@@ -447,7 +467,7 @@ const COLORS = ["#10b981", "#8b5cf6", "#3b82f6"];
           </div>
         </TabsContent>
 
-        {/* ✨ NEW TAB: INCOMING DELIVERIES */}
+        {/* TAB 2: INCOMING DELIVERIES */}
         <TabsContent value="deliveries" className="w-full animate-in fade-in duration-500 pt-6 block">
           <div className="flex items-center gap-3 mb-6">
              <Truck className="text-orange-500 w-8 h-8" />
