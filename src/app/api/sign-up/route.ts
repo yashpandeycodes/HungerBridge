@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs';
 import dbConnect from '@/lib/dbConnect';
 import UserModel from '@/model/User';
 import { signUpSchema } from '@/schemas/signUpSchema';
+import { sendVerificationEmail } from '@/helpers/sendVerificationEmail';
 
 export async function POST(request: Request) {
   await dbConnect();
@@ -20,27 +21,58 @@ export async function POST(request: Request) {
 
     const { name, email, password, role, phone } = parsedData.data;
 
-    const existingUser = await UserModel.findOne({ email });
-    if (existingUser) {
-      return NextResponse.json(
-        { success: false, message: 'User already exists with this email' },
-        { status: 400 }
-      );
-    }
+    const existingUserByEmail = await UserModel.findOne({ email });
+    const verifyCode = Math.floor(100000 + Math.random() * 900000).toString();
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    if (existingUserByEmail) {
+      if (existingUserByEmail.isVerified) {
+        return Response.json(
+          {
+            success: false,
+            message: 'User already exists with this email',
+          },
+          { status: 400 }
+        );
+      } else {
+        const hashedPassword = await bcrypt.hash(password, 10);
+        existingUserByEmail.password = hashedPassword;
+        existingUserByEmail.verifyCode = verifyCode;
+        existingUserByEmail.verifyCodeExpiry = new Date(Date.now() + 3600000);
+        await existingUserByEmail.save();
+      }
+    } else {
+      const hashedPassword = await bcrypt.hash(password, 10);
+      const expiryDate = new Date();
+      expiryDate.setHours(expiryDate.getHours() + 1);
 
    
     const newUser = new UserModel({
       name,
       email,
       password: hashedPassword,
+       verifyCode,
+       verifyCodeExpiry: expiryDate,
       role,
       phone: phone || '',
-      isVerified: true, 
+      isVerified: false, 
     });
 
     await newUser.save();
+    }
+     const emailResponse = await sendVerificationEmail(
+      email,
+      name,
+      verifyCode
+    );
+    if (!emailResponse.success) {
+      return Response.json(
+        {
+          success: false,
+          message: emailResponse.message,
+        },
+        { status: 500 }
+      );
+    }
 
     return NextResponse.json(
       { success: true, message: 'User registered successfully' },

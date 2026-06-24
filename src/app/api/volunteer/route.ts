@@ -4,6 +4,7 @@ import { authOptions } from '@/app/api/auth/[...nextauth]/options';
 import dbConnect from '@/lib/dbConnect';
 import DonationModel from '@/model/Donation';
 import CampaignModel from '@/model/Campaign';
+import UserModel from "@/model/User";
 
 export async function GET() {
   try {
@@ -40,7 +41,6 @@ export async function PATCH(request: Request) {
     }
 
     if (updatedDonation.campaignId) {
-    
       const parsedQuantity = parseInt(updatedDonation.quantity.replace(/\D/g, '')) || 20; 
       
       await CampaignModel.findByIdAndUpdate(
@@ -48,6 +48,16 @@ export async function PATCH(request: Request) {
         { $inc: { mealsCollected: parsedQuantity } } 
       );
     }
+
+    await UserModel.findByIdAndUpdate(
+      session.user._id,
+      { 
+        $inc: { 
+          karma: 50, 
+          deliveries: 1 
+        } 
+      }
+    );
 
     return NextResponse.json({ success: true, data: updatedDonation }, { status: 200 });
   } catch (error) {
