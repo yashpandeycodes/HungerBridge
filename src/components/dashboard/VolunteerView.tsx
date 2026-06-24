@@ -23,10 +23,10 @@ export default function VolunteerView() {
         if (json.success) setMissions(json.data);
 
         const statsRes = await fetch("/api/volunteer/stats");
-      const statsJson = await statsRes.json();
-      if (statsJson.success) {
-        setStats(statsJson.data); 
-      }
+        const statsJson = await statsRes.json();
+        if (statsJson.success) {
+          setStats(statsJson.data); 
+        }
       } catch (error) {
         toast.error("Failed to load missions.");
       } finally {
@@ -50,7 +50,7 @@ export default function VolunteerView() {
         toast.success("Mission Completed! You earned 50 Karma Points. 🏆");
         setMissions((prev) => prev.filter((m) => m._id !== donationId));
         
-        // INSTANT UI UPDATE: Badha do points!
+        // INSTANT UI UPDATE
         setStats(prev => ({ karma: prev.karma + 50, deliveries: prev.deliveries + 1 }));
       } else {
         toast.error(json.message);
@@ -70,13 +70,13 @@ export default function VolunteerView() {
   ];
 
   return (
-    <div className="space-y-10 animate-in fade-in slide-in-from-bottom-8 duration-700 w-full mx-auto relative z-10">
+    <div className="space-y-10 animate-in fade-in slide-in-from-bottom-8 duration-700 w-full mx-auto relative z-10 block">
       
       {/* Background Ambience */}
       <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-amber-500/10 dark:bg-amber-600/10 rounded-full blur-[120px] pointer-events-none -translate-y-1/2" />
 
       {/* Premium Hero Card */}
-      <Card className="relative w-full overflow-hidden border-0 shadow-xl bg-gradient-to-br from-amber-500 to-orange-600 dark:from-amber-600 dark:to-orange-700 text-white rounded-3xl group">
+      <Card className="relative w-full overflow-hidden border-0 shadow-xl bg-gradient-to-br from-amber-500 to-orange-600 dark:from-amber-800 dark:to-orange-950 text-white rounded-3xl group z-10">
         <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-10 mix-blend-overlay pointer-events-none" />
         <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 group-hover:scale-110 transition-transform duration-700" />
         
@@ -92,13 +92,13 @@ export default function VolunteerView() {
           </div>
           
           <div className="flex gap-4 shrink-0">
-            <div className="bg-white/10 dark:bg-black/20 p-5 rounded-2xl backdrop-blur-md border border-white/20 shadow-inner min-w-[120px] text-center shrink-0 transition-colors duration-300">
+            <div className="bg-white/10 dark:bg-black/40 p-5 rounded-2xl backdrop-blur-md border border-white/20 shadow-inner min-w-[120px] text-center shrink-0 transition-colors duration-300">
               <p className="text-xs font-bold text-orange-100 uppercase tracking-widest mb-1 flex items-center justify-center gap-1">
                 <Flame size={14} className="text-red-300" /> Karma
               </p>
               <p className="text-3xl font-black text-white drop-shadow-sm">{stats.karma}</p>
             </div>
-            <div className="bg-white/10 dark:bg-black/20 p-5 rounded-2xl backdrop-blur-md border border-white/20 shadow-inner min-w-[120px] text-center shrink-0 transition-colors duration-300">
+            <div className="bg-white/10 dark:bg-black/40 p-5 rounded-2xl backdrop-blur-md border border-white/20 shadow-inner min-w-[120px] text-center shrink-0 transition-colors duration-300">
               <p className="text-xs font-bold text-orange-100 uppercase tracking-widest mb-1 flex items-center justify-center gap-1">
                 <Sparkles size={14} className="text-yellow-300" /> Impact
               </p>
@@ -110,31 +110,30 @@ export default function VolunteerView() {
       </Card>
 
       {/* Tabs Section */}
-      <Tabs defaultValue="missions" className="w-full block">
-        <TabsList className="grid w-full grid-cols-3 h-14 bg-white/50 dark:bg-white/5 backdrop-blur-md border border-slate-200 dark:border-white/10 rounded-2xl p-1 mb-8">
-          <TabsTrigger value="missions" className="rounded-xl font-bold text-sm md:text-base data-[state=active]:bg-white dark:data-[state=active]:bg-black data-[state=active]:text-amber-600 dark:data-[state=active]:text-amber-500 data-[state=active]:shadow-sm transition-all">
+      <Tabs defaultValue="missions" className="w-full relative z-10 block">
+        <TabsList className="grid w-full grid-cols-1 md:grid-cols-3 h-auto md:h-14 bg-slate-100 dark:bg-[#121212] border border-slate-200 dark:border-slate-800 rounded-2xl p-1.5 mb-8 gap-1">
+          <TabsTrigger value="missions" className="rounded-xl font-bold text-sm text-slate-600 dark:text-slate-400 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800 data-[state=active]:text-amber-600 dark:data-[state=active]:text-amber-400 py-2.5 shadow-none data-[state=active]:shadow-sm transition-all">
             <Bike className="w-4 h-4 mr-2" /> Active Missions
           </TabsTrigger>
-          <TabsTrigger value="leaderboard" className="rounded-xl font-bold text-sm md:text-base data-[state=active]:bg-white dark:data-[state=active]:bg-black data-[state=active]:text-amber-600 dark:data-[state=active]:text-amber-500 data-[state=active]:shadow-sm transition-all">
+          <TabsTrigger value="leaderboard" className="rounded-xl font-bold text-sm text-slate-600 dark:text-slate-400 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800 data-[state=active]:text-amber-600 dark:data-[state=active]:text-amber-400 py-2.5 shadow-none data-[state=active]:shadow-sm transition-all">
             <Trophy className="w-4 h-4 mr-2" /> Leaderboard
           </TabsTrigger>
-          <TabsTrigger value="history" className="rounded-xl font-bold text-sm md:text-base data-[state=active]:bg-white dark:data-[state=active]:bg-black data-[state=active]:text-amber-600 dark:data-[state=active]:text-amber-500 data-[state=active]:shadow-sm transition-all">
+          <TabsTrigger value="history" className="rounded-xl font-bold text-sm text-slate-600 dark:text-slate-400 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800 data-[state=active]:text-amber-600 dark:data-[state=active]:text-amber-400 py-2.5 shadow-none data-[state=active]:shadow-sm transition-all">
             <History className="w-4 h-4 mr-2" /> My Impact
           </TabsTrigger>
         </TabsList>
 
-        {/* TAB 1: ACTIVE MISSIONS */}
         <TabsContent value="missions" className="w-full space-y-6 animate-in fade-in duration-500 block">
           {isLoading ? (
-            <div className="w-full flex flex-col items-center justify-center p-16 space-y-5 border border-slate-200 dark:border-white/10 rounded-3xl bg-white/50 dark:bg-white/5 backdrop-blur-sm">
+            <div className="w-full flex flex-col items-center justify-center p-16 space-y-5 border border-slate-200 dark:border-slate-800 rounded-3xl bg-white/50 dark:bg-[#121212]/50 backdrop-blur-sm">
               <div className="relative">
-                <div className="w-12 h-12 border-4 border-amber-200 dark:border-amber-500/20 border-t-amber-600 dark:border-t-amber-500 rounded-full animate-spin"></div>
+                <Loader2 className="w-12 h-12 border-4 border-amber-200 dark:border-amber-500/20 border-t-amber-600 dark:border-t-amber-500 rounded-full animate-spin text-transparent" />
               </div>
               <p className="text-slate-500 dark:text-slate-400 font-medium">Locating nearby missions...</p>
             </div>
           ) : missions.length === 0 ? (
-            <div className="w-full max-w-2xl mx-auto text-center p-12 border border-slate-200 dark:border-white/10 rounded-3xl bg-white/50 dark:bg-white/5 backdrop-blur-sm flex flex-col items-center justify-center space-y-4 shadow-sm">
-              <div className="w-20 h-20 bg-amber-100 dark:bg-amber-500/10 rounded-full flex items-center justify-center mb-2">
+            <div className="w-full p-16 text-center border border-slate-200 dark:border-slate-800 rounded-3xl bg-white/50 dark:bg-[#121212]/50 backdrop-blur-sm flex flex-col items-center justify-center space-y-4 shadow-sm">
+              <div className="w-20 h-20 bg-amber-100 dark:bg-slate-800 rounded-full flex items-center justify-center mb-2">
                 <Award className="text-amber-500 w-10 h-10" />
               </div>
               <h4 className="text-xl font-bold text-slate-800 dark:text-slate-200">No active missions right now</h4>
@@ -145,7 +144,7 @@ export default function VolunteerView() {
               {missions.map((mission) => (
                 <Card 
                   key={mission._id} 
-                  className="w-full border border-slate-200 dark:border-white/10 bg-white/80 dark:bg-[#121212]/80 backdrop-blur-xl shadow-md hover:shadow-xl dark:hover:border-amber-500/50 transition-all duration-300 group rounded-2xl relative overflow-hidden"
+                  className="w-full border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900 shadow-sm hover:shadow-md transition-all duration-300 group rounded-2xl relative overflow-hidden"
                 >
                   <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-gradient-to-b from-amber-400 to-orange-500" />
                   <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
@@ -156,15 +155,15 @@ export default function VolunteerView() {
                         <h4 className="font-extrabold text-xl text-slate-900 dark:text-white capitalize tracking-tight leading-tight">
                           {mission.foodCategory}
                         </h4>
-                        <div className="inline-flex items-center px-3 py-1 bg-amber-100 dark:bg-amber-500/10 text-amber-800 dark:text-amber-400 text-xs font-bold rounded-lg border border-amber-200 dark:border-amber-500/20 shadow-sm">
+                        <div className="inline-flex items-center px-3 py-1 bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-400 text-xs font-bold rounded-lg border border-amber-200 dark:border-amber-800/50 shadow-sm">
                           Quantity: {mission.quantity}
                         </div>
                       </div>
                     </div>
                     
-                    <div className="space-y-3 text-sm text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-white/5 p-4 rounded-xl border border-slate-100 dark:border-white/5 shadow-inner">
+                    <div className="space-y-3 text-sm text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-800/50 p-4 rounded-xl border border-slate-100 dark:border-slate-700/50 shadow-inner">
                       <div className="flex items-start gap-3">
-                        <div className="mt-0.5 bg-white dark:bg-black p-1.5 rounded-full shadow-sm border border-slate-200 dark:border-white/10 shrink-0">
+                        <div className="mt-0.5 bg-white dark:bg-slate-800 p-1.5 rounded-full shadow-sm border border-slate-200 dark:border-slate-700 shrink-0">
                           <MapPin className="text-slate-500 dark:text-slate-400" size={14} />
                         </div>
                         <p className="leading-relaxed break-words w-full"><span className="font-bold text-slate-800 dark:text-slate-200 block mb-0.5">Pickup</span> {mission.pickupLocation}</p>
@@ -173,7 +172,7 @@ export default function VolunteerView() {
                       <div className="w-0.5 h-4 border-l-2 border-dashed border-slate-300 dark:border-slate-700 ml-4 my-0.5" />
 
                       <div className="flex items-start gap-3">
-                        <div className="mt-0.5 bg-white dark:bg-black p-1.5 rounded-full shadow-sm border border-slate-200 dark:border-white/10 shrink-0">
+                        <div className="mt-0.5 bg-white dark:bg-slate-800 p-1.5 rounded-full shadow-sm border border-slate-200 dark:border-slate-700 shrink-0">
                           <Navigation className="text-amber-500 dark:text-amber-400" size={14} />
                         </div>
                         <p className="leading-relaxed"><span className="font-bold text-slate-800 dark:text-slate-200 block mb-0.5">Dropoff</span> NGO Base Camp</p>
@@ -183,7 +182,7 @@ export default function VolunteerView() {
                     <Button 
                       onClick={() => completeMission(mission._id)}
                       disabled={isAccepting === mission._id}
-                      className="w-full h-12 bg-slate-900 hover:bg-slate-800 dark:bg-white dark:text-black dark:hover:bg-slate-200 text-white font-bold text-base rounded-xl transition-all shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98]"
+                      className="w-full h-12 bg-slate-900 hover:bg-slate-800 dark:bg-amber-600 dark:text-white dark:hover:bg-amber-700 text-white font-bold text-base rounded-xl transition-all shadow-md active:scale-[0.98]"
                     >
                       {isAccepting === mission._id ? (
                         <span className="flex items-center gap-2">
@@ -191,7 +190,7 @@ export default function VolunteerView() {
                         </span>
                       ) : (
                         <>
-                          <CheckCircle2 size={18} className="mr-2 text-emerald-400 dark:text-emerald-600" /> Mark as Delivered
+                          <CheckCircle2 size={18} className="mr-2 text-emerald-400 dark:text-white" /> Mark as Delivered
                         </>
                       )}
                     </Button>
@@ -204,8 +203,8 @@ export default function VolunteerView() {
 
         {/* TAB 2: LEADERBOARD */}
         <TabsContent value="leaderboard" className="w-full animate-in fade-in duration-500 block">
-          <Card className="w-full border border-slate-200 dark:border-white/10 bg-white/80 dark:bg-[#121212]/80 backdrop-blur-xl shadow-xl rounded-3xl overflow-hidden">
-            <CardHeader className="bg-amber-50/50 dark:bg-amber-500/5 border-b border-slate-200 dark:border-white/5 pb-6">
+          <Card className="w-full border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900 backdrop-blur-xl shadow-sm rounded-3xl overflow-hidden">
+            <CardHeader className="bg-amber-50/50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 pb-6">
               <CardTitle className="text-2xl font-extrabold flex items-center gap-2 text-slate-900 dark:text-white">
                 <Trophy className="text-amber-500" /> City Top Heroes
               </CardTitle>
@@ -214,14 +213,14 @@ export default function VolunteerView() {
               </CardDescription>
             </CardHeader>
             <CardContent className="p-0">
-              <div className="divide-y divide-slate-100 dark:divide-white/5">
+              <div className="divide-y divide-slate-100 dark:divide-slate-800">
                 {topVolunteers.map((vol, index) => (
-                  <div key={vol.id} className="flex items-center justify-between p-6 hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">
+                  <div key={vol.id} className="flex items-center justify-between p-6 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
                     <div className="flex items-center gap-4">
                       <div className={`w-12 h-12 rounded-full flex items-center justify-center font-black text-xl shadow-inner
                         ${index === 0 ? 'bg-yellow-100 text-yellow-600 dark:bg-yellow-500/20 dark:text-yellow-400' : 
-                          index === 1 ? 'bg-slate-200 text-slate-600 dark:bg-white/10 dark:text-slate-300' : 
-                          'bg-orange-100 text-orange-600 dark:bg-orange-500/20 dark:text-orange-400'}`}
+                          index === 1 ? 'bg-slate-200 text-slate-600 dark:bg-slate-700 dark:text-slate-300' : 
+                          'bg-orange-100 text-orange-600 dark:bg-orange-900/30 dark:text-orange-400'}`}
                       >
                         #{index + 1}
                       </div>
@@ -243,15 +242,15 @@ export default function VolunteerView() {
           </Card>
         </TabsContent>
 
-        {/* TAB 3: HISTORY (Mock UI) */}
+        {/* TAB 3: HISTORY */}
         <TabsContent value="history" className="w-full animate-in fade-in duration-500 block">
-          <Card className="w-full border border-slate-200 dark:border-white/10 bg-white/80 dark:bg-[#121212]/80 backdrop-blur-xl shadow-xl rounded-3xl overflow-hidden text-center p-12">
-             <div className="w-20 h-20 bg-slate-100 dark:bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4">
+          <Card className="w-full border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900 backdrop-blur-xl shadow-sm rounded-3xl overflow-hidden text-center p-12">
+             <div className="w-20 h-20 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4">
                 <History className="text-slate-400 w-10 h-10" />
              </div>
              <h4 className="text-xl font-bold text-slate-800 dark:text-slate-200">Your Impact History</h4>
              <p className="text-slate-500 dark:text-slate-400 font-medium mt-2 max-w-md mx-auto">
-               Your recent deliveries and earned badges will appear here. Keep rescuing food to build your timeline!
+                Your recent deliveries and earned badges will appear here. Keep rescuing food to build your timeline!
              </p>
           </Card>
         </TabsContent>
