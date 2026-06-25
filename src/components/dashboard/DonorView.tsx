@@ -91,8 +91,21 @@ export default function DonorView() {
     };
   }, [fetchMyDonations]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    
+    const updatedFormData = { ...formData, [name]: value };
+
+    if (name === "expiryTime") {
+      const expiryDate = new Date(value);
+      const fourHoursFromNow = new Date(Date.now() + 4 * 60 * 60 * 1000);
+      
+      if (expiryDate <= fourHoursFromNow) {
+        updatedFormData.isUrgent = true;
+        toast.info("⏳ Time is less than 4 hours! Automatically marked as Urgent.", { duration: 4000 });
+      }
+    }
+    setFormData(updatedFormData);
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
