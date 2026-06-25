@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import Link from "next/link";
-import { useForm } from "react-hook-form";
+import { useForm,useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 
@@ -35,6 +35,12 @@ export default function SignUpPage() {
       role: "DONOR",
       phone: "",
     },
+  });
+
+  // Watch the role field to dynamically change the UI
+ const selectedRole = useWatch({
+    control: form.control,
+    name: "role",
   });
 
   const onSubmit = async (data: z.infer<typeof signUpSchema>) => {
@@ -90,15 +96,45 @@ export default function SignUpPage() {
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
               
+              {/* Role Selection Moved to Top for Better UX */}
+              <FormField
+                control={form.control}
+                name="role"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-slate-700 dark:text-slate-300 font-semibold">I am registering as a:</FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <select 
+                          {...field}
+                          className="flex h-12 w-full appearance-none items-center justify-between rounded-xl border border-slate-200 dark:border-white/10 bg-white/50 dark:bg-[#121212] px-4 py-2 text-sm ring-offset-white dark:ring-offset-black focus:outline-none focus:ring-2 focus:ring-orange-500 disabled:cursor-not-allowed disabled:opacity-50 dark:text-white transition-all"
+                        >
+                          <option value="DONOR">Donor (I have food to give)</option>
+                          <option value="NGO">NGO (I distribute food)</option>
+                          <option value="VOLUNTEER">Volunteer (I can deliver food)</option>
+                        </select>
+                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-500 dark:text-slate-400">
+                          <svg className="h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                        </div>
+                      </div>
+                    </FormControl>
+                    <FormMessage className="text-rose-500 dark:text-rose-400" />
+                  </FormItem>
+                )}
+              />
+
+              {/* Dynamic Name Field based on selected role */}
               <FormField
                 control={form.control}
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-slate-700 dark:text-slate-300 font-semibold">Full Name</FormLabel>
+                    <FormLabel className="text-slate-700 dark:text-slate-300 font-semibold">
+                      {selectedRole === 'NGO' ? 'Organization / Food Bank Name' : 'Full Name'}
+                    </FormLabel>
                     <FormControl>
                       <Input 
-                        placeholder="John Doe" 
+                        placeholder={selectedRole === 'NGO' ? 'e.g., Robin Hood Army' : 'John Doe'} 
                         {...field} 
                         className="bg-white/50 dark:bg-white/5 border-slate-200 dark:border-white/10 focus:ring-orange-500 dark:focus:ring-orange-500 dark:text-white transition-all h-12 rounded-xl"
                       />
@@ -107,6 +143,20 @@ export default function SignUpPage() {
                   </FormItem>
                 )}
               />
+
+              {/* Optional NGO Registration Number (Visual only, not connected to Zod by default) */}
+              {selectedRole === 'NGO' && (
+                <div className="space-y-2 animate-in fade-in zoom-in duration-300">
+                  <FormLabel className="text-slate-700 dark:text-slate-300 font-semibold">
+                    NGO Registration Number <span className="text-slate-400 dark:text-slate-500 font-normal">(Optional)</span>
+                  </FormLabel>
+                  <Input 
+                    type="text" 
+                    placeholder="e.g., REG-12345678" 
+                    className="bg-white/50 dark:bg-white/5 border-slate-200 dark:border-white/10 focus:ring-orange-500 dark:focus:ring-orange-500 dark:text-white transition-all h-12 rounded-xl"
+                  />
+                </div>
+              )}
 
               <FormField
                 control={form.control}
@@ -159,32 +209,6 @@ export default function SignUpPage() {
                         {...field} 
                         className="bg-white/50 dark:bg-white/5 border-slate-200 dark:border-white/10 focus:ring-orange-500 dark:focus:ring-orange-500 dark:text-white transition-all h-12 rounded-xl"
                       />
-                    </FormControl>
-                    <FormMessage className="text-rose-500 dark:text-rose-400" />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="role"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-slate-700 dark:text-slate-300 font-semibold">I am registering as a:</FormLabel>
-                    <FormControl>
-                      <div className="relative">
-                        <select 
-                          {...field}
-                          className="flex h-12 w-full appearance-none items-center justify-between rounded-xl border border-slate-200 dark:border-white/10 bg-white/50 dark:bg-[#121212] px-4 py-2 text-sm ring-offset-white dark:ring-offset-black focus:outline-none focus:ring-2 focus:ring-orange-500 disabled:cursor-not-allowed disabled:opacity-50 dark:text-white transition-all"
-                        >
-                          <option value="DONOR">Donor (I have food to give)</option>
-                          <option value="NGO">NGO (I distribute food)</option>
-                          <option value="VOLUNTEER">Volunteer (I can deliver food)</option>
-                        </select>
-                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-500 dark:text-slate-400">
-                          <svg className="h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
-                        </div>
-                      </div>
                     </FormControl>
                     <FormMessage className="text-rose-500 dark:text-rose-400" />
                   </FormItem>
