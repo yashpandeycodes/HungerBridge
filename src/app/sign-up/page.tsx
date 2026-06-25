@@ -37,7 +37,7 @@ export default function SignUpPage() {
     },
   });
 
-  // Watch the role field to dynamically change the UI
+  // Watching the role field to dynamically change the UI
  const selectedRole = useWatch({
     control: form.control,
     name: "role",
@@ -81,10 +81,10 @@ export default function SignUpPage() {
       <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-rose-500/10 dark:bg-rose-600/10 rounded-full blur-[100px] pointer-events-none -translate-x-1/3 translate-y-1/3" />
 
       <Card className="w-full max-w-md shadow-2xl border border-slate-200 dark:border-white/10 bg-white/80 dark:bg-black/40 backdrop-blur-2xl rounded-3xl relative z-10 overflow-hidden group">
-        <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-transparent dark:from-white/5 dark:to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        <div className="absolute inset-0 bg-linear-to-br from-white/40 to-transparent dark:from-white/5 dark:to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
         
         <CardHeader className="space-y-2 text-center pb-6 relative z-10">
-          <CardTitle className="text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-orange-600 to-rose-500 tracking-tight">
+          <CardTitle className="text-3xl font-extrabold bg-clip-text text-transparent bg-linear-to-r from-orange-600 to-rose-500 tracking-tight">
             Join HungerBridge
           </CardTitle>
           <CardDescription className="text-slate-500 dark:text-slate-400 font-medium">
@@ -134,7 +134,7 @@ export default function SignUpPage() {
                     </FormLabel>
                     <FormControl>
                       <Input 
-                        placeholder={selectedRole === 'NGO' ? 'e.g., Robin Hood Army' : 'John Doe'} 
+                        placeholder={selectedRole === 'NGO' ? 'e.g., Indian Army' : 'Yash Pandey'} 
                         {...field} 
                         className="bg-white/50 dark:bg-white/5 border-slate-200 dark:border-white/10 focus:ring-orange-500 dark:focus:ring-orange-500 dark:text-white transition-all h-12 rounded-xl"
                       />
@@ -167,7 +167,7 @@ export default function SignUpPage() {
                     <FormControl>
                       <Input 
                         type="email" 
-                        placeholder="john@example.com" 
+                        placeholder="yash@example.com" 
                         {...field} 
                         className="bg-white/50 dark:bg-white/5 border-slate-200 dark:border-white/10 focus:ring-orange-500 dark:focus:ring-orange-500 dark:text-white transition-all h-12 rounded-xl"
                       />
@@ -217,7 +217,7 @@ export default function SignUpPage() {
 
               <Button 
                 type="submit" 
-                className="w-full h-12 bg-gradient-to-r from-orange-600 to-rose-600 hover:from-orange-700 hover:to-rose-700 text-white rounded-xl font-bold text-lg shadow-lg shadow-orange-500/25 border-0 transition-all hover:scale-[1.02] active:scale-[0.98] mt-4" 
+                className="w-full h-12 bg-linear-to-r from-orange-600 to-rose-600 hover:from-orange-700 hover:to-rose-700 text-white rounded-xl font-bold text-lg shadow-lg shadow-orange-500/25 border-0 transition-all hover:scale-[1.02] active:scale-[0.98] mt-4" 
                 disabled={isSubmitting}
               >
                 {isSubmitting ? (
@@ -233,7 +233,7 @@ export default function SignUpPage() {
         <CardFooter className="flex justify-center pb-8 relative z-10">
           <p className="text-sm font-medium text-slate-600 dark:text-slate-400">
             Already have an account?{" "}
-            <Link href="/sign-in" className="text-transparent bg-clip-text bg-gradient-to-r from-orange-600 to-rose-500 hover:opacity-80 transition-opacity font-bold">
+            <Link href="/sign-in" className="text-transparent bg-clip-text bg-linear-to-r from-orange-600 to-rose-500 hover:opacity-80 transition-opacity font-bold">
               Log in
             </Link>
           </p>
