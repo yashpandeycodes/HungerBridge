@@ -14,6 +14,7 @@ import {
   ResponsiveContainer,
   Legend,
 } from "recharts";
+import useIdleTimeout from "@/hooks/useIdleTimeout";
 
 export interface DonationType {
   _id: string;
@@ -39,6 +40,7 @@ export interface CampaignType {
 }
 
 export default function NgoView() {
+    useIdleTimeout(15);
   const [isGenerating, setIsGenerating] = useState(false);
   const [liveCampaigns, setLiveCampaigns] = useState<CampaignType[]>([]);
   const [campaignText, setCampaignText] = useState("");

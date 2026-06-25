@@ -10,6 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Image as ImageIcon, Sparkles, AlertCircle, HeartHandshake, Loader2, UploadCloud, History, PlusCircle, Trash2, Package, Clock, Award, Download, X, Share2, Check } from "lucide-react";
 import Image from "next/image";
 import * as htmlToImage from "html-to-image";
+import useIdleTimeout from "@/hooks/useIdleTimeout";
 
 export interface CampaignDropdownType {
   _id: string;
@@ -30,6 +31,7 @@ export interface MyDonationType {
 }
 
 export default function DonorView() {
+  useIdleTimeout(15);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [previewBase64, setPreviewBase64] = useState<string | null>(null);

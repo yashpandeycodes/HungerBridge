@@ -7,8 +7,10 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MapPin, Navigation, CheckCircle2, Award, Bike, Loader2, Sparkles, Trophy, Star, History, Flame,Clock } from "lucide-react";
 import { DonationType } from "./NgoView"; 
+import useIdleTimeout from "@/hooks/useIdleTimeout";
 
 export default function VolunteerView() {
+    useIdleTimeout(15);
   const [missions, setMissions] = useState<DonationType[]>([]);
   const [history, setHistory] = useState<DonationType[]>([]); // Naya state history ke liye
   const [isLoading, setIsLoading] = useState(true);
