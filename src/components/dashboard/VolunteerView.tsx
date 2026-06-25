@@ -226,7 +226,7 @@ export default function VolunteerView() {
                         </span>
                       ) : (
                         <>
-                          <CheckCircle2 size={18} className="mr-2 text-emerald-400 dark:text-white" /> Mark as Delivered
+                          <CheckCircle2 size={18} className="mr-2 text-emerald-400 dark:text-white" /> Accept
                         </>
                       )}
                     </Button>
