@@ -33,7 +33,7 @@ export async function sendVerificationEmail(
     };
 
     await transporter.sendMail(mailOptions);
-    return { success: true, message: 'Verification email sent successfully' };
+    return { success: true, message: 'Verification email sent successfully.Please check your spam/junk folder if you don`t see it.' };
     
   } catch (error) {
     console.error("Error sending verification email with Nodemailer", error);

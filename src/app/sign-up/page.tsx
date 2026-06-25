@@ -56,7 +56,7 @@ export default function SignUpPage() {
       const responseData = await res.json();
 
       if (res.ok) {
-        toast.success("Account created! Please verify your email.");
+        toast.success("Account created! Please verify your email.Please check your spam/junk folder if you don't see the mail.");
         // Redirecting to the verify page with the encoded email
         router.replace(`/verify/${encodeURIComponent(data.email)}`);
       } else {

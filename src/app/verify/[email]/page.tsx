@@ -37,7 +37,7 @@ export default function VerifyAccountPage() {
       const data = await res.json();
 
       if (res.ok && data.success) {
-        toast.success("Account Verified Successfully! 🎉");
+        toast.success("Account Verified Successfully! ");
         router.replace("/sign-in");
       } else {
         toast.error(data.message || "Invalid or expired code.");
