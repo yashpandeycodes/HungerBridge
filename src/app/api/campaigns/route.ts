@@ -66,7 +66,7 @@ export async function POST(request: Request) {
 export async function GET() {
   try {
     await dbConnect();
-    // Sirf Active campaigns fetch karo
+    // Sirf Active campaigns fetch karenge
     const campaigns = await CampaignModel.find({ status: 'ACTIVE' }).sort({ createdAt: -1 });
     return NextResponse.json({ success: true, data: campaigns });
   } catch (error) {

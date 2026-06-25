@@ -3,7 +3,7 @@ import mongoose, { Schema, Document } from 'mongoose';
 export interface Campaign extends Document {
   ngoId: mongoose.Types.ObjectId;
   title: string;
-  description: string; // GenAI will help generate this
+  description: string; 
   targetMeals: number;
   mealsCollected: number;
   status: 'ACTIVE' | 'CLOSED';

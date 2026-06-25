@@ -36,41 +36,36 @@ export default function Home() {
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-[#0a0a0a] transition-colors duration-500 text-slate-900 dark:text-slate-100">
-      
-      {/* Premium Glassmorphism Navbar */}
      
+        <header className="sticky top-0 z-50 px-3 sm:px-6 lg:px-14 h-16 flex items-center justify-between border-b border-slate-200/60 dark:border-white/10 bg-white/75 dark:bg-black/55 backdrop-blur-2xl shadow-lg shadow-black/5 dark:shadow-black/20 transition-all duration-500">
+  <Link className="flex items-center justify-center group shrink-0" href="/">
+    <span className="font-extrabold text-xl sm:text-2xl bg-clip-text text-transparent bg-linear-to-r from-orange-600 via-rose-500 to-orange-500 tracking-tight group-hover:scale-105 transition-all duration-300">
+      HungerBridge
+    </span>
+  </Link>
+  <nav className="flex gap-2 sm:gap-6 items-center shrink-0">
+    <ThemeToggle />
+    <Link href="/sign-in">
+      <Button
+        variant="ghost"
+        className="font-semibold rounded-xl text-slate-700 dark:text-slate-300 hover:bg-slate-100/80 dark:hover:bg-white/10 transition-all duration-300 px-2 sm:px-4 text-sm sm:text-base"
+      >
+        Log In
+      </Button>
+    </Link>
+    <Link href="/sign-up">
+     <Button className="bg-linear-to-r from-orange-600 to-rose-600 hover:from-orange-700 hover:to-rose-700 text-white shadow-xl shadow-orange-500/20 border-0 transition-all duration-300 hover:scale-105 hover:shadow-orange-500/40 rounded-xl px-3 sm:px-4 text-sm sm:text-base">
 
-        <header className="sticky top-0 z-50 px-6 lg:px-14 h-16 flex items-center justify-between border-b border-slate-200/60 dark:border-white/10 bg-white/75 dark:bg-black/55 backdrop-blur-2xl shadow-lg shadow-black/5 dark:shadow-black/20 transition-all duration-500">
-        <Link className="flex items-center justify-center group" href="/">
-       
-         <span className="font-extrabold text-2xl bg-clip-text text-transparent bg-linear-to-r from-orange-600 via-rose-500 to-orange-500 tracking-tight group-hover:scale-105 transition-all duration-300">
-            HungerBridge
-          </span>
-        </Link>
-        <nav className="flex gap-4 sm:gap-6 items-center">
-          <ThemeToggle />
-          <Link href="/sign-in">
-           <Button
-           variant="ghost"
-          className="font-semibold   rounded-xl text-slate-700 dark:text-slate-300 hover:bg-slate-100/80 dark:hover:bg-white/10 transition-all duration-300"
->
-              Log In
-            </Button>
-          </Link>
-          <Link href="/sign-up">
-           
+  <span className="sm:hidden">Join</span>
+  
+  <span className="hidden sm:inline">Join the Cause</span>
+</Button>
+    </Link>
+  </nav>
+</header>
 
-          <Button className="bg-linear-to-r from-orange-600 to-rose-600 hover:from-orange-700 hover:to-rose-700 text-white shadow-xl shadow-orange-500/20 border-0 transition-all duration-300 hover:scale-105 hover:shadow-orange-500/40 rounded-xl">
-              Join the Cause
-            </Button>
-          </Link>
-        </nav>
-      </header>
-
-      {/* Hero Section with Glowing Effects */}
       <main className="flex-1 flex flex-col items-center justify-center text-center px-4 md:px-6 py-20 md:py-32 relative overflow-hidden">
         
-        {/* Background Ambient Glow */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-150 h-150 bg-orange-500/20 dark:bg-orange-600/10 rounded-full blur-[120px] pointer-events-none" />
 
       
@@ -144,9 +139,6 @@ export default function Home() {
               </CardContent>
             </Card>
 
-           
-             
-           
 
 <Card className="relative overflow-hidden border border-slate-200 dark:border-white/10 bg-white/90 dark:bg-white/5 backdrop-blur-2xl shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 group rounded-2xl">
               <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -198,8 +190,6 @@ export default function Home() {
           </div>
         </div>
       </main>
-
-      {/* Footer */}
 
 <footer className="py-8 w-full shrink-0 items-center px-6 md:px-14 border-t border-slate-200 dark:border-white/10 bg-white/80 dark:bg-black/60 backdrop-blur-xl flex flex-col md:flex-row justify-between text-center md:text-left transition-colors duration-500">
         <p className="text-sm font-medium text-slate-500 dark:text-slate-400">

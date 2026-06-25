@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getServerSession } from "next-auth"; // Tumhara auth config
+import { getServerSession } from "next-auth"; 
 import dbConnect from "@/lib/dbConnect"; 
 import User from "@/model/User"; 
 

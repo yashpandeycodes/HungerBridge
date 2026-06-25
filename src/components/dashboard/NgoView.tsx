@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { MapPin, Clock, Megaphone, Package, HeartHandshake, Sparkles, Copy, Loader2, Activity, PieChart, Truck, CheckCircle, ShieldCheck, ShieldAlert, TrendingUp } from "lucide-react";
+import { MapPin, Megaphone, Package, HeartHandshake, Sparkles, Copy, Loader2, Activity, PieChart, Truck, CheckCircle, ShieldCheck, ShieldAlert, TrendingUp } from "lucide-react";
 import {
   PieChart as RePieChart,
   Pie,
@@ -50,10 +50,8 @@ export default function NgoView() {
   const [incomingDeliveries, setIncomingDeliveries] = useState<DonationType[]>([]);
   const [isLoadingDB, setIsLoadingDB] = useState(true);
   
-  // Naya state AI Insight ke liye
   const [aiInsight, setAiInsight] = useState("");
 
-  // Example stats for the Impact tab
  const [stats, setStats] = useState({
   totalMeals: 0,
   activeVolunteers: 0,
@@ -151,7 +149,7 @@ const COLORS = ["#10b981", "#8b5cf6", "#3b82f6"];
   const generateCampaign = async (donation: DonationType) => {
     setIsGenerating(true);
     setActiveCard(donation._id); 
-    toast("🤖 AI is drafting your campaign...", { duration: 3000 });
+    toast(" AI is drafting your campaign...", { duration: 3000 });
 
     try {
       const res = await fetch("/api/campaigns/generate", {
@@ -170,7 +168,7 @@ const COLORS = ["#10b981", "#8b5cf6", "#3b82f6"];
 
       if (res.ok) {
         setCampaignText(data.data.campaignContent);
-        toast.success("✨ Campaign drafted successfully!");
+        toast.success(" Campaign drafted successfully!");
       } else {
         toast.error("AI failed to generate campaign. Try again.");
       }
@@ -275,11 +273,9 @@ const COLORS = ["#10b981", "#8b5cf6", "#3b82f6"];
   return (
     <div className="space-y-10 animate-in fade-in slide-in-from-bottom-8 duration-700 relative w-full block">
       
-      {/* Background Ambience */}
       <div className="absolute top-1/4 right-0 w-[400px] h-[400px] bg-purple-500/10 dark:bg-purple-600/10 rounded-full blur-[100px] pointer-events-none -translate-y-1/2 translate-x-1/3" />
       <div className="absolute bottom-1/4 left-0 w-[400px] h-[400px] bg-emerald-500/10 dark:bg-emerald-600/10 rounded-full blur-[100px] pointer-events-none translate-y-1/2 -translate-x-1/3" />
 
-      {/* Hero Stats Card */}
       <Card className="relative w-full overflow-hidden border-0 shadow-2xl bg-gradient-to-br from-emerald-600 to-teal-800 dark:from-emerald-900 dark:to-slate-900 text-white rounded-3xl group z-10">
         <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-10 mix-blend-overlay pointer-events-none" />
         <CardContent className="p-8 md:p-10 flex flex-col md:flex-row items-center justify-between gap-8 relative z-10 w-full">
@@ -370,7 +366,7 @@ const COLORS = ["#10b981", "#8b5cf6", "#3b82f6"];
                               {donation.foodCategory || "Food Donation"}
                             </h3>
                             
-                            {/* 👇 Trust Badge & Urgent Tags Row 👇 */}
+                            {/*  Trust Badge & Urgent Tags Row  */}
                             <div className="flex flex-wrap items-center gap-2">
                               {donation.isUrgent && (
                                 <span className="px-3 py-1 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 text-xs font-black tracking-widest uppercase rounded-md animate-pulse border border-red-200 dark:border-red-800 shrink-0">
@@ -445,7 +441,7 @@ const COLORS = ["#10b981", "#8b5cf6", "#3b82f6"];
             <div className="lg:col-span-5 w-full">
               <div className="sticky top-24 w-full space-y-6">
                 
-                {/* 🤖 AI Predictive Insights Widget 🤖 */}
+                {/*  AI Predictive Insights Widget  */}
                 <Card className="w-full border border-blue-200 dark:border-blue-900/50 shadow-md bg-blue-50/50 dark:bg-blue-950/20 rounded-3xl overflow-hidden relative">
                   <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-blue-500" />
                   <CardContent className="p-5 flex items-start gap-4">

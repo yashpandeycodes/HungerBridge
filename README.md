@@ -7,18 +7,45 @@
 
 ---
 
-# Project Overview
+# Project Purpose
 
-Millions of people sleep hungry while tons of perfectly edible food are wasted every day.
+We live in a world of stark contrast. Every single day, massive amounts of perfectly edible, nutrient-rich food from restaurants, weddings, and households are thrown into landfills. Yet, just a few miles away, millions of people go to sleep on an empty stomach.
 
-**HungerBridge** solves this problem by creating an intelligent ecosystem where:
+Why does this happen?
+The core problem isn't a lack of empathy; it's a lack of real-time logistics. Food is highly perishable. The manual friction of finding a willing NGO, coordinating a volunteer, and arranging a pickup takes too long. By the time the logistics are figured out, the food has already expired.
 
-- Food Donors can instantly list surplus food
-- AI automatically analyzes food images
-- NGOs can claim donations and generate campaigns
-- Volunteers can deliver food before it expires
+HungerBridge is built to eliminate this friction. We are transforming food rescue from a slow, manual chore into a hyper-efficient, community-driven ecosystem powered by AI.
 
-Our goal is to build a **Zero Hunger, Zero Food Waste** future using modern technology and AI.
+Our platform bridges the gap between surplus and scarcity in real-time:
+
+For Donors (Zero Friction): Instantly list surplus food. Our AI Vision Model automatically categorizes the food, estimates servings, and flags urgent items, taking the hassle out of donating.
+
+For NGOs (Actionable Impact): Claim nearby donations instantly and use our AI Campaign Studio to generate powerful awareness and fundraising drives in a single click.
+
+For Volunteers (Gamified Logistics): An "open-board" system to claim delivery missions, track live progress, and earn Karma points for saving meals before they spoil.
+
+By replacing logistical chaos with a streamlined, GenAI-powered platform, HungerBridge ensures that surplus food reaches hungry stomachs, not garbage bins.
+
+Our mission is simple: Zero Hunger, Zero Food Waste.
+
+---
+
+# Tech Stack
+
+| Category              | Technologies                   |
+| --------------------- | ------------------------------ |
+| **Framework**         | Next.js 16 (App Router)        |
+| **Language**          | TypeScript                     |
+| **Frontend**          | React, Tailwind CSS, Shadcn UI |
+| **Icons**             | Lucide React                   |
+| **Backend**           | Next.js API Routes             |
+| **Database**          | MongoDB + Mongoose             |
+| **Authentication**    | NextAuth.js                    |
+| **Validation**        | Zod                            |
+| **Password Security** | BcryptJS                       |
+| **Email Service**     | Nodemailer                     |
+| **AI Integration**    | Google Gemini Flash            |
+| **Deployment**        | Vercel                         |
 
 ---
 
@@ -82,6 +109,72 @@ Built using **NextAuth.js**, **Zod Validation**, and **BcryptJS**.
 
 ---
 
+## AI Trust Scoring & Fraud Detection
+
+Ensures platform integrity and safety by automatically analyzing incoming donations.
+
+- AI-assigned "Trust Score" for every listing
+- Highlights high-risk or suspicious donation patterns
+- Visual "AI Verified" badges to help NGOs accept safe food
+- Maintains high quality control across the platform
+
+---
+
+## AI Predictive Demand Forecast
+
+Empowers NGOs to be proactive rather than reactive using data analysis.
+
+- Predicts high-demand periods for food collection
+- Suggests optimal days and times to run campaigns
+- Helps NGOs prepare volunteer capacity in advance
+- Powered by real-time contextual data analysis
+
+---
+
+## Smart Auto-Urgency Flagging
+
+Prioritizes critical food rescues to completely eliminate food spoilage
+
+- Automatically detects if the food expiry time is within 4 hours
+- Instantly flags the donation as "Urgent" with high-visibility UI
+- Real-time toast notifications for donors
+- Manual toggle override available for extreme emergencies
+
+---
+
+## Volunteer Gamification & Dynamic Leaderboard
+
+Keeps the community engaged and highly motivated to rescue more food.
+
+- Volunteers earn "Karma Points" for every successful delivery
+- Real-time dynamic leaderboard showing top contributors
+- Clear visual status indicators (Pending vs. Completed missions)
+- "Uber/Ola" style open-board claiming system for instant task assignment
+
+---
+
+## Live Progress Tracking & Viral Certificates
+
+Delivers a "Swiggy-style" real-time experience to donors to build trust.
+
+- Live donation lifecycle timeline (Pending ➔ Assigned ➔ Completed)
+- 1-click downloadable high-quality "Impact Certificate"
+- Powered by html-to-image for instant generation
+- Encourages social sharing and creates viral loops for the platform
+
+---
+
+## Enterprise-Level Session Security
+
+Ensures accounts and sensitive NGO/Donor data remain secure on shared devices.
+
+- Intelligent client-side 15-minute inactivity auto-logout
+- Custom DOM event listeners to track active usage seamlessly
+- Complements the robust OTP-based and Role-Based Authentication
+- Auto-redirects to login with a grace period notification
+
+---
+
 ## Graceful AI Fallback System
 
 If the AI endpoint is unavailable or rate-limited:
@@ -90,24 +183,6 @@ If the AI endpoint is unavailable or rate-limited:
 - Zero downtime
 - Smooth demo experience
 - Production-friendly architecture
-
----
-
-# Tech Stack
-
-| Category              | Technologies                   |
-| --------------------- | ------------------------------ |
-| **Framework**         | Next.js 16 (App Router)        |
-| **Language**          | TypeScript                     |
-| **Frontend**          | React, Tailwind CSS, Shadcn UI |
-| **Icons**             | Lucide React                   |
-| **Backend**           | Next.js API Routes             |
-| **Database**          | MongoDB + Mongoose             |
-| **Authentication**    | NextAuth.js                    |
-| **Validation**        | Zod                            |
-| **Password Security** | BcryptJS                       |
-| **Email Service**     | Nodemailer                     |
-| **AI Integration**    | Google Gemini Flash            |
 
 ---
 

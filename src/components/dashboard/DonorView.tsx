@@ -129,7 +129,7 @@ export default function DonorView() {
     }
 
     setIsAnalyzing(true);
-    toast("🤖 AI is analyzing the food...", { duration: 3000 });
+    toast(" AI is analyzing the food...", { duration: 3000 });
 
     try {
       const base64Data = previewBase64.split(",")[1];
@@ -148,7 +148,7 @@ export default function DonorView() {
           quantity: data.data.estimatedQuantity,
           foodSource: data.data.suggestedSource,
         });
-        toast.success("✨ AI successfully categorized the food!");
+        toast.success(" AI successfully categorized the food!");
       } else {
         toast.error("AI Analysis failed. You can enter details manually.");
       }
@@ -220,14 +220,13 @@ export default function DonorView() {
     }
   };
 
-  // 🏆 Download Certificate Logic
+  //  Download Certificate Logic
   const downloadCertificate = async () => {
     if (!certificateRef.current) return;
     setIsDownloading(true);
     toast("Generating high-res certificate...", { duration: 2000 });
     
     try {
-      // html-to-image automatically modern CSS, shadows aur colors ko handle kar leta hai
       const dataUrl = await htmlToImage.toPng(certificateRef.current, {
         quality: 1,
         pixelRatio: 3, // High resolution HD image ke liye
@@ -251,10 +250,10 @@ export default function DonorView() {
   return (
     <div className="w-full max-w-4xl mx-auto relative group animate-in fade-in slide-in-from-bottom-8 duration-700 block">
       
-      {/* Dynamic Glow Background */}
+
       <div className="absolute inset-0 bg-gradient-to-r from-orange-500/30 to-rose-500/30 dark:from-orange-600/20 dark:to-rose-600/20 rounded-3xl blur-3xl opacity-50 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none -z-10" />
 
-      {/* TABS CONTAINER */}
+
       <Tabs defaultValue="donate" className="w-full relative z-10 block">
         <TabsList className="grid w-full grid-cols-2 h-auto md:h-14 bg-white/50 dark:bg-[#121212]/80 backdrop-blur-md border border-slate-200 dark:border-slate-800 rounded-2xl p-1.5 mb-6 gap-1 shadow-sm">
           <TabsTrigger value="donate" className="rounded-xl font-bold text-sm text-slate-600 dark:text-slate-400 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800 data-[state=active]:text-orange-600 dark:data-[state=active]:text-orange-400 py-2.5 transition-all shadow-none data-[state=active]:shadow-sm">
@@ -290,7 +289,6 @@ export default function DonorView() {
             <CardContent className="pt-8 px-6 md:px-8 pb-8">
               <form onSubmit={handleSubmit} className="space-y-8">
                 
-                {/* Image Upload Section */}
                 <div className="space-y-4">
                   <Label className="text-slate-700 dark:text-slate-300 font-bold text-sm uppercase tracking-wider flex items-center gap-2">
                       <ImageIcon size={16} /> Upload Food Photo
@@ -441,7 +439,7 @@ export default function DonorView() {
                   </CardHeader>
                   <CardContent className="p-5 flex-1 flex flex-col space-y-5">
                     
-                    {/* 🔥 THE SWIGGY-STYLE TIMELINE 🔥 */}
+                    {/* THE SWIGGY-STYLE TIMELINE */}
                     <div className="relative w-full mt-2 mb-2">
                       <div className="absolute top-3.5 left-[15%] right-[15%]">
                         <div className="w-full h-1.5 bg-slate-200 dark:bg-slate-800 rounded-full"></div>
@@ -514,7 +512,7 @@ export default function DonorView() {
         </TabsContent>
       </Tabs>
 
-      {/* 🏆 THE VIRAL IMPACT CERTIFICATE MODAL 🏆 */}
+      {/*  THE VIRAL IMPACT CERTIFICATE MODAL */}
       {showCertificate && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-in fade-in duration-300">
           <div className="relative w-full max-w-md mx-auto">
@@ -527,7 +525,7 @@ export default function DonorView() {
               <X size={24} />
             </button>
 
-            {/* Certificate Card (This is what gets converted to image) */}
+            {/* Certificate Card */}
             <div 
               ref={certificateRef}
               className="bg-white dark:bg-slate-900 rounded-3xl overflow-hidden shadow-2xl relative"

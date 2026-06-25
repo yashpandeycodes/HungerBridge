@@ -12,7 +12,7 @@ import useIdleTimeout from "@/hooks/useIdleTimeout";
 export default function VolunteerView() {
     useIdleTimeout(15);
   const [missions, setMissions] = useState<DonationType[]>([]);
-  const [history, setHistory] = useState<DonationType[]>([]); // Naya state history ke liye
+  const [history, setHistory] = useState<DonationType[]>([]); 
   const [isLoading, setIsLoading] = useState(true);
   const [isAccepting, setIsAccepting] = useState<string | null>(null);
 
@@ -82,7 +82,6 @@ export default function VolunteerView() {
     }
   };
 
-  // 🔥 DYNAMIC LEADERBOARD LOGIC 🔥
   const getLeaderboard = () => {
     const staticVolunteers = [
       { id: "1", name: "Rahul Sharma", points: 1250, deliveries: 45, badge: "Food Savior" },
@@ -111,10 +110,8 @@ export default function VolunteerView() {
   return (
     <div className="space-y-10 animate-in fade-in slide-in-from-bottom-8 duration-700 w-full mx-auto relative z-10 block">
       
-      {/* Background Ambience */}
       <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-amber-500/10 dark:bg-amber-600/10 rounded-full blur-[120px] pointer-events-none -translate-y-1/2" />
 
-      {/* Premium Hero Card */}
       <Card className="relative w-full overflow-hidden border-0 shadow-xl bg-gradient-to-br from-amber-500 to-orange-600 dark:from-amber-800 dark:to-orange-950 text-white rounded-3xl group z-10">
         <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-10 mix-blend-overlay pointer-events-none" />
         <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 group-hover:scale-110 transition-transform duration-700" />

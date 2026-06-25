@@ -19,7 +19,7 @@ export async function PATCH(request: Request) {
 
     const { donationId } = await request.json();
 
-    // 1. Status ko 'COMPLETED' kar do
+    // 1. Status ko 'COMPLETED' kar diya
     const completedDonation = await DonationModel.findOneAndUpdate(
       { _id: donationId, status: 'ASSIGNED', ngoId: session.user._id },
       { status: 'COMPLETED' },
@@ -30,7 +30,7 @@ export async function PATCH(request: Request) {
       return NextResponse.json({ success: false, message: 'Donation not found or not assigned yet.' }, { status: 404 });
     }
 
-    // 2. Campaign me meals update karo
+    // 2. Campaign me meals update 
     if (completedDonation.campaignId) {
       const parsedQuantity = parseInt(completedDonation.quantity.replace(/\D/g, '')) || 20; 
       await CampaignModel.findByIdAndUpdate(
@@ -39,7 +39,7 @@ export async function PATCH(request: Request) {
       );
     }
 
-    // 3. Volunteer ko uski mehnat ke Karma points aur delivery count do
+    // 3. Volunteer ko uski mehnat ke Karma points aur delivery count dunga
     if (completedDonation.volunteerId) {
       await UserModel.findByIdAndUpdate(
         completedDonation.volunteerId,
@@ -49,7 +49,7 @@ export async function PATCH(request: Request) {
       );
     }
 
-    // 4. Donor ko FINAL "Delivery Completed" mail bhejo
+    // 4. Donor ko FINAL "Delivery Completed" mail 
     const donor = await UserModel.findById(completedDonation.donorId); 
     if (donor && donor.email) {
       sendEventEmail(
