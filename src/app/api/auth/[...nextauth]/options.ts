@@ -1,4 +1,3 @@
-
 import { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import bcrypt from 'bcryptjs';
@@ -25,6 +24,10 @@ export const authOptions: NextAuthOptions = {
           
           if (!user) {
             throw new Error('No user found with this email');
+          }
+
+          if (!user.isVerified) {
+            throw new Error('Please verify your email before logging in');
           }
 
           if (!user.password) {
