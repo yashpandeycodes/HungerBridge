@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { toast } from "sonner";
 import Link from "next/link";
@@ -24,7 +23,6 @@ import {
 import { signInSchema } from "@/schemas/signInSchema";
 
 export default function SignInPage() {
-  const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const getCallbackUrl = () => {
@@ -56,7 +54,7 @@ export default function SignInPage() {
         toast.error(result.error || "Invalid email or password");
       } else {
         toast.success("Welcome back!");
-        router.push(getCallbackUrl());
+        window.location.assign(getCallbackUrl());
       }
     } catch (error) {
       toast.error("An error occurred during login.");
