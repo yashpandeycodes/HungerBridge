@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter}  from "next/navigation";
+import {useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { toast } from "sonner";
 import Link from "next/link";
@@ -25,7 +26,9 @@ import { signInSchema } from "@/schemas/signInSchema";
 
 export default function SignInPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
 
   const form = useForm<z.infer<typeof signInSchema>>({
     resolver: zodResolver(signInSchema),
@@ -40,16 +43,17 @@ export default function SignInPage() {
 
     try {
       const result = await signIn("credentials", {
-        redirect: false, 
+        redirect: false,
         email: data.email,
         password: data.password,
+        callbackUrl,
       });
 
       if (result?.error) {
         toast.error(result.error || "Invalid email or password");
-      } else if (result?.url) {
+      } else {
         toast.success("Welcome back!");
-        router.push("/dashboard"); 
+        router.push(callbackUrl);
       }
     } catch (error) {
       toast.error("An error occurred during login.");
