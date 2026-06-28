@@ -81,7 +81,9 @@ export default function DonorView() {
       try {
         const res = await fetch("/api/campaigns", { signal: controller.signal });
         const json = await res.json();
-        if (json.success) setActiveCampaigns(json.data);
+        if (json.success) {
+          queueMicrotask(() => setActiveCampaigns(json.data));
+        }
       } catch (error) {
         if (error instanceof DOMException && error.name === 'AbortError') return;
         console.error("Failed to fetch campaigns");
