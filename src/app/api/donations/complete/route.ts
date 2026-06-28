@@ -39,14 +39,16 @@ export async function PATCH(request: Request) {
       );
     }
 
+    let updatedVolunteer = null;
     // 3. Volunteer ko uski mehnat ke Karma points aur delivery count dunga
     if (completedDonation.volunteerId) {
-      await UserModel.findByIdAndUpdate(
+      updatedVolunteer = await UserModel.findByIdAndUpdate(
         completedDonation.volunteerId,
         { 
           $inc: { karma: 50, deliveries: 1 } 
-        }
-      );
+        },
+        { new: true }
+      ).select('karma deliveries name');
     }
 
     // 4. Donor ko FINAL "Delivery Completed" mail 
@@ -54,13 +56,18 @@ export async function PATCH(request: Request) {
     if (donor && donor.email) {
       sendEventEmail(
         donor.email,
-        donor.username || "Generous Donor", 
+        donor.name || "Generous Donor", 
         "Delivery Completed",
         `Amazing news! Your food has been successfully received by the NGO and has reached those in need. You just fed empty stomachs today. Thank you for your kindness!`
       ).catch(err => console.error("Email sending failed:", err)); 
     }
 
-    return NextResponse.json({ success: true, message: 'Donation cycle completed successfully!', data: completedDonation }, { status: 200 });
+    return NextResponse.json({ 
+      success: true, 
+      message: 'Donation cycle completed successfully!', 
+      data: completedDonation,
+      volunteerStats: updatedVolunteer ? { karma: updatedVolunteer.karma, deliveries: updatedVolunteer.deliveries } : null
+    }, { status: 200 });
   } catch (error) {
     console.error("Completion Error:", error);
     return NextResponse.json({ success: false, message: 'Failed to complete donation' }, { status: 500 });

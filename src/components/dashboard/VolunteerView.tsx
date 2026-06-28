@@ -9,6 +9,15 @@ import { MapPin, Navigation, CheckCircle2, Award, Bike, Loader2, Sparkles, Troph
 import { DonationType } from "./NgoView"; 
 import useIdleTimeout from "@/hooks/useIdleTimeout";
 
+export interface LeaderboardEntry {
+  _id: string;
+  name: string;
+  karma: number;
+  deliveries: number;
+  badge: string;
+  isCurrentUser: boolean;
+}
+
 export default function VolunteerView() {
     useIdleTimeout(15);
   const [missions, setMissions] = useState<DonationType[]>([]);
@@ -17,6 +26,8 @@ export default function VolunteerView() {
   const [isAccepting, setIsAccepting] = useState<string | null>(null);
 
   const [stats, setStats] = useState({ karma: 0, deliveries: 0 });
+  const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
+  const [isLeaderboardLoading, setIsLeaderboardLoading] = useState(true);
 
   useEffect(() => {
     const fetchMissions = async () => {
@@ -31,13 +42,23 @@ export default function VolunteerView() {
           setStats(statsJson.data); 
         }
 
-        // Try to fetch history (agar backend mein endpoint nahi hoga toh silent fail ho jayega)
+        // Try to fetch history (if backend endpoint doesn't exist it will silently fail)
         try {
-          const histRes = await fetch("/api/volunteer/historyy");
+          const histRes = await fetch("/api/volunteer/history");
           const histJson = await histRes.json();
           if (histJson.success) setHistory(histJson.data);
         } catch (e) {
           console.log("No history endpoint found, relying on local session history.");
+        }
+
+        try {
+          const lbRes = await fetch("/api/volunteer/leaderboard");
+          const lbJson = await lbRes.json();
+          if (lbJson.success) setLeaderboard(lbJson.data);
+        } catch (e) {
+          console.error("Failed to fetch leaderboard", e);
+        } finally {
+          setIsLeaderboardLoading(false);
         }
 
       } catch (error) {
@@ -60,7 +81,7 @@ export default function VolunteerView() {
       const json = await res.json();
       
       if (json.success) {
-        toast.success("Mission Completed! You earned 50 Karma Points. 🏆");
+        toast.success("Mission accepted! 🚗 Head to the pickup location. Your karma will update once the NGO confirms delivery.");
         
         // Find the completed mission and move it to History
         const completedMission = missions.find((m) => m._id === donationId);
@@ -69,9 +90,6 @@ export default function VolunteerView() {
         }
         
         setMissions((prev) => prev.filter((m) => m._id !== donationId));
-        
-        // INSTANT UI UPDATE
-        setStats(prev => ({ karma: prev.karma + 50, deliveries: prev.deliveries + 1 }));
       } else {
         toast.error(json.message);
       }
@@ -82,30 +100,7 @@ export default function VolunteerView() {
     }
   };
 
-  const getLeaderboard = () => {
-    const staticVolunteers = [
-      { id: "1", name: "Rahul Sharma", points: 1250, deliveries: 45, badge: "Food Savior" },
-      { id: "2", name: "Priya Singh", points: 980, deliveries: 32, badge: "Speedy Rider" },
-      { id: "3", name: "Amit Kumar", points: 850, deliveries: 28, badge: "Community Hero" },
-    ];
-    
-    const allVolunteers = [
-      ...staticVolunteers,
-      // Current User dynamically added
-      { 
-        id: "me", 
-        name: "You (Volunteer)", 
-        points: stats.karma, 
-        deliveries: stats.deliveries, 
-        badge: stats.karma >= 1000 ? "Food Savior" : "Rising Hero" 
-      }
-    ];
-    
-    // Sort array by highest points
-    return allVolunteers.sort((a, b) => b.points - a.points);
-  };
 
-  const topVolunteers = getLeaderboard();
 
   return (
     <div className="space-y-10 animate-in fade-in slide-in-from-bottom-8 duration-700 w-full mx-auto relative z-10 block">
@@ -226,7 +221,7 @@ export default function VolunteerView() {
                         </span>
                       ) : (
                         <>
-                          <CheckCircle2 size={18} className="mr-2 text-emerald-400 dark:text-white" /> Accept
+                          <Bike size={18} className="mr-2" /> Accept Pickup Mission
                         </>
                       )}
                     </Button>
@@ -249,38 +244,56 @@ export default function VolunteerView() {
               </CardDescription>
             </CardHeader>
             <CardContent className="p-0">
-              <div className="divide-y divide-slate-100 dark:divide-slate-800">
-                {topVolunteers.map((vol, index) => (
-                  <div key={vol.id} className={`flex items-center justify-between p-6 transition-colors 
-                    ${vol.id === 'me' ? 'bg-amber-50 dark:bg-amber-900/20 border-l-4 border-amber-500' : 'hover:bg-slate-50 dark:hover:bg-slate-800/50'}
-                  `}>
-                    <div className="flex items-center gap-4">
-                      <div className={`w-12 h-12 rounded-full flex items-center justify-center font-black text-xl shadow-inner
-                        ${index === 0 ? 'bg-yellow-100 text-yellow-600 dark:bg-yellow-500/20 dark:text-yellow-400' : 
-                          index === 1 ? 'bg-slate-200 text-slate-600 dark:bg-slate-700 dark:text-slate-300' : 
-                          'bg-orange-100 text-orange-600 dark:bg-orange-900/30 dark:text-orange-400'}`}
-                      >
-                        #{index + 1}
+              {isLeaderboardLoading ? (
+                <div className="flex justify-center items-center p-12">
+                  <Loader2 className="animate-spin text-amber-500 w-8 h-8" />
+                  <span className="ml-3 text-slate-500 dark:text-slate-400 font-medium">Loading heroes...</span>
+                </div>
+              ) : leaderboard.length === 0 ? (
+                <div className="flex justify-center items-center p-12 flex-col space-y-3">
+                  <Trophy className="text-slate-300 dark:text-slate-600 w-12 h-12" />
+                  <span className="text-slate-500 dark:text-slate-400 font-medium text-center">No volunteers have completed deliveries yet. Be the first hero!</span>
+                </div>
+              ) : (
+                <div className="divide-y divide-slate-100 dark:divide-slate-800">
+                  {leaderboard.map((entry, index) => (
+                    <div key={entry._id} className={`flex items-center justify-between p-6 transition-colors 
+                      ${entry.isCurrentUser ? 'bg-amber-50 dark:bg-amber-900/20 border-l-4 border-amber-500' : 'hover:bg-slate-50 dark:hover:bg-slate-800/50'}
+                    `}>
+                      <div className="flex items-center gap-4">
+                        <div className={`w-12 h-12 rounded-full flex items-center justify-center font-black text-xl shadow-inner
+                          ${index === 0 ? 'bg-yellow-100 text-yellow-600 dark:bg-yellow-500/20 dark:text-yellow-400' : 
+                            index === 1 ? 'bg-slate-200 text-slate-600 dark:bg-slate-700 dark:text-slate-300' : 
+                            index === 2 ? 'bg-orange-100 text-orange-600 dark:bg-orange-900/30 dark:text-orange-400' :
+                            'bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400'}`}
+                        >
+                          #{index + 1}
+                        </div>
+                        <div>
+                          <h4 className={`font-bold text-lg flex items-center gap-2 ${entry.isCurrentUser ? 'text-amber-700 dark:text-amber-400' : 'text-slate-900 dark:text-white'}`}>
+                            {entry.name}
+                            {entry.isCurrentUser && (
+                              <span className="text-[10px] bg-amber-200 text-amber-800 dark:bg-amber-800 dark:text-amber-200 px-2 py-0.5 rounded-full uppercase tracking-wider">You</span>
+                            )}
+                          </h4>
+                          <p className="text-sm text-slate-500 dark:text-slate-400 font-medium flex items-center gap-1">
+                            <Star size={14} className="text-amber-500" /> {entry.badge} • {entry.deliveries} Deliveries
+                          </p>
+                        </div>
                       </div>
-                      <div>
-                        <h4 className={`font-bold text-lg flex items-center gap-2 ${vol.id === 'me' ? 'text-amber-700 dark:text-amber-400' : 'text-slate-900 dark:text-white'}`}>
-                          {vol.name}
-                          {vol.id === 'me' && (
-                            <span className="text-[10px] bg-amber-200 text-amber-800 dark:bg-amber-800 dark:text-amber-200 px-2 py-0.5 rounded-full uppercase tracking-wider">You</span>
-                          )}
-                        </h4>
-                        <p className="text-sm text-slate-500 dark:text-slate-400 font-medium flex items-center gap-1">
-                          <Star size={14} className="text-amber-500" /> {vol.badge} • {vol.deliveries} Deliveries
-                        </p>
+                      <div className="text-right">
+                        <p className="text-2xl font-black text-amber-600 dark:text-amber-500">{entry.karma}</p>
+                        <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Karma</p>
                       </div>
                     </div>
-                    <div className="text-right">
-                      <p className="text-2xl font-black text-amber-600 dark:text-amber-500">{vol.points}</p>
-                      <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Karma</p>
+                  ))}
+                  {!leaderboard.some(e => e.isCurrentUser) && (
+                    <div className="p-4 text-center text-sm text-slate-500 dark:text-slate-400 border-t border-slate-100 dark:border-slate-800">
+                      You are not in the top 10 yet. Keep delivering to climb the ranks!
                     </div>
-                  </div>
-                ))}
-              </div>
+                  )}
+                </div>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
@@ -328,7 +341,7 @@ export default function VolunteerView() {
                     ? 'bg-orange-100 text-orange-700 border-orange-200 dark:bg-orange-900/30 dark:text-orange-400'
                     : 'bg-slate-100 text-slate-600 border-slate-200 dark:bg-slate-700 dark:text-slate-300'
                 }`}>
-                  <Flame size={14} /> {donation.status === 'COMPLETED' ? '+50 Karma' : 'Pending'}
+                  <Flame size={14} /> {donation.status === 'COMPLETED' ? '+50 Karma ✓' : donation.status === 'ASSIGNED' ? 'Awaiting NGO Confirmation' : 'Pending'}
                 </span>
               </div>
             </div>

@@ -1,4 +1,6 @@
 import { NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth/next';
+import { authOptions } from '@/app/api/auth/[...nextauth]/options';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
 export const maxDuration = 60; 
@@ -8,6 +10,11 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY as string);
 
 export async function POST(req: Request) {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session || !session.user) {
+      return NextResponse.json({ success: false, message: 'Unauthorized.' }, { status: 401 });
+    }
+
     const { imageBase64 } = await req.json();
 
     if (!imageBase64) {

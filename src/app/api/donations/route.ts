@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import crypto from 'crypto';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/[...nextauth]/options';
 import dbConnect from '@/lib/dbConnect';
@@ -15,7 +16,7 @@ const calculateTrustScore = (source: string, qtyText: string, expiry: string) =>
   let reason = "";
 
   const qtyMatch = String(qtyText).match(/\d+/);
-  const quantityNum = qtyMatch ? parseInt(qtyMatch[0]) : 20;
+  const quantityNum = qtyMatch ? parseInt(qtyMatch[0]) : 1;
   
   const hoursToExpiry = (new Date(expiry).getTime() - new Date().getTime()) / (1000 * 60 * 60);
 
@@ -31,7 +32,8 @@ const calculateTrustScore = (source: string, qtyText: string, expiry: string) =>
     reason = "Very short expiry time for large quantity.";
   }
 
-  score += Math.floor(Math.random() * 5) - 2; 
+  const randomOffset = crypto.randomInt(0, 5) - 2;
+  score += randomOffset;
 
   return { 
     score: Math.max(0, Math.min(100, score)), 
@@ -106,7 +108,12 @@ export async function GET() {
   try {
     await dbConnect();
     
-    const currentTime = new Date(); 
+    const session = await getServerSession(authOptions);
+    if (!session || !session.user) {
+      return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 });
+    }
+
+    const currentTime = new Date();
 
     const donations = await DonationModel.find({ 
       status: 'PENDING',
@@ -150,7 +157,7 @@ export async function PATCH(request: Request) {
     if (donor && donor.email) {
       sendEventEmail(
         donor.email,
-        donor.username || "Generous Donor",
+        donor.name || "Generous Donor",
         "Donation Accepted",
         `Great news! An NGO has accepted your donation. A volunteer will be assigned shortly to pick it up.`
       ).catch(err => console.error("Email sending failed:", err));

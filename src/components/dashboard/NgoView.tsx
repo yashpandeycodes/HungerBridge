@@ -26,6 +26,7 @@ export interface DonationType {
   status?: string;
   trustScore?: number;
   isSuspicious?: boolean;
+  volunteerId?: { _id: string; name: string } | null;
 }
 
 export interface CampaignType {
@@ -538,6 +539,17 @@ const COLORS = ["#10b981", "#8b5cf6", "#3b82f6"];
                      <div className="text-sm text-slate-600 dark:text-slate-400 flex items-center gap-2">
                         <Package size={16} className="text-emerald-500" /> {delivery.quantity}
                      </div>
+                     {delivery.status === 'ASSIGNED' && delivery.volunteerId ? (
+                       <div className="text-sm font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-2 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/50 px-3 py-2 rounded-xl">
+                         <Truck size={16} className="text-amber-500 shrink-0" />
+                         <span>Volunteer: <span className="text-amber-700 dark:text-amber-400">{delivery.volunteerId.name}</span></span>
+                       </div>
+                     ) : delivery.status === 'ACCEPTED' ? (
+                       <div className="text-sm text-slate-500 dark:text-slate-400 flex items-center gap-2 bg-slate-50 dark:bg-slate-800/50 px-3 py-2 rounded-xl">
+                         <Truck size={16} className="text-slate-400 shrink-0" />
+                         <span>Awaiting volunteer assignment...</span>
+                       </div>
+                     ) : null}
                      <Button 
                         onClick={() => markAsReceived(delivery._id)}
                         className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl h-11"
@@ -557,7 +569,7 @@ const COLORS = ["#10b981", "#8b5cf6", "#3b82f6"];
               <div className="w-full p-16 text-center border border-slate-200 dark:border-slate-800 rounded-3xl bg-white/50 dark:bg-[#121212]/50 max-w-3xl mx-auto">
                 <Megaphone className="w-16 h-16 text-slate-300 dark:text-slate-600 mx-auto mb-4" />
                 <h4 className="text-xl font-bold text-slate-800 dark:text-slate-200 mb-2">No Active Campaigns</h4>
-                <p className="text-slate-500 dark:text-slate-400">Use the Campaign Studio to create your first appeal.</p>
+                <p className="text-slate-500 dark:text-slate-400">You have no active campaigns yet. Use the Campaign Studio above to create your first appeal.</p>
               </div>
             ) : (
               <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 w-full">

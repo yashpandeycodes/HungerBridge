@@ -9,6 +9,10 @@ import { sendEventEmail } from '@/helpers/sendEventEmail';
 export async function GET() {
   try {
     await dbConnect();
+    const session = await getServerSession(authOptions);
+    if (!session || !session.user) {
+      return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 });
+    }
     const missions = await DonationModel.find({ status: 'ACCEPTED' }).sort({ updatedAt: -1 });
     return NextResponse.json({ success: true, data: missions });
   } catch (error) {
@@ -46,7 +50,7 @@ export async function PATCH(request: Request) {
     if (donor && donor.email) {
       sendEventEmail(
         donor.email,
-        donor.username || "Generous Donor", 
+        donor.name || "Generous Donor", 
         "Volunteer Assigned",
         `Good news! A volunteer has been assigned to pick up your donation. They are on their way to collect the food. Thank you for your patience!`
       ).catch(err => console.error("Email sending failed:", err)); 

@@ -15,7 +15,7 @@ export async function GET() {
       return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 403 });
     }
 
-    // Donor ki saari history le aao, newest first
+    // Fetch all donor history, newest first
     const myDonations = await DonationModel.find({ 
       donorId: session.user._id 
     }).sort({ createdAt: -1 });

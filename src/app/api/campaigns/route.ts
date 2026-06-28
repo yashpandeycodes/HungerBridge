@@ -66,9 +66,24 @@ export async function POST(request: Request) {
 export async function GET() {
   try {
     await dbConnect();
-    // Sirf Active campaigns fetch karenge
-    const campaigns = await CampaignModel.find({ status: 'ACTIVE' }).sort({ createdAt: -1 });
-    return NextResponse.json({ success: true, data: campaigns });
+    const session = await getServerSession(authOptions);
+    if (!session || !session.user) {
+      return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 });
+    }
+    if (session.user.role === 'NGO') {
+      const campaigns = await CampaignModel.find({
+        ngoId: session.user._id,
+        status: 'ACTIVE'
+      }).sort({ createdAt: -1 });
+      return NextResponse.json({ success: true, data: campaigns });
+    }
+
+    if (session.user.role === 'DONOR') {
+      const campaigns = await CampaignModel.find({ status: 'ACTIVE' }).sort({ createdAt: -1 });
+      return NextResponse.json({ success: true, data: campaigns });
+    }
+
+    return NextResponse.json({ success: false, message: 'Forbidden' }, { status: 403 });
   } catch (error) {
     return NextResponse.json({ success: false, message: 'Failed to fetch campaigns' }, { status: 500 });
   }

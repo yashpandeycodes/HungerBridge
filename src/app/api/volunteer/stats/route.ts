@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
-import { getServerSession } from "next-auth"; 
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 import dbConnect from "@/lib/dbConnect"; 
 import User from "@/model/User"; 
 
@@ -7,7 +8,7 @@ export async function GET(req: Request) {
   try {
     await dbConnect();
     
-    const session = await getServerSession();
+    const session = await getServerSession(authOptions);
 
     if (!session || !session.user || !session.user.email) {
       return NextResponse.json(

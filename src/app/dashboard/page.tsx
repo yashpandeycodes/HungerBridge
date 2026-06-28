@@ -1,36 +1,16 @@
-"use client";
-
-import { useSession, signOut } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
-import { Button } from "@/components/ui/button";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/options";
+import { redirect } from "next/navigation";
 import DonorView from "@/components/dashboard/DonorView";
 import NgoView from "@/components/dashboard/NgoView";
 import VolunteerView from "@/components/dashboard/VolunteerView"; 
+import LogoutButton from "@/components/dashboard/LogoutButton";
 
-export default function Dashboard() {
-  const { data: session, status } = useSession();
-  const router = useRouter();
-
-  useEffect(() => {
-    if (status === "unauthenticated") {
-      router.push("/sign-in");
-    }
-  }, [status, router]);
-
-  if (status === "loading") {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50 dark:bg-[#0a0a0a] transition-colors duration-500">
-        <div className="relative">
-          <div className="w-16 h-16 border-4 border-orange-500/20 dark:border-orange-500/10 border-t-orange-600 dark:border-t-orange-500 rounded-full animate-spin"></div>
-          <div className="absolute inset-0 w-16 h-16 border-4 border-transparent border-b-rose-500/50 rounded-full animate-spin" style={{ animationDirection: 'reverse', animationDuration: '1.5s' }}></div>
-        </div>
-        <p className="mt-4 text-slate-500 dark:text-slate-400 font-medium animate-pulse">Loading your dashboard...</p>
-      </div>
-    );
+export default async function Dashboard() {
+  const session = await getServerSession(authOptions);
+  if (!session || !session.user) {
+    redirect("/sign-in");
   }
-
-  if (!session || !session.user) return null;
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-[#0a0a0a] p-4 md:p-8 lg:p-12 relative overflow-hidden transition-colors duration-500">
@@ -57,13 +37,7 @@ export default function Dashboard() {
             </div>
           </div>
 
-          <Button 
-            variant="outline" 
-            className="mt-6 md:mt-0 relative z-10 border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-300 hover:bg-red-50 hover:text-red-600 hover:border-red-200 dark:hover:bg-red-500/10 dark:hover:text-red-400 dark:hover:border-red-500/30 transition-all rounded-xl h-12 px-6 font-semibold"
-            onClick={() => signOut({ callbackUrl: "/sign-in" })}
-          >
-            Log Out
-          </Button>
+          <LogoutButton />
         </div>
 
         <div className="bg-white/80 dark:bg-[#121212]/80 backdrop-blur-xl p-6 md:p-8 lg:p-10 rounded-3xl shadow-2xl border border-slate-200 dark:border-white/5 min-h-[500px] relative overflow-hidden">

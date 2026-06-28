@@ -56,41 +56,42 @@ export default function DonorView() {
   const [myDonations, setMyDonations] = useState<MyDonationType[]>([]);
   const [isLoadingHistory, setIsLoadingHistory] = useState(true);
 
-  const fetchMyDonations = useCallback(async (isRefresh = false) => {
-    if (isRefresh) setIsLoadingHistory(true);
+  const fetchMyDonations = useCallback(async (isRefresh = false, signal?: AbortSignal) => {
+    if (isRefresh) {
+      queueMicrotask(() => setIsLoadingHistory(true));
+    }
     try {
-      const res = await fetch("/api/donations/me");
+      const res = await fetch("/api/donations/me", { signal });
       const json = await res.json();
-      if (json.success) setMyDonations(json.data);
+      if (json.success) {
+        queueMicrotask(() => setMyDonations(json.data));
+      }
     } catch (error) {
+      if (error instanceof DOMException && error.name === 'AbortError') return;
       toast.error("Failed to load your donation history.");
     } finally {
-      setIsLoadingHistory(false);
+      queueMicrotask(() => setIsLoadingHistory(false));
     }
   }, []); 
 
    useEffect(() => {
+    const controller = new AbortController();
+
     const fetchCampaigns = async () => {
       try {
-        const res = await fetch("/api/campaigns");
+        const res = await fetch("/api/campaigns", { signal: controller.signal });
         const json = await res.json();
         if (json.success) setActiveCampaigns(json.data);
       } catch (error) {
+        if (error instanceof DOMException && error.name === 'AbortError') return;
         console.error("Failed to fetch campaigns");
       }
     };
 
-    let isMounted = true;
+    fetchCampaigns();
+    fetchMyDonations(false, controller.signal);
 
-    Promise.resolve().then(() => {
-      if (!isMounted) return;
-      fetchCampaigns();
-      fetchMyDonations();
-    });
-
-    return () => {
-      isMounted = false;
-    };
+    return () => controller.abort();
   }, [fetchMyDonations]);
 
  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -229,7 +230,7 @@ export default function DonorView() {
     try {
       const dataUrl = await htmlToImage.toPng(certificateRef.current, {
         quality: 1,
-        pixelRatio: 3, // High resolution HD image ke liye
+        pixelRatio: 3, // For high resolution HD image
         backgroundColor: undefined
       });
       

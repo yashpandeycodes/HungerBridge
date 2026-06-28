@@ -10,9 +10,9 @@ export default function useIdleTimeout(timeoutMinutes = 15) {
 
     const logoutUser = () => {
       toast.error("Session expired due to inactivity. Logging out...", { duration: 5000 });
-      // 2 second baad logout kar dega taaki user ko toast padhne ka time mile
+      // Wait 2 seconds before logging out so the user can read the toast
       setTimeout(() => {
-        signOut({ callbackUrl: "/login" }); 
+        signOut({ callbackUrl: "/sign-in" }); 
       }, 2000);
     };
 
@@ -22,15 +22,15 @@ export default function useIdleTimeout(timeoutMinutes = 15) {
       timeoutId = setTimeout(logoutUser, timeoutMinutes * 60 * 1000);
     };
 
-    // User ki in harkaton par timer wapas zero se shuru ho jayega
+    // Reset the timer on these user activities
     const events = ["mousemove", "keydown", "wheel", "click", "touchstart"];
     
     events.forEach((event) => window.addEventListener(event, resetTimer));
 
-    // Pehli baar timer start karna
+    // Start the timer initially
     resetTimer();
 
-    // Cleanup function jab component unmount ho
+    // Cleanup function when component unmounts
     return () => {
       clearTimeout(timeoutId);
       events.forEach((event) => window.removeEventListener(event, resetTimer));

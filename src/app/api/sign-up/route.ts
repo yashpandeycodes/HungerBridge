@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import crypto from 'crypto';
 import bcrypt from 'bcryptjs';
 import dbConnect from '@/lib/dbConnect';
 import UserModel from '@/model/User'; 
@@ -23,7 +24,7 @@ export async function POST(request: Request) {
     const { name, email, password, role, phone } = parsedData.data;
 
     const existingUserByEmail = await UserModel.findOne({ email });
-    const verifyCode = Math.floor(100000 + Math.random() * 900000).toString();
+    const verifyCode = crypto.randomInt(100000, 999999).toString();
 
     if (existingUserByEmail) {
       if (existingUserByEmail.isVerified) {

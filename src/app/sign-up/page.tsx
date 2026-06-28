@@ -144,19 +144,7 @@ export default function SignUpPage() {
                 )}
               />
 
-              {/* Optional NGO Registration Number (Visual only, not connected to Zod by default) */}
-              {selectedRole === 'NGO' && (
-                <div className="space-y-2 animate-in fade-in zoom-in duration-300">
-                  <FormLabel className="text-slate-700 dark:text-slate-300 font-semibold">
-                    NGO Registration Number <span className="text-slate-400 dark:text-slate-500 font-normal">(Optional)</span>
-                  </FormLabel>
-                  <Input 
-                    type="text" 
-                    placeholder="e.g., REG-12345678" 
-                    className="bg-white/50 dark:bg-white/5 border-slate-200 dark:border-white/10 focus:ring-orange-500 dark:focus:ring-orange-500 dark:text-white transition-all h-12 rounded-xl"
-                  />
-                </div>
-              )}
+
 
               <FormField
                 control={form.control}

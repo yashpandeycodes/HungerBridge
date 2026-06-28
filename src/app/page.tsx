@@ -1,38 +1,36 @@
-"use client";
-import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import dbConnect from '@/lib/dbConnect';
+import DonationModel from '@/model/Donation';
+import CampaignModel from '@/model/Campaign';
 
-export default function Home() {
-  const [stats, setStats] = useState({
-    totalDonations: 0,
-    completedDeliveries: 0,
-    activeCampaigns: 0,
-    totalMealsServed: 0,
-    totalFoodRescuedKg: 0,
-    volunteerHours: 0
-  });
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        const res = await fetch("/api/impact");
-        if (!res.ok) return;
-        const json = await res.json();
-        if (json.success) {
-          setStats(json.data);
-        }
-      } catch (error) {
-        console.error("Failed to fetch stats", error);
-      } finally {
-        setLoading(false);
-      }
+export default async function Home() {
+  let stats = { totalMealsServed: 0, completedDeliveries: 0, activeCampaigns: 0, totalFoodRescuedKg: 0, volunteerHours: 0, totalDonations: 0 };
+  
+  try {
+    await dbConnect();
+    const totalDonations = await DonationModel.countDocuments();
+    const completedDeliveries = await DonationModel.countDocuments({ status: 'COMPLETED' });
+    const activeCampaigns = await CampaignModel.countDocuments({ status: 'ACTIVE' }); 
+    const campaigns = await CampaignModel.find();
+    const totalMealsServed = campaigns.reduce((acc, camp) => acc + (camp.mealsCollected || 0), 0);
+    const totalFoodRescuedKg = completedDeliveries * 10; 
+    const volunteerHours = completedDeliveries * 2;
+    
+    stats = {
+      totalDonations,
+      completedDeliveries,
+      activeCampaigns,
+      totalMealsServed,
+      totalFoodRescuedKg,
+      volunteerHours
     };
-    fetchStats();
-  }, []);
+  } catch (error) {
+    console.error("Failed to load impact stats:", error);
+  }
+
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-[#0a0a0a] transition-colors duration-500 text-slate-900 dark:text-slate-100">
@@ -133,7 +131,7 @@ export default function Home() {
               </CardHeader>
               <CardContent>
                 <div className="text-5xl font-black text-emerald-600 dark:text-emerald-400 tracking-tight">
-                  {loading ? "..." : stats.totalMealsServed}
+                  {stats.totalMealsServed}
                 </div>
                 <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 font-medium">Across our network</p>
               </CardContent>
@@ -148,7 +146,7 @@ export default function Home() {
               <CardContent>
 
              <div className="text-5xl font-black tracking-tight tabular-nums text-orange-600 dark:text-orange-400">
-            {loading ? "..." : stats.totalFoodRescuedKg}
+            {stats.totalFoodRescuedKg}
              <div className="h-1" />
             <span className="text-lg font-bold text-orange-600/60 dark:text-orange-400/60">
             kg / servings
@@ -166,7 +164,7 @@ export default function Home() {
               </CardHeader>
               <CardContent>
                 <div className="text-5xl font-black text-blue-600 dark:text-blue-400 tracking-tight">
-                  {loading ? "..." : stats.activeCampaigns}
+                  {stats.activeCampaigns}
                 </div>
                 <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 font-medium">Needing immediate support</p>
               </CardContent>
@@ -181,7 +179,7 @@ export default function Home() {
               </CardHeader>
               <CardContent>
                 <div className="text-5xl font-black text-purple-600 dark:text-purple-400 tracking-tight">
-                  {loading ? "..." : stats.volunteerHours}
+                  {stats.volunteerHours}
                 </div>
                 <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 font-medium">Logged by our heroes</p>
               </CardContent>
@@ -193,7 +191,7 @@ export default function Home() {
 
 <footer className="py-8 w-full shrink-0 items-center px-6 md:px-14 border-t border-slate-200 dark:border-white/10 bg-white/80 dark:bg-black/60 backdrop-blur-xl flex flex-col md:flex-row justify-between text-center md:text-left transition-colors duration-500">
         <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
-          © {new Date().getFullYear()} HungerBridge. Built for the Hackathon.
+          © {new Date().getFullYear()} HungerBridge.
         </p>
         <div className="flex gap-6 mt-4 md:mt-0 justify-center">
           <span className="text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-orange-600 dark:hover:text-orange-400 cursor-pointer transition-colors">Terms of Service</span>

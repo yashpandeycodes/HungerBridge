@@ -6,6 +6,7 @@ export interface User extends Document {
   password?: string;
   role: 'DONOR' | 'NGO' | 'VOLUNTEER';
   phone?: string;
+  ngoRegistrationNumber?: string;
   location?: string;
   verifyCode: string;
   verifyCodeExpiry: Date; 
@@ -21,6 +22,7 @@ const UserSchema: Schema<User> = new Schema({
   password: { type: String , required: [true, 'Password is required'],}, 
   role: { type: String, enum: ['DONOR', 'NGO', 'VOLUNTEER'], required: true },
   phone: { type: String },
+  ngoRegistrationNumber: { type: String },
   location: { type: String },
    verifyCode: {
     type: String,

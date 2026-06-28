@@ -6,4 +6,5 @@ export const signUpSchema = z.object({
   password: z.string().min(6, "Password must be at least 6 characters"),
   role: z.enum(['DONOR', 'NGO', 'VOLUNTEER']),
   phone: z.string().optional(),
+  ngoRegistrationNumber: z.string().optional(),
 });

@@ -15,11 +15,14 @@ export async function GET() {
       return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 403 });
     }
 
-    // Sirf is NGO ke orders uthao jo ACCEPTED ya ASSIGNED status mein hain
+    // Only fetch orders for this NGO that are in ACCEPTED or ASSIGNED status
     const activeDeliveries = await DonationModel.find({ 
       ngoId: session.user._id,
       status: { $in: ['ACCEPTED', 'ASSIGNED'] } 
-    }).sort({ updatedAt: -1 });
+    })
+    .populate('volunteerId', 'name')
+    .sort({ updatedAt: -1 })
+    .lean();
 
     return NextResponse.json({ success: true, data: activeDeliveries });
   } catch (error) {
