@@ -5,17 +5,6 @@ import type { NextRequest } from "next/server";
 export async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  if (
-    pathname.startsWith("/api/auth") ||
-    pathname.startsWith("/_next") ||
-    pathname.startsWith("/favicon.ico") ||
-    pathname === "/sign-in" ||
-    pathname === "/sign-up" ||
-    pathname === "/"
-  ) {
-    return NextResponse.next();
-  }
-
   const token = await getToken({
     req,
     secret: process.env.NEXTAUTH_SECRET || process.env.AUTH_SECRET,
