@@ -7,6 +7,7 @@ import {
   useScroll,
   useTransform,
   useReducedMotion,
+  type Variants,
 } from "framer-motion";
 import {
   HeartHandshake,
@@ -46,7 +47,7 @@ const steps = [
   },
 ];
 
-const cardVariants = {
+const cardVariants: Variants = {
   hidden: { opacity: 0, y: 40, filter: "blur(4px)" },
   visible: (i: number) => ({
     opacity: 1,

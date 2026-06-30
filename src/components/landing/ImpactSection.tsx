@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { motion, useInView, useReducedMotion } from "framer-motion";
+import { motion, useInView, useReducedMotion, type Variants } from "framer-motion";
 
 interface ImpactSectionProps {
   totalMealsServed: number;
@@ -10,7 +10,7 @@ interface ImpactSectionProps {
   volunteerHours: number;
 }
 
-const fadeUp = {
+const fadeUp: Variants = {
   hidden: { opacity: 0, y: 30 },
   visible: (i: number) => ({
     opacity: 1,
@@ -18,7 +18,7 @@ const fadeUp = {
     transition: {
       duration: 0.6,
       delay: i * 0.1,
-      ease: [0.25, 0.4, 0.25, 1],
+      ease: [0.25, 0.4, 0.25, 1] as const,
     },
   }),
 };

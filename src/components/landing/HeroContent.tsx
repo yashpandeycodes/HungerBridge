@@ -1,17 +1,17 @@
 "use client";
 
 import Link from "next/link";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion, type Variants } from "framer-motion";
 import { Button } from "@/components/ui/button";
 
-const container = {
+const container: Variants = {
   hidden: {},
   show: {
     transition: { staggerChildren: 0.15, delayChildren: 0.3 },
   },
 };
 
-const fadeUp = {
+const fadeUp: Variants = {
   hidden: { opacity: 0, y: 30, filter: "blur(6px)" },
   show: {
     opacity: 1,
@@ -24,10 +24,10 @@ const fadeUp = {
 export function HeroContent() {
   const prefersReducedMotion = useReducedMotion();
 
-  const Wrapper = prefersReducedMotion ? "div" : motion.div;
-  const Item = prefersReducedMotion ? "div" : motion.div;
-  const H1Wrapper = prefersReducedMotion ? "div" : motion.div;
-  const PWrapper = prefersReducedMotion ? "div" : motion.div;
+  const Wrapper = prefersReducedMotion ? ("div" as const) : motion.div;
+  const Item = prefersReducedMotion ? ("div" as const) : motion.div;
+  const H1Wrapper = prefersReducedMotion ? ("div" as const) : motion.div;
+  const PWrapper = prefersReducedMotion ? ("div" as const) : motion.div;
 
   return (
     <Wrapper
