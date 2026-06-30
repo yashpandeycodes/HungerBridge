@@ -107,7 +107,7 @@ export default function VolunteerView() {
       
       <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-amber-500/10 dark:bg-amber-600/10 rounded-full blur-[120px] pointer-events-none -translate-y-1/2" />
 
-      <Card className="relative w-full overflow-hidden border-0 shadow-xl bg-gradient-to-br from-amber-500 to-orange-600 dark:from-amber-800 dark:to-orange-950 text-white rounded-3xl group z-10">
+      <Card className="relative w-full overflow-hidden border-0 shadow-xl brand-gradient text-white rounded-2xl group z-10">
         <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-10 mix-blend-overlay pointer-events-none" />
         <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 group-hover:scale-110 transition-transform duration-700" />
         
@@ -117,24 +117,24 @@ export default function VolunteerView() {
               <Award className="text-yellow-300 drop-shadow-md" size={36} /> 
               Volunteer Hub
             </h2>
-            <p className="text-orange-100/90 text-lg md:text-xl font-medium max-w-lg">
+            <p className="text-indigo-100/90 text-lg md:text-xl font-medium max-w-lg">
               Help NGOs deliver food to those in need. Become a hero and earn Karma points!
             </p>
           </div>
           
           <div className="flex gap-4 shrink-0">
             <div className="bg-white/10 dark:bg-black/40 p-5 rounded-2xl backdrop-blur-md border border-white/20 shadow-inner min-w-[120px] text-center shrink-0 transition-colors duration-300">
-              <p className="text-xs font-bold text-orange-100 uppercase tracking-widest mb-1 flex items-center justify-center gap-1">
+              <p className="text-xs font-bold text-indigo-100 uppercase tracking-widest mb-1 flex items-center justify-center gap-1">
                 <Flame size={14} className="text-red-300" /> Karma
               </p>
               <p className="text-3xl font-black text-white drop-shadow-sm">{stats.karma}</p>
             </div>
             <div className="bg-white/10 dark:bg-black/40 p-5 rounded-2xl backdrop-blur-md border border-white/20 shadow-inner min-w-[120px] text-center shrink-0 transition-colors duration-300">
-              <p className="text-xs font-bold text-orange-100 uppercase tracking-widest mb-1 flex items-center justify-center gap-1">
+              <p className="text-xs font-bold text-indigo-100 uppercase tracking-widest mb-1 flex items-center justify-center gap-1">
                 <Sparkles size={14} className="text-yellow-300" /> Impact
               </p>
               <p className="text-3xl font-black text-white drop-shadow-sm">{stats.deliveries}</p>
-              <p className="text-[10px] font-medium text-orange-200 mt-1 uppercase tracking-wider">Deliveries</p>
+              <p className="text-[10px] font-medium text-indigo-200 mt-1 uppercase tracking-wider">Deliveries</p>
             </div>
           </div>
         </CardContent>
@@ -142,28 +142,28 @@ export default function VolunteerView() {
 
       {/* Tabs Section */}
       <Tabs defaultValue="missions" className="w-full relative z-10 block">
-        <TabsList className="grid w-full grid-cols-1 md:grid-cols-3 h-auto md:h-14 bg-slate-100 dark:bg-[#121212] border border-slate-200 dark:border-slate-800 rounded-2xl p-1.5 mb-8 gap-1">
-          <TabsTrigger value="missions" className="rounded-xl font-bold text-sm text-slate-600 dark:text-slate-400 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800 data-[state=active]:text-amber-600 dark:data-[state=active]:text-amber-400 py-2.5 shadow-none data-[state=active]:shadow-sm transition-all">
+        <TabsList className="grid w-full grid-cols-1 md:grid-cols-3 h-auto md:h-14 bg-[hsl(var(--muted))] border border-[hsl(var(--border))] rounded-xl p-1.5 mb-8 gap-1">
+          <TabsTrigger value="missions" className="rounded-lg font-bold text-sm text-[hsl(var(--muted-foreground))] data-[state=active]:bg-[hsl(var(--card))] data-[state=active]:text-indigo-600 dark:data-[state=active]:text-indigo-400 py-2.5 shadow-none data-[state=active]:shadow-sm transition-all">
             <Bike className="w-4 h-4 mr-2" /> Active Missions
           </TabsTrigger>
-          <TabsTrigger value="leaderboard" className="rounded-xl font-bold text-sm text-slate-600 dark:text-slate-400 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800 data-[state=active]:text-amber-600 dark:data-[state=active]:text-amber-400 py-2.5 shadow-none data-[state=active]:shadow-sm transition-all">
+          <TabsTrigger value="leaderboard" className="rounded-lg font-bold text-sm text-[hsl(var(--muted-foreground))] data-[state=active]:bg-[hsl(var(--card))] data-[state=active]:text-indigo-600 dark:data-[state=active]:text-indigo-400 py-2.5 shadow-none data-[state=active]:shadow-sm transition-all">
             <Trophy className="w-4 h-4 mr-2" /> Leaderboard
           </TabsTrigger>
-          <TabsTrigger value="history" className="rounded-xl font-bold text-sm text-slate-600 dark:text-slate-400 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800 data-[state=active]:text-amber-600 dark:data-[state=active]:text-amber-400 py-2.5 shadow-none data-[state=active]:shadow-sm transition-all">
+          <TabsTrigger value="history" className="rounded-lg font-bold text-sm text-[hsl(var(--muted-foreground))] data-[state=active]:bg-[hsl(var(--card))] data-[state=active]:text-indigo-600 dark:data-[state=active]:text-indigo-400 py-2.5 shadow-none data-[state=active]:shadow-sm transition-all">
             <History className="w-4 h-4 mr-2" /> My Impact
           </TabsTrigger>
         </TabsList>
 
         <TabsContent value="missions" className="w-full space-y-6 animate-in fade-in duration-500 block">
           {isLoading ? (
-            <div className="w-full flex flex-col items-center justify-center p-16 space-y-5 border border-slate-200 dark:border-slate-800 rounded-3xl bg-white/50 dark:bg-[#121212]/50 backdrop-blur-sm">
+            <div className="w-full flex flex-col items-center justify-center p-16 space-y-5 border border-[hsl(var(--border))] rounded-2xl bg-[hsl(var(--muted))]">
               <div className="relative">
-                <Loader2 className="w-12 h-12 border-4 border-amber-200 dark:border-amber-500/20 border-t-amber-600 dark:border-t-amber-500 rounded-full animate-spin text-transparent" />
+                <Loader2 className="w-12 h-12 border-4 border-indigo-200 dark:border-indigo-500/20 border-t-indigo-600 dark:border-t-indigo-500 rounded-full animate-spin text-transparent" />
               </div>
               <p className="text-slate-500 dark:text-slate-400 font-medium">Locating nearby missions...</p>
             </div>
           ) : missions.length === 0 ? (
-            <div className="w-full p-16 text-center border border-slate-200 dark:border-slate-800 rounded-3xl bg-white/50 dark:bg-[#121212]/50 backdrop-blur-sm flex flex-col items-center justify-center space-y-4 shadow-sm">
+            <div className="w-full p-16 text-center border border-[hsl(var(--border))] rounded-2xl bg-[hsl(var(--muted))] flex flex-col items-center justify-center space-y-4 shadow-sm">
               <div className="w-20 h-20 bg-amber-100 dark:bg-slate-800 rounded-full flex items-center justify-center mb-2">
                 <Award className="text-amber-500 w-10 h-10" />
               </div>
@@ -177,7 +177,7 @@ export default function VolunteerView() {
                   key={mission._id} 
                   className="w-full border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900 shadow-sm hover:shadow-md transition-all duration-300 group rounded-2xl relative overflow-hidden"
                 >
-                  <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-gradient-to-b from-amber-400 to-orange-500" />
+                  <div className="absolute left-0 top-0 bottom-0 w-1.5 brand-gradient" />
                   <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
 
                   <CardContent className="p-6 pl-8 space-y-5 relative z-10 w-full">
@@ -234,7 +234,7 @@ export default function VolunteerView() {
 
         {/* TAB 2: LEADERBOARD */}
         <TabsContent value="leaderboard" className="w-full animate-in fade-in duration-500 block">
-          <Card className="w-full border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900 backdrop-blur-xl shadow-sm rounded-3xl overflow-hidden">
+          <Card className="w-full border border-[hsl(var(--border))] bg-[hsl(var(--card))] shadow-sm rounded-2xl overflow-hidden">
             <CardHeader className="bg-amber-50/50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 pb-6">
               <CardTitle className="text-2xl font-extrabold flex items-center gap-2 text-slate-900 dark:text-white">
                 <Trophy className="text-amber-500" /> City Top Heroes
@@ -258,22 +258,22 @@ export default function VolunteerView() {
                 <div className="divide-y divide-slate-100 dark:divide-slate-800">
                   {leaderboard.map((entry, index) => (
                     <div key={entry._id} className={`flex items-center justify-between p-6 transition-colors 
-                      ${entry.isCurrentUser ? 'bg-amber-50 dark:bg-amber-900/20 border-l-4 border-amber-500' : 'hover:bg-slate-50 dark:hover:bg-slate-800/50'}
+                      ${entry.isCurrentUser ? 'bg-indigo-50 dark:bg-indigo-900/20 border-l-4 border-indigo-500' : 'hover:bg-slate-50 dark:hover:bg-slate-800/50'}
                     `}>
                       <div className="flex items-center gap-4">
                         <div className={`w-12 h-12 rounded-full flex items-center justify-center font-black text-xl shadow-inner
                           ${index === 0 ? 'bg-yellow-100 text-yellow-600 dark:bg-yellow-500/20 dark:text-yellow-400' : 
                             index === 1 ? 'bg-slate-200 text-slate-600 dark:bg-slate-700 dark:text-slate-300' : 
                             index === 2 ? 'bg-orange-100 text-orange-600 dark:bg-orange-900/30 dark:text-orange-400' :
-                            'bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400'}`}
+                            'bg-indigo-100 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400'}`}
                         >
                           #{index + 1}
                         </div>
                         <div>
-                          <h4 className={`font-bold text-lg flex items-center gap-2 ${entry.isCurrentUser ? 'text-amber-700 dark:text-amber-400' : 'text-slate-900 dark:text-white'}`}>
+                          <h4 className={`font-bold text-lg flex items-center gap-2 ${entry.isCurrentUser ? 'text-indigo-700 dark:text-indigo-400' : 'text-slate-900 dark:text-white'}`}>
                             {entry.name}
                             {entry.isCurrentUser && (
-                              <span className="text-[10px] bg-amber-200 text-amber-800 dark:bg-amber-800 dark:text-amber-200 px-2 py-0.5 rounded-full uppercase tracking-wider">You</span>
+                              <span className="text-[10px] bg-indigo-200 text-indigo-800 dark:bg-indigo-800 dark:text-indigo-200 px-2 py-0.5 rounded-full uppercase tracking-wider">You</span>
                             )}
                           </h4>
                           <p className="text-sm text-slate-500 dark:text-slate-400 font-medium flex items-center gap-1">
@@ -300,7 +300,7 @@ export default function VolunteerView() {
 
         {/* TAB 3: HISTORY */}
         <TabsContent value="history" className="w-full animate-in fade-in duration-500 block">
-          <Card className="w-full border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900 backdrop-blur-xl shadow-sm rounded-3xl overflow-hidden">
+          <Card className="w-full border border-[hsl(var(--border))] bg-[hsl(var(--card))] shadow-sm rounded-2xl overflow-hidden">
             {history.length === 0 ? (
               <div className="text-center p-12">
                  <div className="w-20 h-20 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -338,7 +338,7 @@ export default function VolunteerView() {
               <div className="text-right shrink-0">
                 <span className={`font-black px-3 py-1.5 rounded-full text-sm flex items-center gap-1 shadow-sm border ${
                   donation.status === 'COMPLETED' 
-                    ? 'bg-orange-100 text-orange-700 border-orange-200 dark:bg-orange-900/30 dark:text-orange-400'
+                    ? 'bg-indigo-100 text-indigo-700 border-indigo-200 dark:bg-indigo-900/30 dark:text-indigo-400'
                     : 'bg-slate-100 text-slate-600 border-slate-200 dark:bg-slate-700 dark:text-slate-300'
                 }`}>
                   <Flame size={14} /> {donation.status === 'COMPLETED' ? '+50 Karma ✓' : donation.status === 'ASSIGNED' ? 'Awaiting NGO Confirmation' : 'Pending'}

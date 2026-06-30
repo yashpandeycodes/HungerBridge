@@ -277,7 +277,7 @@ const COLORS = ["#10b981", "#8b5cf6", "#3b82f6"];
       <div className="absolute top-1/4 right-0 w-[400px] h-[400px] bg-purple-500/10 dark:bg-purple-600/10 rounded-full blur-[100px] pointer-events-none -translate-y-1/2 translate-x-1/3" />
       <div className="absolute bottom-1/4 left-0 w-[400px] h-[400px] bg-emerald-500/10 dark:bg-emerald-600/10 rounded-full blur-[100px] pointer-events-none translate-y-1/2 -translate-x-1/3" />
 
-      <Card className="relative w-full overflow-hidden border-0 shadow-2xl bg-gradient-to-br from-emerald-600 to-teal-800 dark:from-emerald-900 dark:to-slate-900 text-white rounded-3xl group z-10">
+      <Card className="relative w-full overflow-hidden border-0 shadow-2xl bg-gradient-to-br from-emerald-600 to-teal-800 dark:from-emerald-900 dark:to-slate-900 text-white rounded-2xl group z-10">
         <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-10 mix-blend-overlay pointer-events-none" />
         <CardContent className="p-8 md:p-10 flex flex-col md:flex-row items-center justify-between gap-8 relative z-10 w-full">
           <div className="space-y-3 text-center md:text-left flex-1">
@@ -308,17 +308,17 @@ const COLORS = ["#10b981", "#8b5cf6", "#3b82f6"];
       </Card>
 
       <Tabs defaultValue="feed" className="w-full relative z-10 block">
-        <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 h-auto md:h-14 bg-slate-100 dark:bg-[#121212] border border-slate-200 dark:border-slate-800 rounded-2xl p-1.5 mb-8 gap-1">
-          <TabsTrigger value="feed" className="rounded-xl font-bold text-sm text-slate-600 dark:text-slate-400 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800 data-[state=active]:text-emerald-600 dark:data-[state=active]:text-emerald-400 transition-all py-2.5 shadow-none data-[state=active]:shadow-sm">
+        <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 h-auto md:h-14 bg-[hsl(var(--muted))] border border-[hsl(var(--border))] rounded-xl p-1.5 mb-8 gap-1">
+          <TabsTrigger value="feed" className="rounded-lg font-bold text-sm text-[hsl(var(--muted-foreground))] data-[state=active]:bg-[hsl(var(--card))] data-[state=active]:text-indigo-600 dark:data-[state=active]:text-indigo-400 transition-all py-2.5 shadow-none data-[state=active]:shadow-sm">
             <Activity className="w-4 h-4 mr-2" /> Live Feed
           </TabsTrigger>
-          <TabsTrigger value="deliveries" className="rounded-xl font-bold text-sm text-slate-600 dark:text-slate-400 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800 data-[state=active]:text-orange-600 dark:data-[state=active]:text-orange-400 transition-all py-2.5 shadow-none data-[state=active]:shadow-sm">
+          <TabsTrigger value="deliveries" className="rounded-lg font-bold text-sm text-[hsl(var(--muted-foreground))] data-[state=active]:bg-[hsl(var(--card))] data-[state=active]:text-indigo-600 dark:data-[state=active]:text-indigo-400 transition-all py-2.5 shadow-none data-[state=active]:shadow-sm">
             <Truck className="w-4 h-4 mr-2" /> Deliveries
           </TabsTrigger>
-          <TabsTrigger value="campaigns" className="rounded-xl font-bold text-sm text-slate-600 dark:text-slate-400 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800 data-[state=active]:text-purple-600 dark:data-[state=active]:text-purple-400 transition-all py-2.5 shadow-none data-[state=active]:shadow-sm">
+          <TabsTrigger value="campaigns" className="rounded-lg font-bold text-sm text-[hsl(var(--muted-foreground))] data-[state=active]:bg-[hsl(var(--card))] data-[state=active]:text-indigo-600 dark:data-[state=active]:text-indigo-400 transition-all py-2.5 shadow-none data-[state=active]:shadow-sm">
             <Megaphone className="w-4 h-4 mr-2" /> Campaigns
           </TabsTrigger>
-          <TabsTrigger value="impact" className="rounded-xl font-bold text-sm text-slate-600 dark:text-slate-400 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800 data-[state=active]:text-blue-600 dark:data-[state=active]:text-blue-400 transition-all py-2.5 shadow-none data-[state=active]:shadow-sm">
+          <TabsTrigger value="impact" className="rounded-lg font-bold text-sm text-[hsl(var(--muted-foreground))] data-[state=active]:bg-[hsl(var(--card))] data-[state=active]:text-indigo-600 dark:data-[state=active]:text-indigo-400 transition-all py-2.5 shadow-none data-[state=active]:shadow-sm">
             <PieChart className="w-4 h-4 mr-2" /> Impact Stats
           </TabsTrigger>
         </TabsList>
@@ -330,8 +330,8 @@ const COLORS = ["#10b981", "#8b5cf6", "#3b82f6"];
             <div className="lg:col-span-7 space-y-6 w-full">
               <div className="flex items-center gap-3 mb-2">
                 <div className="relative flex h-4 w-4">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-4 w-4 bg-orange-500"></span>
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-4 w-4 bg-indigo-500"></span>
                 </div>
                 <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
                   Live Donation Feed
@@ -339,12 +339,12 @@ const COLORS = ["#10b981", "#8b5cf6", "#3b82f6"];
               </div>
               
               {isLoadingDB ? (
-                <div className="w-full flex flex-col items-center justify-center p-16 space-y-5 border border-slate-200 dark:border-slate-800 rounded-3xl bg-white/50 dark:bg-[#121212]/50">
-                  <Loader2 className="w-12 h-12 border-4 border-orange-200 dark:border-orange-500/20 border-t-orange-600 dark:border-t-orange-500 rounded-full animate-spin text-transparent" />
+                <div className="w-full flex flex-col items-center justify-center p-16 space-y-5 border border-[hsl(var(--border))] rounded-2xl bg-[hsl(var(--muted))]">
+                  <Loader2 className="w-12 h-12 border-4 border-indigo-200 dark:border-indigo-500/20 border-t-indigo-600 dark:border-t-indigo-500 rounded-full animate-spin text-transparent" />
                   <p className="text-slate-500 dark:text-slate-400 font-medium">Scanning network for donations...</p>
                 </div>
               ) : donations.length === 0 ? (
-                <div className="w-full p-12 text-center border border-slate-200 dark:border-slate-800 rounded-3xl bg-white/50 dark:bg-[#121212]/50">
+                <div className="w-full p-12 text-center border border-[hsl(var(--border))] rounded-2xl bg-[hsl(var(--muted))]">
                   <Package className="w-16 h-16 text-slate-300 dark:text-slate-600 mx-auto mb-4" />
                   <p className="text-slate-500 dark:text-slate-400 font-medium text-lg">No active donations at the moment.</p>
                 </div>
@@ -356,7 +356,7 @@ const COLORS = ["#10b981", "#8b5cf6", "#3b82f6"];
                       className={`w-full border transition-all duration-300 bg-white/80 dark:bg-slate-900 shadow-sm hover:shadow-md rounded-2xl overflow-hidden
                         ${activeCard === donation._id 
                           ? 'border-purple-500 dark:border-purple-500 shadow-purple-500/10 ring-1 ring-purple-500' 
-                          : 'border-slate-200 dark:border-slate-800 hover:border-orange-500/50'
+                          : 'border-[hsl(var(--border))] hover:border-indigo-400 dark:hover:border-indigo-600'
                         }`}
                     >
                       <CardContent className="p-6 flex flex-col sm:flex-row justify-between gap-6 relative w-full">
@@ -443,7 +443,7 @@ const COLORS = ["#10b981", "#8b5cf6", "#3b82f6"];
               <div className="sticky top-24 w-full space-y-6">
                 
                 {/*  AI Predictive Insights Widget  */}
-                <Card className="w-full border border-blue-200 dark:border-blue-900/50 shadow-md bg-blue-50/50 dark:bg-blue-950/20 rounded-3xl overflow-hidden relative">
+                <Card className="w-full border border-blue-200 dark:border-blue-900/50 shadow-md bg-blue-50/50 dark:bg-blue-950/20 rounded-2xl overflow-hidden relative">
                   <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-blue-500" />
                   <CardContent className="p-5 flex items-start gap-4">
                     <div className="bg-blue-100 dark:bg-blue-900/50 p-3 rounded-full shrink-0 mt-1">
@@ -460,7 +460,7 @@ const COLORS = ["#10b981", "#8b5cf6", "#3b82f6"];
                   </CardContent>
                 </Card>
 
-                <Card className="w-full border border-slate-200 dark:border-slate-800 shadow-xl bg-white dark:bg-slate-900 rounded-3xl overflow-hidden relative group">
+                <Card className="w-full border border-[hsl(var(--border))] bg-[hsl(var(--card))] rounded-2xl overflow-hidden relative group shadow-xl">
                   <div className="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-purple-500 to-fuchsia-500" />
                   <CardHeader className="bg-purple-50/50 dark:bg-slate-800/50 pb-5 border-b border-slate-200 dark:border-slate-800 w-full">
                     <CardTitle className="text-2xl font-extrabold flex items-center gap-2 text-slate-900 dark:text-white">
@@ -514,11 +514,11 @@ const COLORS = ["#10b981", "#8b5cf6", "#3b82f6"];
         {/* TAB 2: INCOMING DELIVERIES */}
         <TabsContent value="deliveries" className="w-full animate-in fade-in duration-500 pt-6 block">
           <div className="flex items-center gap-3 mb-6">
-             <Truck className="text-orange-500 w-8 h-8" />
+             <Truck className="text-indigo-500 w-8 h-8" />
              <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white">Active Deliveries</h2>
           </div>
           {incomingDeliveries.length === 0 ? (
-            <div className="w-full p-16 text-center border border-slate-200 dark:border-slate-800 rounded-3xl bg-white/50 dark:bg-[#121212]/50 max-w-3xl mx-auto">
+            <div className="w-full p-16 text-center border border-[hsl(var(--border))] rounded-2xl bg-[hsl(var(--muted))] max-w-3xl mx-auto">
               <Truck className="w-16 h-16 text-slate-300 dark:text-slate-600 mx-auto mb-4" />
               <h4 className="text-xl font-bold text-slate-800 dark:text-slate-200 mb-2">No Active Deliveries</h4>
               <p className="text-slate-500 dark:text-slate-400">Claim donations from the live feed to see them here.</p>
@@ -526,11 +526,11 @@ const COLORS = ["#10b981", "#8b5cf6", "#3b82f6"];
           ) : (
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 w-full">
               {incomingDeliveries.map((delivery) => (
-                <Card key={delivery._id} className="border-orange-200 dark:border-orange-900/50 bg-orange-50/50 dark:bg-orange-950/20 shadow-md rounded-2xl">
+                <Card key={delivery._id} className="border-amber-200 dark:border-amber-900/50 bg-amber-50/50 dark:bg-amber-950/20 shadow-md rounded-2xl">
                   <CardHeader className="pb-2">
                      <CardTitle className="text-lg font-bold text-slate-900 dark:text-white capitalize flex items-center justify-between">
                         {delivery.foodCategory}
-                        <span className="text-xs bg-orange-200 dark:bg-orange-900 text-orange-800 dark:text-orange-200 px-2 py-1 rounded-full">
+                        <span className="text-xs bg-amber-200 dark:bg-amber-900 text-amber-800 dark:text-amber-200 px-2 py-1 rounded-full">
                            {delivery.status || 'ON THE WAY'}
                         </span>
                      </CardTitle>
@@ -566,7 +566,7 @@ const COLORS = ["#10b981", "#8b5cf6", "#3b82f6"];
         {/* TAB 3: ACTIVE CAMPAIGNS */}
         <TabsContent value="campaigns" className="w-full animate-in fade-in duration-500 pt-6 block">
            {liveCampaigns.length === 0 ? (
-              <div className="w-full p-16 text-center border border-slate-200 dark:border-slate-800 rounded-3xl bg-white/50 dark:bg-[#121212]/50 max-w-3xl mx-auto">
+              <div className="w-full p-16 text-center border border-[hsl(var(--border))] rounded-2xl bg-[hsl(var(--muted))] max-w-3xl mx-auto">
                 <Megaphone className="w-16 h-16 text-slate-300 dark:text-slate-600 mx-auto mb-4" />
                 <h4 className="text-xl font-bold text-slate-800 dark:text-slate-200 mb-2">No Active Campaigns</h4>
                 <p className="text-slate-500 dark:text-slate-400">You have no active campaigns yet. Use the Campaign Studio above to create your first appeal.</p>
@@ -574,7 +574,7 @@ const COLORS = ["#10b981", "#8b5cf6", "#3b82f6"];
             ) : (
               <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 w-full">
                 {liveCampaigns.map((campaign) => (
-                  <Card key={campaign._id} className="w-full border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-md rounded-2xl flex flex-col">
+                  <Card key={campaign._id} className="w-full border border-[hsl(var(--border))] bg-[hsl(var(--card))] shadow-md rounded-2xl flex flex-col">
                     <CardHeader className="bg-purple-50/50 dark:bg-slate-800/50 pb-4 border-b border-slate-100 dark:border-slate-800">
                       <CardTitle className="text-lg font-bold text-slate-900 dark:text-white line-clamp-2">{campaign.title}</CardTitle>
                     </CardHeader>
@@ -602,24 +602,24 @@ const COLORS = ["#10b981", "#8b5cf6", "#3b82f6"];
         {/* TAB 4: IMPACT STATS */}
         <TabsContent value="impact" className="w-full animate-in fade-in duration-500 pt-6 block">
           <div className="grid gap-6 md:grid-cols-3 w-full">
-             <Card className="border border-slate-200 dark:border-slate-800 shadow-sm rounded-3xl bg-white dark:bg-slate-900 p-8 text-center flex flex-col items-center">
+             <Card className="border border-[hsl(var(--border))] rounded-2xl bg-[hsl(var(--card))] p-8 text-center flex flex-col items-center">
                 <HeartHandshake className="text-blue-500 w-12 h-12 mb-4" />
                 <h4 className="text-slate-500 dark:text-slate-400 font-bold uppercase tracking-widest text-sm mb-2">Total Meals Served</h4>
                 <p className="text-5xl font-black text-slate-900 dark:text-white">{stats.totalMeals}</p>
              </Card>
-             <Card className="border border-slate-200 dark:border-slate-800 shadow-sm rounded-3xl bg-white dark:bg-slate-900 p-8 text-center flex flex-col items-center">
+             <Card className="border border-[hsl(var(--border))] rounded-2xl bg-[hsl(var(--card))] p-8 text-center flex flex-col items-center">
                 <MapPin className="text-emerald-500 w-12 h-12 mb-4" />
                 <h4 className="text-slate-500 dark:text-slate-400 font-bold uppercase tracking-widest text-sm mb-2">Active Volunteers</h4>
                 <p className="text-5xl font-black text-slate-900 dark:text-white">{stats.activeVolunteers}</p>
              </Card>
-             <Card className="border border-slate-200 dark:border-slate-800 shadow-sm rounded-3xl bg-white dark:bg-slate-900 p-8 text-center flex flex-col items-center">
+             <Card className="border border-[hsl(var(--border))] rounded-2xl bg-[hsl(var(--card))] p-8 text-center flex flex-col items-center">
                 <Megaphone className="text-purple-500 w-12 h-12 mb-4" />
                 <h4 className="text-slate-500 dark:text-slate-400 font-bold uppercase tracking-widest text-sm mb-2">Campaigns Run</h4>
                 <p className="text-5xl font-black text-slate-900 dark:text-white">{stats.campaignsRun}</p>
              </Card>
              
              <div className="mt-8 md:col-span-3">
-              <Card className="w-full border border-slate-200 dark:border-slate-800 shadow-sm rounded-3xl bg-white dark:bg-slate-900">
+              <Card className="w-full border border-[hsl(var(--border))] rounded-2xl bg-[hsl(var(--card))]">
                 <CardHeader>
                   <CardTitle className="text-slate-700 dark:text-slate-300 font-bold uppercase tracking-widest text-sm mb-2">NGO Analytics</CardTitle>
                 </CardHeader>

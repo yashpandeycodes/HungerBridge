@@ -7,9 +7,10 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { HeartHandshake } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
   Form,
@@ -64,47 +65,55 @@ export default function SignInPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-[#0a0a0a] p-4 relative overflow-hidden transition-colors duration-500">
+    <div className="min-h-screen relative flex items-center justify-center p-4 overflow-hidden">
       
       {/* Back to Home Link */}
-      <Link href="/" className="absolute top-8 left-8 text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-orange-600 dark:hover:text-orange-500 transition-colors z-20 flex items-center gap-2">
+      <Link href="/" className="absolute top-8 left-8 text-sm font-medium text-white/50 hover:text-white transition-colors z-20 flex items-center gap-2">
         &larr; Back to Home
       </Link>
 
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-orange-500/10 dark:bg-orange-600/10 rounded-full blur-[100px] pointer-events-none translate-x-1/3 -translate-y-1/3" />
-      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-rose-500/10 dark:bg-rose-600/10 rounded-full blur-[100px] pointer-events-none -translate-x-1/3 translate-y-1/3" />
+      {/* Background photo layer */}
+      <div
+        className="absolute inset-0 bg-cover bg-center scale-105"
+        style={{
+          backgroundImage:
+            "url('https://images.unsplash.com/photo-1547592180-85f173990554?q=80&w=1600&auto=format&fit=crop')",
+          filter: "blur(2px) brightness(0.4)",
+        }}
+      />
+      {/* Darkening gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-b from-[hsl(222,47%,5%)]/40 via-[hsl(222,47%,5%)]/60 to-[hsl(222,47%,5%)]/85" />
 
-      <Card className="w-full max-w-md shadow-2xl border border-slate-200 dark:border-white/10 bg-white/80 dark:bg-black/40 backdrop-blur-2xl rounded-3xl relative z-10 overflow-hidden group">
-        <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-transparent dark:from-white/5 dark:to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-        
-        <CardHeader className="space-y-2 text-center pb-6 relative z-10">
-          <CardTitle className="text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-orange-600 to-rose-500 tracking-tight">
-            Welcome Back
+      {/* Glass card */}
+      <Card className="relative z-10 w-full max-w-md glass-card rounded-2xl border-0 p-1">
+        <CardHeader className="text-center pb-2 pt-8">
+          <div className="w-12 h-12 mx-auto mb-4 rounded-xl brand-gradient flex items-center justify-center brand-shadow">
+            <HeartHandshake className="w-6 h-6 text-white" />
+          </div>
+          <CardTitle className="text-2xl font-bold text-white tracking-tight">
+            Welcome back
           </CardTitle>
-          <CardDescription className="text-slate-500 dark:text-slate-400 font-medium">
-            Enter your credentials to access your account.
-          </CardDescription>
+          <p className="text-sm text-white/55 mt-1">Sign in to continue your impact</p>
         </CardHeader>
-        
-        <CardContent className="relative z-10">
+        <CardContent className="px-8 pb-8 pt-4">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
-              
+
               <FormField
                 control={form.control}
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-slate-700 dark:text-slate-300 font-semibold">Email</FormLabel>
+                    <FormLabel className="text-xs font-semibold text-white/60 mb-1.5 block">Email</FormLabel>
                     <FormControl>
-                      <Input 
-                        type="email" 
-                        placeholder="john@example.com" 
-                        {...field} 
-                        className="bg-white/50 dark:bg-white/5 border-slate-200 dark:border-white/10 focus:ring-orange-500 dark:focus:ring-orange-500 dark:text-white transition-all h-12 rounded-xl"
+                      <Input
+                        type="email"
+                        placeholder="john@example.com"
+                        {...field}
+                        className="bg-white/5 border border-white/12 text-white placeholder:text-white/25 rounded-lg h-11 focus-visible:ring-2 focus-visible:ring-indigo-400/50 focus-visible:border-indigo-400/40"
                       />
                     </FormControl>
-                    <FormMessage className="text-rose-500 dark:text-rose-400" />
+                    <FormMessage className="text-red-300" />
                   </FormItem>
                 )}
               />
@@ -114,23 +123,23 @@ export default function SignInPage() {
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-slate-700 dark:text-slate-300 font-semibold">Password</FormLabel>
+                    <FormLabel className="text-xs font-semibold text-white/60 mb-1.5 block">Password</FormLabel>
                     <FormControl>
-                      <Input 
-                        type="password" 
-                        placeholder="••••••••" 
-                        {...field} 
-                        className="bg-white/50 dark:bg-white/5 border-slate-200 dark:border-white/10 focus:ring-orange-500 dark:focus:ring-orange-500 dark:text-white transition-all h-12 rounded-xl"
+                      <Input
+                        type="password"
+                        placeholder="••••••••"
+                        {...field}
+                        className="bg-white/5 border border-white/12 text-white placeholder:text-white/25 rounded-lg h-11 focus-visible:ring-2 focus-visible:ring-indigo-400/50 focus-visible:border-indigo-400/40"
                       />
                     </FormControl>
-                    <FormMessage className="text-rose-500 dark:text-rose-400" />
+                    <FormMessage className="text-red-300" />
                   </FormItem>
                 )}
               />
 
-              <Button 
-                type="submit" 
-                className="w-full h-12 bg-gradient-to-r from-orange-600 to-rose-600 hover:from-orange-700 hover:to-rose-700 text-white rounded-xl font-bold text-lg shadow-lg shadow-orange-500/25 border-0 transition-all hover:scale-[1.02] active:scale-[0.98] mt-4" 
+              <Button
+                type="submit"
+                className="w-full h-11 brand-gradient hover:brightness-110 text-white rounded-lg font-semibold text-sm border-0 brand-shadow transition-all mt-2"
                 disabled={isSubmitting}
               >
                 {isSubmitting ? (
@@ -142,15 +151,14 @@ export default function SignInPage() {
               </Button>
             </form>
           </Form>
-        </CardContent>
-        <CardFooter className="flex justify-center pb-8 relative z-10">
-          <p className="text-sm font-medium text-slate-600 dark:text-slate-400">
+
+          <p className="text-sm text-white/45 text-center mt-5">
             Don`t have an account?{" "}
-            <Link href="/sign-up" className="text-transparent bg-clip-text bg-gradient-to-r from-orange-600 to-rose-500 hover:opacity-80 transition-opacity font-bold">
+            <Link href="/sign-up" className="text-indigo-300 font-semibold hover:text-indigo-200">
               Sign up
             </Link>
           </p>
-        </CardFooter>
+        </CardContent>
       </Card>
     </div>
   );

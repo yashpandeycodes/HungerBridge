@@ -4,12 +4,12 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import Link from "next/link";
-import { useForm,useWatch } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
   Form,
@@ -37,8 +37,7 @@ export default function SignUpPage() {
     },
   });
 
-  // Watching the role field to dynamically change the UI
- const selectedRole = useWatch({
+  const selectedRole = useWatch({
     control: form.control,
     name: "role",
   });
@@ -57,7 +56,6 @@ export default function SignUpPage() {
 
       if (res.ok) {
         toast.success("Account created! Please verify your email.Please check your spam/junk folder if you don't see the mail.");
-        // Redirecting to the verify page with the encoded email
         router.replace(`/verify/${encodeURIComponent(data.email)}`);
       } else {
         toast.error(responseData.message || "Something went wrong!");
@@ -70,97 +68,102 @@ export default function SignUpPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-[#0a0a0a] p-4 relative overflow-hidden transition-colors duration-500">
-      
+    <div className="min-h-screen relative flex items-center justify-center p-4 overflow-hidden">
+
       {/* Back to Home Link */}
-      <Link href="/" className="absolute top-8 left-8 text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-orange-600 dark:hover:text-orange-500 transition-colors z-20 flex items-center gap-2">
+      <Link href="/" className="absolute top-8 left-8 text-sm font-medium text-white/50 hover:text-white transition-colors z-20 flex items-center gap-2">
         &larr; Back to Home
       </Link>
 
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-orange-500/10 dark:bg-orange-600/10 rounded-full blur-[100px] pointer-events-none translate-x-1/3 -translate-y-1/3" />
-      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-rose-500/10 dark:bg-rose-600/10 rounded-full blur-[100px] pointer-events-none -translate-x-1/3 translate-y-1/3" />
+      {/* Background photo layer */}
+      <div
+        className="absolute inset-0 bg-cover bg-center scale-105"
+        style={{
+          backgroundImage:
+            "url('https://images.unsplash.com/photo-1593113598332-cd288d649433?q=80&w=1600&auto=format&fit=crop')",
+          filter: "blur(2px) brightness(0.4)",
+        }}
+      />
+      {/* Darkening gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-b from-[hsl(222,47%,5%)]/40 via-[hsl(222,47%,5%)]/60 to-[hsl(222,47%,5%)]/85" />
 
-      <Card className="w-full max-w-md shadow-2xl border border-slate-200 dark:border-white/10 bg-white/80 dark:bg-black/40 backdrop-blur-2xl rounded-3xl relative z-10 overflow-hidden group">
-        <div className="absolute inset-0 bg-linear-to-br from-white/40 to-transparent dark:from-white/5 dark:to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-        
-        <CardHeader className="space-y-2 text-center pb-6 relative z-10">
-          <CardTitle className="text-3xl font-extrabold bg-clip-text text-transparent bg-linear-to-r from-orange-600 to-rose-500 tracking-tight">
+      {/* Glass card */}
+      <Card className="relative z-10 w-full max-w-md glass-card rounded-2xl border-0 p-1">
+        <CardHeader className="text-center pb-2 pt-8">
+          <CardTitle className="text-2xl font-bold text-white tracking-tight">
             Join HungerBridge
           </CardTitle>
-          <CardDescription className="text-slate-500 dark:text-slate-400 font-medium">
-            Create an account to start your journey of impact.
-          </CardDescription>
+          <p className="text-sm text-white/55 mt-1">Create your account and start making an impact</p>
         </CardHeader>
         
-        <CardContent className="relative z-10">
+        <CardContent className="px-8 pb-8 pt-4">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
               
-              {/* Role Selection Moved to Top for Better UX */}
               <FormField
                 control={form.control}
                 name="role"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-slate-700 dark:text-slate-300 font-semibold">I am registering as a:</FormLabel>
+                    <FormLabel className="text-xs font-semibold text-white/60 mb-1.5 block">I am registering as a:</FormLabel>
                     <FormControl>
-                      <div className="relative">
-                        <select 
-                          {...field}
-                          className="flex h-12 w-full appearance-none items-center justify-between rounded-xl border border-slate-200 dark:border-white/10 bg-white/50 dark:bg-[#121212] px-4 py-2 text-sm ring-offset-white dark:ring-offset-black focus:outline-none focus:ring-2 focus:ring-orange-500 disabled:cursor-not-allowed disabled:opacity-50 dark:text-white transition-all"
-                        >
-                          <option value="DONOR">Donor (I have food to give)</option>
-                          <option value="NGO">NGO (I distribute food)</option>
-                          <option value="VOLUNTEER">Volunteer (I can deliver food)</option>
-                        </select>
-                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-500 dark:text-slate-400">
-                          <svg className="h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
-                        </div>
+                      <div className="grid grid-cols-3 gap-2">
+                        {['DONOR', 'NGO', 'VOLUNTEER'].map((roleType) => (
+                          <button
+                            key={roleType}
+                            type="button"
+                            onClick={() => field.onChange(roleType)}
+                            className={`px-2 py-2 rounded-lg text-xs font-semibold transition-all text-center ${
+                              field.value === roleType
+                                ? "border-2 border-indigo-400 bg-indigo-500/15 text-indigo-200"
+                                : "border border-white/12 bg-white/5 text-white/50 hover:border-indigo-400/40 hover:bg-white/8"
+                            }`}
+                          >
+                            {roleType.charAt(0) + roleType.slice(1).toLowerCase()}
+                          </button>
+                        ))}
                       </div>
                     </FormControl>
-                    <FormMessage className="text-rose-500 dark:text-rose-400" />
+                    <FormMessage className="text-red-300" />
                   </FormItem>
                 )}
               />
 
-              {/* Dynamic Name Field based on selected role */}
               <FormField
                 control={form.control}
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-slate-700 dark:text-slate-300 font-semibold">
+                    <FormLabel className="text-xs font-semibold text-white/60 mb-1.5 block">
                       {selectedRole === 'NGO' ? 'Organization / Food Bank Name' : 'Full Name'}
                     </FormLabel>
                     <FormControl>
-                      <Input 
-                        placeholder={selectedRole === 'NGO' ? 'e.g., Indian Army' : 'Yash Pandey'} 
-                        {...field} 
-                        className="bg-white/50 dark:bg-white/5 border-slate-200 dark:border-white/10 focus:ring-orange-500 dark:focus:ring-orange-500 dark:text-white transition-all h-12 rounded-xl"
+                      <Input
+                        placeholder={selectedRole === 'NGO' ? 'e.g., Indian Army' : 'Yash Pandey'}
+                        {...field}
+                        className="bg-white/5 border border-white/12 text-white placeholder:text-white/25 rounded-lg h-11 focus-visible:ring-2 focus-visible:ring-indigo-400/50 focus-visible:border-indigo-400/40"
                       />
                     </FormControl>
-                    <FormMessage className="text-rose-500 dark:text-rose-400" /> 
+                    <FormMessage className="text-red-300" />
                   </FormItem>
                 )}
               />
-
-
 
               <FormField
                 control={form.control}
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-slate-700 dark:text-slate-300 font-semibold">Email</FormLabel>
+                    <FormLabel className="text-xs font-semibold text-white/60 mb-1.5 block">Email</FormLabel>
                     <FormControl>
-                      <Input 
-                        type="email" 
-                        placeholder="yash@example.com" 
-                        {...field} 
-                        className="bg-white/50 dark:bg-white/5 border-slate-200 dark:border-white/10 focus:ring-orange-500 dark:focus:ring-orange-500 dark:text-white transition-all h-12 rounded-xl"
+                      <Input
+                        type="email"
+                        placeholder="yash@example.com"
+                        {...field}
+                        className="bg-white/5 border border-white/12 text-white placeholder:text-white/25 rounded-lg h-11 focus-visible:ring-2 focus-visible:ring-indigo-400/50 focus-visible:border-indigo-400/40"
                       />
                     </FormControl>
-                    <FormMessage className="text-rose-500 dark:text-rose-400" />
+                    <FormMessage className="text-red-300" />
                   </FormItem>
                 )}
               />
@@ -170,16 +173,16 @@ export default function SignUpPage() {
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-slate-700 dark:text-slate-300 font-semibold">Password</FormLabel>
+                    <FormLabel className="text-xs font-semibold text-white/60 mb-1.5 block">Password</FormLabel>
                     <FormControl>
-                      <Input 
-                        type="password" 
-                        placeholder="Min 6 characters" 
-                        {...field} 
-                        className="bg-white/50 dark:bg-white/5 border-slate-200 dark:border-white/10 focus:ring-orange-500 dark:focus:ring-orange-500 dark:text-white transition-all h-12 rounded-xl"
+                      <Input
+                        type="password"
+                        placeholder="Min 6 characters"
+                        {...field}
+                        className="bg-white/5 border border-white/12 text-white placeholder:text-white/25 rounded-lg h-11 focus-visible:ring-2 focus-visible:ring-indigo-400/50 focus-visible:border-indigo-400/40"
                       />
                     </FormControl>
-                    <FormMessage className="text-rose-500 dark:text-rose-400" />
+                    <FormMessage className="text-red-300" />
                   </FormItem>
                 )}
               />
@@ -189,23 +192,23 @@ export default function SignUpPage() {
                 name="phone"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-slate-700 dark:text-slate-300 font-semibold">Phone Number <span className="text-slate-400 dark:text-slate-500 font-normal">(Optional)</span></FormLabel>
+                    <FormLabel className="text-xs font-semibold text-white/60 mb-1.5 block">Phone Number <span className="text-white/40 font-normal">(Optional)</span></FormLabel>
                     <FormControl>
-                      <Input 
-                        type="tel" 
-                        placeholder="+91 9876543210" 
-                        {...field} 
-                        className="bg-white/50 dark:bg-white/5 border-slate-200 dark:border-white/10 focus:ring-orange-500 dark:focus:ring-orange-500 dark:text-white transition-all h-12 rounded-xl"
+                      <Input
+                        type="tel"
+                        placeholder="+91 9876543210"
+                        {...field}
+                        className="bg-white/5 border border-white/12 text-white placeholder:text-white/25 rounded-lg h-11 focus-visible:ring-2 focus-visible:ring-indigo-400/50 focus-visible:border-indigo-400/40"
                       />
                     </FormControl>
-                    <FormMessage className="text-rose-500 dark:text-rose-400" />
+                    <FormMessage className="text-red-300" />
                   </FormItem>
                 )}
               />
 
-              <Button 
-                type="submit" 
-                className="w-full h-12 bg-linear-to-r from-orange-600 to-rose-600 hover:from-orange-700 hover:to-rose-700 text-white rounded-xl font-bold text-lg shadow-lg shadow-orange-500/25 border-0 transition-all hover:scale-[1.02] active:scale-[0.98] mt-4" 
+              <Button
+                type="submit"
+                className="w-full h-11 brand-gradient hover:brightness-110 text-white rounded-lg font-semibold text-sm border-0 brand-shadow transition-all mt-2"
                 disabled={isSubmitting}
               >
                 {isSubmitting ? (
@@ -217,15 +220,14 @@ export default function SignUpPage() {
               </Button>
             </form>
           </Form>
-        </CardContent>
-        <CardFooter className="flex justify-center pb-8 relative z-10">
-          <p className="text-sm font-medium text-slate-600 dark:text-slate-400">
+
+          <p className="text-sm text-white/45 text-center mt-5">
             Already have an account?{" "}
-            <Link href="/sign-in" className="text-transparent bg-clip-text bg-linear-to-r from-orange-600 to-rose-500 hover:opacity-80 transition-opacity font-bold">
+            <Link href="/sign-in" className="text-indigo-300 font-semibold hover:text-indigo-200">
               Log in
             </Link>
           </p>
-        </CardFooter>
+        </CardContent>
       </Card>
     </div>
   );

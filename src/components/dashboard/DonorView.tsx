@@ -252,31 +252,28 @@ export default function DonorView() {
 
   return (
     <div className="w-full max-w-4xl mx-auto relative group animate-in fade-in slide-in-from-bottom-8 duration-700 block">
-      
-
-      <div className="absolute inset-0 bg-gradient-to-r from-orange-500/30 to-rose-500/30 dark:from-orange-600/20 dark:to-rose-600/20 rounded-3xl blur-3xl opacity-50 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none -z-10" />
 
 
       <Tabs defaultValue="donate" className="w-full relative z-10 block">
-        <TabsList className="grid w-full grid-cols-2 h-auto md:h-14 bg-white/50 dark:bg-[#121212]/80 backdrop-blur-md border border-slate-200 dark:border-slate-800 rounded-2xl p-1.5 mb-6 gap-1 shadow-sm">
-          <TabsTrigger value="donate" className="rounded-xl font-bold text-sm text-slate-600 dark:text-slate-400 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800 data-[state=active]:text-orange-600 dark:data-[state=active]:text-orange-400 py-2.5 transition-all shadow-none data-[state=active]:shadow-sm">
+        <TabsList className="grid w-full grid-cols-2 h-auto md:h-14 bg-[hsl(var(--muted))] border border-[hsl(var(--border))] rounded-xl p-1.5 mb-6 gap-1">
+          <TabsTrigger value="donate" className="rounded-lg font-bold text-sm text-[hsl(var(--muted-foreground))] data-[state=active]:bg-[hsl(var(--card))] data-[state=active]:text-indigo-600 dark:data-[state=active]:text-indigo-400 py-2.5 transition-all shadow-none data-[state=active]:shadow-sm">
             <PlusCircle className="w-4 h-4 mr-2" /> Donate Food
           </TabsTrigger>
-          <TabsTrigger value="history" className="rounded-xl font-bold text-sm text-slate-600 dark:text-slate-400 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800 data-[state=active]:text-rose-600 dark:data-[state=active]:text-rose-400 py-2.5 transition-all shadow-none data-[state=active]:shadow-sm">
+          <TabsTrigger value="history" className="rounded-lg font-bold text-sm text-[hsl(var(--muted-foreground))] data-[state=active]:bg-[hsl(var(--card))] data-[state=active]:text-indigo-600 dark:data-[state=active]:text-indigo-400 py-2.5 transition-all shadow-none data-[state=active]:shadow-sm">
             <History className="w-4 h-4 mr-2" /> My History
           </TabsTrigger>
         </TabsList>
 
         {/* TAB 1: FORM */}
         <TabsContent value="donate" className="w-full animate-in fade-in duration-500">
-          <Card className="w-full shadow-2xl border border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-slate-900 rounded-3xl relative overflow-hidden backdrop-blur-xl">
+          <Card className="w-full border border-[hsl(var(--border))] bg-[hsl(var(--card))] rounded-2xl relative overflow-hidden">
             
-            <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-orange-500 via-rose-500 to-orange-500" />
+            <div className="absolute top-0 left-0 right-0 h-1.5 brand-gradient" />
 
             <CardHeader className="pb-6 pt-8 border-b border-slate-100 dark:border-slate-800/80 text-center md:text-left">
               <div className="flex flex-col md:flex-row items-center gap-4">
-                <div className="w-12 h-12 bg-orange-100 dark:bg-orange-900/30 rounded-2xl flex items-center justify-center shrink-0">
-                    <HeartHandshake className="text-orange-600 dark:text-orange-500" size={24} />
+                <div className="w-12 h-12 bg-indigo-100 dark:bg-indigo-900/30 rounded-xl flex items-center justify-center shrink-0">
+                    <HeartHandshake className="text-indigo-600 dark:text-indigo-400" size={24} />
                 </div>
                 <div>
                     <CardTitle className="text-2xl md:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
@@ -299,13 +296,13 @@ export default function DonorView() {
                   
                   <div className={`relative border-2 border-dashed rounded-2xl transition-all duration-300 overflow-hidden group/upload
                       ${previewBase64 
-                        ? 'border-orange-200 dark:border-orange-900/50 bg-orange-50/50 dark:bg-orange-950/10' 
-                        : 'border-slate-300 dark:border-slate-700 hover:border-orange-400 dark:hover:border-orange-600 bg-slate-50 dark:bg-slate-800/50'
+                        ? 'border-indigo-300 dark:border-indigo-700 bg-indigo-50/50 dark:bg-indigo-950/10' 
+                        : 'border-[hsl(var(--border))] hover:border-indigo-400 dark:hover:border-indigo-500 bg-[hsl(var(--muted))]'
                       }`}
                   >
                       {!previewBase64 && (
                         <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none text-slate-400 dark:text-slate-500">
-                            <UploadCloud size={32} className="mb-2 group-hover/upload:text-orange-500 transition-colors" />
+                            <UploadCloud size={32} className="mb-2 group-hover/upload:text-indigo-500 transition-colors" />
                             <span className="text-sm font-medium">Click to browse or drag & drop</span>
                         </div>
                       )}
@@ -354,23 +351,23 @@ export default function DonorView() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <Label className="text-slate-700 dark:text-slate-300 font-bold">Food Category / Name <span className="text-red-500">*</span></Label>
-                    <Input required name="foodCategory" placeholder="e.g. 5 boxes of Rice" value={formData.foodCategory} onChange={handleChange} className="bg-slate-50 dark:bg-[#121212] border-slate-200 dark:border-slate-800 focus:ring-orange-500 dark:focus:ring-orange-500 dark:text-white transition-all h-12 rounded-xl" />
+                    <Input required name="foodCategory" placeholder="e.g. 5 boxes of Rice" value={formData.foodCategory} onChange={handleChange} className="bg-[hsl(var(--muted))] border-[hsl(var(--border))] focus:ring-indigo-500 dark:focus:ring-indigo-400 text-[hsl(var(--foreground))] transition-all h-12 rounded-lg" />
                   </div>
                   <div className="space-y-2">
                     <Label className="text-slate-700 dark:text-slate-300 font-bold">Estimated Quantity <span className="text-red-500">*</span></Label>
-                    <Input required name="quantity" placeholder="e.g. 10 kg or 20 servings" value={formData.quantity} onChange={handleChange} className="bg-slate-50 dark:bg-[#121212] border-slate-200 dark:border-slate-800 focus:ring-orange-500 dark:focus:ring-orange-500 dark:text-white transition-all h-12 rounded-xl" />
+                    <Input required name="quantity" placeholder="e.g. 10 kg or 20 servings" value={formData.quantity} onChange={handleChange} className="bg-[hsl(var(--muted))] border-[hsl(var(--border))] focus:ring-indigo-500 dark:focus:ring-indigo-400 text-[hsl(var(--foreground))] transition-all h-12 rounded-lg" />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <Label className="text-slate-700 dark:text-slate-300 font-bold">Pickup Location (Address) <span className="text-red-500">*</span></Label>
-                    <Input required name="pickupLocation" placeholder="Full precise address" value={formData.pickupLocation} onChange={handleChange} className="bg-slate-50 dark:bg-[#121212] border-slate-200 dark:border-slate-800 focus:ring-orange-500 dark:focus:ring-orange-500 dark:text-white transition-all h-12 rounded-xl" />
+                    <Input required name="pickupLocation" placeholder="Full precise address" value={formData.pickupLocation} onChange={handleChange} className="bg-[hsl(var(--muted))] border-[hsl(var(--border))] focus:ring-indigo-500 dark:focus:ring-indigo-400 text-[hsl(var(--foreground))] transition-all h-12 rounded-lg" />
                   </div>
 
                   <div className="space-y-2">
                     <Label className="text-slate-700 dark:text-slate-300 font-bold">Food Source <span className="text-red-500">*</span></Label>
-                    <select name="foodSource" className="flex h-12 w-full items-center justify-between rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#121212] px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 dark:text-white transition-all appearance-none cursor-pointer" value={formData.foodSource} onChange={handleChange} required>
+                    <select name="foodSource" className="flex h-12 w-full items-center justify-between rounded-lg border border-[hsl(var(--border))] bg-[hsl(var(--muted))] px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 text-[hsl(var(--foreground))] transition-all appearance-none cursor-pointer" value={formData.foodSource} onChange={handleChange} required>
                       <option value="Households">Households (Home cooked)</option>
                       <option value="Restaurant surplus">Restaurant Surplus</option>
                       <option value="Events/Weddings">Events / Weddings</option>
@@ -382,7 +379,7 @@ export default function DonorView() {
                     <Label className="text-slate-700 dark:text-slate-300 font-bold flex justify-between items-center">
                       <span>Support an NGO Campaign <span className="text-slate-400 font-normal">(Optional)</span></span>
                     </Label>
-                    <select name="campaignId" className="flex h-12 w-full items-center justify-between rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#121212] px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 dark:text-white transition-all appearance-none cursor-pointer" value={formData.campaignId} onChange={handleChange}>
+                    <select name="campaignId" className="flex h-12 w-full items-center justify-between rounded-lg border border-[hsl(var(--border))] bg-[hsl(var(--muted))] px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 text-[hsl(var(--foreground))] transition-all appearance-none cursor-pointer" value={formData.campaignId} onChange={handleChange}>
                       <option value="">-- General Donation (Open to all NGOs) --</option>
                       {activeCampaigns.map((camp) => (
                         <option key={camp._id} value={camp._id}>
@@ -394,7 +391,7 @@ export default function DonorView() {
 
                   <div className="space-y-2 md:col-span-2">
                     <Label className="text-slate-700 dark:text-slate-300 font-bold">Expiry Time <span className="text-red-500">*</span></Label>
-                    <Input required type="datetime-local" name="expiryTime" value={formData.expiryTime} onChange={handleChange} className="bg-slate-50 dark:bg-[#121212] border-slate-200 dark:border-slate-800 focus:ring-orange-500 dark:focus:ring-orange-500 dark:text-white transition-all h-12 rounded-xl" style={{ colorScheme: 'inherit' }} />
+                    <Input required type="datetime-local" name="expiryTime" value={formData.expiryTime} onChange={handleChange} className="bg-[hsl(var(--muted))] border-[hsl(var(--border))] focus:ring-indigo-500 dark:focus:ring-indigo-400 text-[hsl(var(--foreground))] transition-all h-12 rounded-lg" style={{ colorScheme: 'inherit' }} />
                   </div>
                 </div>
 
@@ -405,7 +402,7 @@ export default function DonorView() {
                   </Label>
                 </div>
 
-                <Button type="submit" className="w-full h-14 bg-orange-600 hover:bg-orange-700 text-white rounded-xl font-bold text-lg shadow-md border-0 transition-all hover:scale-[1.02] active:scale-[0.98] mt-4" disabled={isSubmitting}>
+                <Button type="submit" className="w-full h-14 brand-gradient hover:brightness-110 text-white rounded-xl font-bold text-lg brand-shadow border-0 transition-all hover:scale-[1.02] active:scale-[0.98] mt-4" disabled={isSubmitting}>
                   {isSubmitting ? (
                     <span className="flex items-center justify-center gap-2">
                       <Loader2 className="w-6 h-6 animate-spin" /> Submitting...
@@ -421,12 +418,12 @@ export default function DonorView() {
         {/* TAB 2: MY DONATIONS HISTORY */}
         <TabsContent value="history" className="w-full animate-in fade-in duration-500">
           {isLoadingHistory ? (
-            <div className="w-full flex flex-col items-center justify-center p-16 border border-slate-200 dark:border-slate-800 rounded-3xl bg-white/80 dark:bg-[#121212]/80 backdrop-blur-md">
-              <Loader2 className="w-12 h-12 animate-spin text-rose-500 mb-4" />
+            <div className="w-full flex flex-col items-center justify-center p-16 border border-[hsl(var(--border))] rounded-2xl bg-[hsl(var(--muted))]">
+              <Loader2 className="w-12 h-12 animate-spin text-sky-500 mb-4" />
               <p className="text-slate-500">Loading your generosity...</p>
             </div>
           ) : myDonations.length === 0 ? (
-            <div className="w-full text-center p-16 border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-3xl bg-white/50 dark:bg-[#121212]/50 backdrop-blur-md">
+            <div className="w-full text-center p-16 border-2 border-dashed border-[hsl(var(--border))] rounded-2xl bg-[hsl(var(--muted))]">
               <HeartHandshake className="w-16 h-16 text-slate-300 dark:text-slate-600 mx-auto mb-4" />
               <h4 className="text-xl font-bold text-slate-800 dark:text-slate-200">No Donations Yet</h4>
               <p className="text-slate-500 dark:text-slate-400 mt-2">Your listed donations will appear here. Start by donating some food!</p>
@@ -434,7 +431,7 @@ export default function DonorView() {
           ) : (
             <div className="grid gap-6 sm:grid-cols-2">
               {myDonations.map((donation) => (
-                <Card key={donation._id} className="border border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-slate-900/90 shadow-sm hover:shadow-md rounded-2xl overflow-hidden flex flex-col transition-all">
+                <Card key={donation._id} className="border border-[hsl(var(--border))] bg-[hsl(var(--card))] hover:border-indigo-300 dark:hover:border-indigo-700 rounded-2xl overflow-hidden flex flex-col transition-colors">
                   <CardHeader className="bg-slate-50/50 dark:bg-slate-800/50 pb-4 border-b border-slate-100 dark:border-slate-800 flex flex-row items-center justify-between space-y-0">
                     <CardTitle className="text-lg font-bold text-slate-900 dark:text-white capitalize truncate">
                       {donation.foodCategory}
@@ -481,7 +478,7 @@ export default function DonorView() {
 
                     {/* Food Details */}
                     <div className="space-y-2 text-sm text-slate-600 dark:text-slate-300 flex-1 bg-slate-50 dark:bg-slate-800/40 p-4 rounded-xl border border-slate-100 dark:border-slate-800/50">
-                      <p className="flex items-center gap-3"><Package size={16} className="text-orange-500" /> <span className="font-medium">{donation.quantity}</span></p>
+                      <p className="flex items-center gap-3"><Package size={16} className="text-indigo-500" /> <span className="font-medium">{donation.quantity}</span></p>
                       <p className="flex items-center gap-3"><Clock size={16} className="text-slate-400" /> <span className="font-medium">Exp: {new Date(donation.expiryTime).toLocaleString()}</span></p>
                     </div>
 
@@ -531,23 +528,23 @@ export default function DonorView() {
             {/* Certificate Card */}
             <div 
               ref={certificateRef}
-              className="bg-white dark:bg-slate-900 rounded-3xl overflow-hidden shadow-2xl relative"
+              className="bg-white dark:bg-slate-900 rounded-2xl overflow-hidden shadow-2xl relative"
             >
             {/* Premium Gradient Header */}
-            <div className="h-32 bg-gradient-to-br from-amber-400 via-orange-500 to-rose-500 relative flex items-center justify-center">
+            <div className="h-32 brand-gradient relative flex items-center justify-center">
               <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay pointer-events-none" />
               <Award size={64} className="text-white drop-shadow-md absolute -bottom-8 bg-white/20 p-2 rounded-full backdrop-blur-md border border-white/30 z-10" />
             </div>
               
               <div className="pt-12 pb-8 px-8 text-center space-y-4 relative">
-                <h3 className="text-xs font-black uppercase tracking-widest text-orange-500 mb-2">Certificate of Impact</h3>
+                <h3 className="text-xs font-black uppercase tracking-widest text-indigo-500 mb-2">Certificate of Impact</h3>
                 <h2 className="text-2xl font-black text-slate-900 dark:text-white leading-tight">
                   You are a Hunger Hero!
                 </h2>
                 
                 <p className="text-slate-600 dark:text-slate-300 font-medium leading-relaxed">
                   This certifies that you successfully rescued and donated <br/>
-                  <strong className="text-orange-600 dark:text-orange-400 text-lg">{showCertificate.quantity}</strong> of <strong className="text-slate-900 dark:text-white">{showCertificate.foodCategory}</strong>.
+                  <strong className="text-indigo-600 dark:text-indigo-400 text-lg">{showCertificate.quantity}</strong> of <strong className="text-slate-900 dark:text-white">{showCertificate.foodCategory}</strong>.
                 </p>
 
                 <div className="pt-6 mt-4 border-t border-slate-100 dark:border-slate-800 flex justify-between items-center text-left">
@@ -559,8 +556,8 @@ export default function DonorView() {
                   </div>
                   <div className="text-right">
                     <p className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Issued By</p>
-                    <p className="text-sm font-black text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-rose-500 flex items-center gap-1 justify-end">
-                      <HeartHandshake size={14} className="text-orange-500" /> HungerBridge
+                    <p className="text-sm font-black brand-gradient-text flex items-center gap-1 justify-end">
+                      <HeartHandshake size={14} className="text-indigo-500" /> HungerBridge
                     </p>
                   </div>
                 </div>
@@ -577,7 +574,7 @@ export default function DonorView() {
               <Button 
                 onClick={downloadCertificate}
                 disabled={isDownloading}
-                className="flex-1 bg-gradient-to-r from-orange-500 to-rose-500 hover:from-orange-600 hover:to-rose-600 text-white font-bold h-12 rounded-xl shadow-lg border-0 transition-all hover:scale-[1.02] active:scale-[0.98]"
+                className="flex-1 brand-gradient hover:brightness-110 text-white font-bold h-12 rounded-xl brand-shadow border-0 transition-all hover:scale-[1.02] active:scale-[0.98]"
               >
                 {isDownloading ? (
                   <span className="flex items-center gap-2"><Loader2 size={18} className="animate-spin" /> Saving...</span>
