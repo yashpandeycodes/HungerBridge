@@ -602,20 +602,29 @@ const COLORS = ["#10b981", "#8b5cf6", "#3b82f6"];
         {/* TAB 4: IMPACT STATS */}
         <TabsContent value="impact" className="w-full animate-in fade-in duration-500 pt-6 block">
           <div className="grid gap-6 md:grid-cols-3 w-full">
-             <Card className="border border-[hsl(var(--border))] rounded-2xl bg-[hsl(var(--card))] p-8 text-center flex flex-col items-center">
-                <HeartHandshake className="text-blue-500 w-12 h-12 mb-4" />
-                <h4 className="text-slate-500 dark:text-slate-400 font-bold uppercase tracking-widest text-sm mb-2">Total Meals Served</h4>
-                <p className="text-5xl font-black text-slate-900 dark:text-white">{stats.totalMeals}</p>
+             <Card className="relative overflow-hidden border border-[hsl(var(--border))] rounded-2xl bg-[hsl(var(--card))] p-8 text-center flex flex-col items-center group hover:border-blue-500/30 transition-colors">
+                <div className="absolute inset-0 bg-blue-500/5 dark:bg-blue-500/10 blur-2xl z-0 group-hover:bg-blue-500/10 dark:group-hover:bg-blue-500/20 transition-all duration-500" />
+                <div className="relative z-10 flex flex-col items-center">
+                  <HeartHandshake className="text-blue-500 w-12 h-12 mb-4 drop-shadow-sm" />
+                  <h4 className="text-slate-500 dark:text-slate-400 font-bold uppercase tracking-widest text-sm mb-2">Total Meals Served</h4>
+                  <p className="text-5xl font-black text-slate-900 dark:text-white">{stats.totalMeals}</p>
+                </div>
              </Card>
-             <Card className="border border-[hsl(var(--border))] rounded-2xl bg-[hsl(var(--card))] p-8 text-center flex flex-col items-center">
-                <MapPin className="text-emerald-500 w-12 h-12 mb-4" />
-                <h4 className="text-slate-500 dark:text-slate-400 font-bold uppercase tracking-widest text-sm mb-2">Active Volunteers</h4>
-                <p className="text-5xl font-black text-slate-900 dark:text-white">{stats.activeVolunteers}</p>
+             <Card className="relative overflow-hidden border border-[hsl(var(--border))] rounded-2xl bg-[hsl(var(--card))] p-8 text-center flex flex-col items-center group hover:border-emerald-500/30 transition-colors">
+                <div className="absolute inset-0 bg-emerald-500/5 dark:bg-emerald-500/10 blur-2xl z-0 group-hover:bg-emerald-500/10 dark:group-hover:bg-emerald-500/20 transition-all duration-500" />
+                <div className="relative z-10 flex flex-col items-center">
+                  <MapPin className="text-emerald-500 w-12 h-12 mb-4 drop-shadow-sm" />
+                  <h4 className="text-slate-500 dark:text-slate-400 font-bold uppercase tracking-widest text-sm mb-2">Active Volunteers</h4>
+                  <p className="text-5xl font-black text-slate-900 dark:text-white">{stats.activeVolunteers}</p>
+                </div>
              </Card>
-             <Card className="border border-[hsl(var(--border))] rounded-2xl bg-[hsl(var(--card))] p-8 text-center flex flex-col items-center">
-                <Megaphone className="text-purple-500 w-12 h-12 mb-4" />
-                <h4 className="text-slate-500 dark:text-slate-400 font-bold uppercase tracking-widest text-sm mb-2">Campaigns Run</h4>
-                <p className="text-5xl font-black text-slate-900 dark:text-white">{stats.campaignsRun}</p>
+             <Card className="relative overflow-hidden border border-[hsl(var(--border))] rounded-2xl bg-[hsl(var(--card))] p-8 text-center flex flex-col items-center group hover:border-purple-500/30 transition-colors">
+                <div className="absolute inset-0 bg-purple-500/5 dark:bg-purple-500/10 blur-2xl z-0 group-hover:bg-purple-500/10 dark:group-hover:bg-purple-500/20 transition-all duration-500" />
+                <div className="relative z-10 flex flex-col items-center">
+                  <Megaphone className="text-purple-500 w-12 h-12 mb-4 drop-shadow-sm" />
+                  <h4 className="text-slate-500 dark:text-slate-400 font-bold uppercase tracking-widest text-sm mb-2">Campaigns Run</h4>
+                  <p className="text-5xl font-black text-slate-900 dark:text-white">{stats.campaignsRun}</p>
+                </div>
              </Card>
              
              <div className="mt-8 md:col-span-3">
