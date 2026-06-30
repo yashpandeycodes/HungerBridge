@@ -103,12 +103,7 @@ export default function VerifyAccountPage() {
                 "Verify Account"
               )}
             </Button>
-              <p className="relative z-10 text-sm text-white/45 text-center mt-5">
-        Entered the wrong email?{" "}
-        <Link href="/sign-up" className="text-indigo-300 font-semibold hover:text-indigo-200">
-          Go back
-        </Link>
-      </p>
+             
           </form>
         </CardContent>
       </Card>
