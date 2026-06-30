@@ -6,7 +6,7 @@ import { HeartHandshake, Megaphone, Truck, CheckCircle, Users, Zap } from "lucid
 async function getImpactStats() {
   try {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/api/impact`,
+     `/api/impact`,
       { next: { revalidate: 60 } }
     );
     if (!res.ok) throw new Error("Failed to fetch");
