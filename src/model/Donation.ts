@@ -9,13 +9,15 @@ export interface Donation extends Document {
   pickupLocation: string;
   photoUrl?: string;
   isUrgent: boolean;
-  status: 'PENDING' | 'ACCEPTED' | 'ASSIGNED' | 'COMPLETED';
+  status: 'PENDING' | 'ACCEPTED' | 'ASSIGNED' | 'COMPLETED' | 'EXPIRED';
   trustScore:number;
   isSuspicious:boolean;
+  coordinates?: { lat: number; lng: number };
   ngoId?: mongoose.Types.ObjectId;
   volunteerId?: mongoose.Types.ObjectId;
   campaignId?: mongoose.Types.ObjectId;
   createdAt: Date;
+  acceptedAt?: Date;
 }
 
 const DonationSchema: Schema<Donation> = new Schema({
@@ -27,10 +29,14 @@ const DonationSchema: Schema<Donation> = new Schema({
   pickupLocation: { type: String, required: true },
   photoUrl: { type: String },
   isUrgent: { type: Boolean, default: false },
-  status: { type: String, enum: ['PENDING', 'ACCEPTED', 'ASSIGNED', 'COMPLETED'], default: 'PENDING' },
+  status: { type: String, enum: ['PENDING', 'ACCEPTED', 'ASSIGNED', 'COMPLETED', 'EXPIRED'], default: 'PENDING' },
   ngoId: { type: Schema.Types.ObjectId, ref: 'User' },
   volunteerId: { type: Schema.Types.ObjectId, ref: 'User' },
   campaignId: { type: Schema.Types.ObjectId, ref: 'Campaign' },
+  coordinates: {
+    lat: { type: Number },
+    lng: { type: Number }
+  },
   trustScore: {
     type: Number,
     default: 95
@@ -40,6 +46,7 @@ const DonationSchema: Schema<Donation> = new Schema({
     default: false
   },
   createdAt: { type: Date, default: Date.now },
+  acceptedAt: { type: Date },
 });
 
 const DonationModel = mongoose.models.Donation || mongoose.model<Donation>('Donation', DonationSchema);

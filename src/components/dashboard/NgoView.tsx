@@ -6,15 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MapPin, Megaphone, Package, HeartHandshake, Sparkles, Copy, Loader2, Activity, PieChart, Truck, CheckCircle, ShieldCheck, ShieldAlert, TrendingUp } from "lucide-react";
-import {
-  PieChart as RePieChart,
-  Pie,
-  Cell,
-  Tooltip,
-  ResponsiveContainer,
-  Legend,
-} from "recharts";
+import { PieChart as RePieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from "recharts";
 import useIdleTimeout from "@/hooks/useIdleTimeout";
+import MapWrapper from "../MapWrapper";
 
 export interface DonationType {
   _id: string;
@@ -27,6 +21,7 @@ export interface DonationType {
   trustScore?: number;
   isSuspicious?: boolean;
   volunteerId?: { _id: string; name: string } | null;
+  coordinates?: { lat: number; lng: number };
 }
 
 export interface CampaignType {
@@ -53,10 +48,12 @@ export default function NgoView() {
   
   const [aiInsight, setAiInsight] = useState("");
 
- const [stats, setStats] = useState({
+  const [stats, setStats] = useState({
   totalMeals: 0,
   activeVolunteers: 0,
-  campaignsRun: 0
+  campaignsRun: 0,
+  acceptanceRate: 0,
+  avgPickupTimeMins: 0
 });
 
   const chartData = [
@@ -128,6 +125,8 @@ const COLORS = ["#10b981", "#8b5cf6", "#3b82f6"];
             totalMeals: json.data.totalMealsServed,
             campaignsRun: json.data.activeCampaigns,
             activeVolunteers: json.data.volunteerHours,
+            acceptanceRate: json.data.acceptanceRate || 0,
+            avgPickupTimeMins: json.data.avgPickupTimeMins || 0
           });
         }
       } catch (e) {}
@@ -627,7 +626,37 @@ const COLORS = ["#10b981", "#8b5cf6", "#3b82f6"];
                 </div>
              </Card>
              
+             <div className="grid gap-6 md:grid-cols-2 mt-8 md:col-span-3">
+               <Card className="relative overflow-hidden border border-[hsl(var(--border))] rounded-2xl bg-[hsl(var(--card))] p-6 text-center flex flex-col items-center group hover:border-orange-500/30 transition-colors">
+                  <div className="absolute inset-0 bg-orange-500/5 dark:bg-orange-500/10 blur-2xl z-0 group-hover:bg-orange-500/10 dark:group-hover:bg-orange-500/20 transition-all duration-500" />
+                  <div className="relative z-10 flex flex-col items-center">
+                    <TrendingUp className="text-orange-500 w-8 h-8 mb-2 drop-shadow-sm" />
+                    <h4 className="text-slate-500 dark:text-slate-400 font-bold uppercase tracking-widest text-xs mb-1">Acceptance Rate</h4>
+                    <p className="text-3xl font-black text-slate-900 dark:text-white">{stats.acceptanceRate}%</p>
+                  </div>
+               </Card>
+               <Card className="relative overflow-hidden border border-[hsl(var(--border))] rounded-2xl bg-[hsl(var(--card))] p-6 text-center flex flex-col items-center group hover:border-pink-500/30 transition-colors">
+                  <div className="absolute inset-0 bg-pink-500/5 dark:bg-pink-500/10 blur-2xl z-0 group-hover:bg-pink-500/10 dark:group-hover:bg-pink-500/20 transition-all duration-500" />
+                  <div className="relative z-10 flex flex-col items-center">
+                    <Activity className="text-pink-500 w-8 h-8 mb-2 drop-shadow-sm" />
+                    <h4 className="text-slate-500 dark:text-slate-400 font-bold uppercase tracking-widest text-xs mb-1">Avg. Pickup Time</h4>
+                    <p className="text-3xl font-black text-slate-900 dark:text-white">{stats.avgPickupTimeMins} mins</p>
+                  </div>
+               </Card>
+             </div>
+             
              <div className="mt-8 md:col-span-3">
+              <Card className="w-full border border-[hsl(var(--border))] rounded-2xl bg-[hsl(var(--card))] mb-8">
+                <CardHeader>
+                  <CardTitle className="text-slate-700 dark:text-slate-300 font-bold uppercase tracking-widest text-sm mb-2 flex items-center gap-2">
+                    <MapPin className="w-4 h-4" /> Geographic Heat Map
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-0 sm:p-6 sm:pt-0">
+                  <MapWrapper donations={[...donations, ...incomingDeliveries]} />
+                </CardContent>
+              </Card>
+
               <Card className="w-full border border-[hsl(var(--border))] rounded-2xl bg-[hsl(var(--card))]">
                 <CardHeader>
                   <CardTitle className="text-slate-700 dark:text-slate-300 font-bold uppercase tracking-widest text-sm mb-2">NGO Analytics</CardTitle>

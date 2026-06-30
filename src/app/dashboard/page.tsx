@@ -5,6 +5,7 @@ import DonorView from "@/components/dashboard/DonorView";
 import NgoView from "@/components/dashboard/NgoView";
 import VolunteerView from "@/components/dashboard/VolunteerView";
 import LogoutButton from "@/components/dashboard/LogoutButton";
+import NotificationBell from "@/components/NotificationBell";
 
 export default async function Dashboard() {
   const session = await getServerSession(authOptions);
@@ -31,7 +32,10 @@ export default async function Dashboard() {
             </div>
           </div>
 
-          <LogoutButton />
+          <div className="flex items-center gap-4 mt-4 md:mt-0">
+            <NotificationBell />
+            <LogoutButton />
+          </div>
         </div>
 
         <div className="bg-[hsl(var(--card))] p-6 md:p-8 lg:p-10 rounded-2xl border border-[hsl(var(--border))] min-h-[500px] relative">

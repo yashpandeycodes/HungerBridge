@@ -5,6 +5,7 @@ import dbConnect from '@/lib/dbConnect';
 import DonationModel from '@/model/Donation';
 import UserModel from "@/model/User";
 import { sendEventEmail } from '@/helpers/sendEventEmail'; 
+import NotificationModel from '@/model/Notification';
 
 export async function GET() {
   try {
@@ -58,6 +59,22 @@ export async function PATCH(request: Request) {
         "Volunteer Assigned",
         `Good news! A volunteer has been assigned to pick up your donation. They are on their way to collect the food. Thank you for your patience!`
       ).catch(err => console.error("Email sending failed:", err)); 
+
+      await NotificationModel.create({
+        userId: donor._id,
+        message: "Volunteer Assigned! 🦸‍♂️ A volunteer is on their way to collect your food donation. Please keep it ready!",
+        type: "SUCCESS",
+        isRead: false
+      });
+    }
+
+    if (updatedDonation.ngoId) {
+      await NotificationModel.create({
+        userId: updatedDonation.ngoId,
+        message: `Volunteer Assigned! 🦸‍♂️ A volunteer has accepted the mission and is on their way to pick up the donation.`,
+        type: "INFO",
+        isRead: false
+      });
     }
 
     return NextResponse.json({ success: true, data: updatedDonation }, { status: 200 });

@@ -8,6 +8,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MapPin, Navigation, CheckCircle2, Award, Bike, Loader2, Sparkles, Trophy, Star, History, Flame,Clock } from "lucide-react";
 import { DonationType } from "./NgoView"; 
 import useIdleTimeout from "@/hooks/useIdleTimeout";
+import { calculateDistance } from "@/lib/geocode";
+
+interface MissionType extends DonationType {
+  distance?: number;
+}
 
 export interface LeaderboardEntry {
   _id: string;
@@ -20,21 +25,35 @@ export interface LeaderboardEntry {
 
 export default function VolunteerView() {
     useIdleTimeout(15);
-  const [missions, setMissions] = useState<DonationType[]>([]);
+  const [missions, setMissions] = useState<MissionType[]>([]);
   const [history, setHistory] = useState<DonationType[]>([]); 
   const [isLoading, setIsLoading] = useState(true);
   const [isAccepting, setIsAccepting] = useState<string | null>(null);
+  const [userLocation, setUserLocation] = useState<{lat: number, lng: number} | null>(null);
 
   const [stats, setStats] = useState({ karma: 0, deliveries: 0 });
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [isLeaderboardLoading, setIsLeaderboardLoading] = useState(true);
 
   useEffect(() => {
-    const fetchMissions = async () => {
+    const fetchMissions = async (lat?: number, lng?: number) => {
       try {
         const res = await fetch("/api/volunteer");
         const json = await res.json();
-        if (json.success) setMissions(json.data);
+        if (json.success) {
+          let loadedMissions: MissionType[] = json.data;
+          
+          if (lat && lng) {
+            loadedMissions = loadedMissions.map((m) => {
+              if (m.coordinates && m.coordinates.lat && m.coordinates.lng) {
+                return { ...m, distance: calculateDistance(lat, lng, m.coordinates.lat, m.coordinates.lng) };
+              }
+              return { ...m, distance: Infinity };
+            }).sort((a, b) => (a.distance || 0) - (b.distance || 0));
+          }
+          
+          setMissions(loadedMissions);
+        }
 
         const statsRes = await fetch("/api/volunteer/stats");
         const statsJson = await statsRes.json();
@@ -67,7 +86,21 @@ export default function VolunteerView() {
         setIsLoading(false);
       }
     };
-    fetchMissions();
+
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setUserLocation({ lat: position.coords.latitude, lng: position.coords.longitude });
+          fetchMissions(position.coords.latitude, position.coords.longitude);
+        },
+        (error) => {
+          console.warn("Geolocation denied or error, falling back to unsorted list.");
+          fetchMissions();
+        }
+      );
+    } else {
+      fetchMissions();
+    }
   }, []);
 
   const completeMission = async (donationId: string) => {
@@ -190,6 +223,15 @@ export default function VolunteerView() {
                           Quantity: {mission.quantity}
                         </div>
                       </div>
+                      
+                      {mission.distance !== undefined && mission.distance !== Infinity && (
+                        <div className="text-right">
+                          <div className="inline-flex items-center text-xs font-bold text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded-md">
+                            <Navigation size={12} className="mr-1" />
+                            {mission.distance.toFixed(1)} km away
+                          </div>
+                        </div>
+                      )}
                     </div>
                     
                     <div className="space-y-3 text-sm text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-800/50 p-4 rounded-xl border border-slate-100 dark:border-slate-700/50 shadow-inner">

@@ -7,6 +7,8 @@ import DonationModel from '@/model/Donation';
 import { donationSchema } from '@/schemas/donationSchema';
 import UserModel from '@/model/User';
 import { sendEventEmail } from '@/helpers/sendEventEmail';
+import { geocodeLocation } from '@/lib/geocode';
+import NotificationModel from '@/model/Notification';
 
 // 1. POST: Create a new donation
 // Helper function for Smart Fraud Detection
@@ -89,6 +91,12 @@ export async function POST(request: Request) {
       isSuspicious: fraudAnalysis.isSuspicious
     });
 
+    // Try to geocode the location
+    const coords = await geocodeLocation(pickupLocation);
+    if (coords) {
+      newDonation.coordinates = coords;
+    }
+
     await newDonation.save();
     return NextResponse.json({ 
       success: true, 
@@ -159,12 +167,21 @@ export async function PATCH(request: Request) {
 
     const donor = await UserModel.findById(updatedDonation.donorId);
     if (donor && donor.email) {
+      // Send Email
       sendEventEmail(
         donor.email,
         donor.name || "Generous Donor",
         "Donation Accepted",
         `Great news! An NGO has accepted your donation. A volunteer will be assigned shortly to pick it up.`
       ).catch(err => console.error("Email sending failed:", err));
+
+      // Create In-App Notification
+      await NotificationModel.create({
+        userId: donor._id,
+        message: "Donation Accepted! 🎉 An NGO has accepted your food donation. They will assign a volunteer shortly.",
+        type: "SUCCESS",
+        isRead: false
+      });
     }
 
     return NextResponse.json({ success: true, message: 'Donation claimed', data: updatedDonation }, { status: 200 });

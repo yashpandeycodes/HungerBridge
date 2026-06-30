@@ -8,6 +8,7 @@ export interface User extends Document {
   phone?: string;
   ngoRegistrationNumber?: string;
   location?: string;
+  coordinates?: { lat: number; lng: number };
   verifyCode: string;
   verifyCodeExpiry: Date; 
   isVerified: boolean;
@@ -24,6 +25,10 @@ const UserSchema: Schema<User> = new Schema({
   phone: { type: String },
   ngoRegistrationNumber: { type: String },
   location: { type: String },
+  coordinates: {
+    lat: { type: Number },
+    lng: { type: Number }
+  },
    verifyCode: {
     type: String,
     required: [true, 'Verify Code is required'],

@@ -6,6 +6,7 @@ import DonationModel from '@/model/Donation';
 import CampaignModel from '@/model/Campaign';
 import UserModel from "@/model/User";
 import { sendEventEmail } from '@/helpers/sendEventEmail';
+import NotificationModel from '@/model/Notification';
 
 export async function PATCH(request: Request) {
   try {
@@ -60,6 +61,13 @@ export async function PATCH(request: Request) {
         "Delivery Completed",
         `Amazing news! Your food has been successfully received by the NGO and has reached those in need. You just fed empty stomachs today. Thank you for your kindness!`
       ).catch(err => console.error("Email sending failed:", err)); 
+
+      await NotificationModel.create({
+        userId: donor._id,
+        message: "Delivery Completed! 🥳 Your food has successfully reached the NGO and is feeding those in need. Thank you!",
+        type: "SUCCESS",
+        isRead: false
+      });
     }
 
     return NextResponse.json({ 
