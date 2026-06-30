@@ -3,12 +3,9 @@ import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { HeartHandshake, Megaphone, Truck, CheckCircle, Users, Zap } from "lucide-react";
 
-async function getImpactStats() {
+export async function getImpactStats() {
   try {
-    const res = await fetch(
-    `/api/impact`,
-      { next: { revalidate: 60 } }
-    );
+    const res = await fetch(`${process.env.NEXTAUTH_URL}/api/impact`);
     if (!res.ok) throw new Error("Failed to fetch");
     const json = await res.json();
     return json.success
