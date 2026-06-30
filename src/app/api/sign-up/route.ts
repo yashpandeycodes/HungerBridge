@@ -26,6 +26,8 @@ export async function POST(request: Request) {
     const existingUserByEmail = await UserModel.findOne({ email });
     const verifyCode = crypto.randomInt(100000, 999999).toString();
 
+    let isExistingUnverified = false;
+
     if (existingUserByEmail) {
       if (existingUserByEmail.isVerified) {
         return NextResponse.json(
@@ -37,13 +39,11 @@ export async function POST(request: Request) {
         );
       } else {
 
-        const hashedPassword = await bcrypt.hash(password, 10);
-        existingUserByEmail.password = hashedPassword;
+        // We only update the verification code and expiry to prevent account takeover
+        // of unverified accounts. The original password, name, and role remain unchanged.
         existingUserByEmail.verifyCode = verifyCode;
         existingUserByEmail.verifyCodeExpiry = new Date(Date.now() + 3600000);
-        existingUserByEmail.name = name;
-        existingUserByEmail.role = role;
-        existingUserByEmail.phone = phone || '';
+        isExistingUnverified = true;
         
         await existingUserByEmail.save();
       }
@@ -85,7 +85,7 @@ export async function POST(request: Request) {
     }
 
     return NextResponse.json(
-      { success: true, message: 'Please verify your email.' }, 
+      { success: true, message: 'Please verify your email.', isExistingUnverified }, 
       { status: 201 }
     );
   } catch (error) {

@@ -113,6 +113,10 @@ export async function GET() {
       return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 });
     }
 
+    if (session.user.role !== 'NGO') {
+      return NextResponse.json({ success: false, message: 'Forbidden. Only NGOs can access pending donations.' }, { status: 403 });
+    }
+
     const currentTime = new Date();
 
     const donations = await DonationModel.find({ 

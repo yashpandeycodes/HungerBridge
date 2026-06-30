@@ -13,6 +13,10 @@ export async function GET() {
     if (!session || !session.user) {
       return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 });
     }
+    
+    if (session.user.role !== 'VOLUNTEER') {
+      return NextResponse.json({ success: false, message: 'Forbidden. Only volunteers can access available missions.' }, { status: 403 });
+    }
     const missions = await DonationModel.find({ status: 'ACCEPTED' }).sort({ updatedAt: -1 });
     return NextResponse.json({ success: true, data: missions });
   } catch (error) {

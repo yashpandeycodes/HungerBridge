@@ -96,7 +96,42 @@ export default function DonorView() {
     return () => controller.abort();
   }, [fetchMyDonations]);
 
- const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  // --- Form Persistence Logic ---
+  useEffect(() => {
+    const savedFormData = localStorage.getItem("donorFormData");
+    const savedPreview = localStorage.getItem("donorPreviewBase64");
+    
+    if (savedFormData) {
+      try {
+        setFormData(JSON.parse(savedFormData));
+      } catch (e) {
+        console.error("Could not parse saved form data", e);
+      }
+    }
+    
+    if (savedPreview) {
+      setPreviewBase64(savedPreview);
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("donorFormData", JSON.stringify(formData));
+  }, [formData]);
+
+  useEffect(() => {
+    if (previewBase64) {
+      try {
+        localStorage.setItem("donorPreviewBase64", previewBase64);
+      } catch (e) {
+        console.warn("Image too large for local storage");
+      }
+    } else {
+      localStorage.removeItem("donorPreviewBase64");
+    }
+  }, [previewBase64]);
+  // -----------------------------
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     
     const updatedFormData = { ...formData, [name]: value };
@@ -122,6 +157,15 @@ export default function DonorView() {
         setPreviewBase64(base64String);
       };
       reader.readAsDataURL(file);
+    }
+  };
+
+  const removeImage = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    setPreviewBase64(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
     }
   };
 
@@ -191,6 +235,10 @@ export default function DonorView() {
         });
         setPreviewBase64(null);
         if (fileInputRef.current) fileInputRef.current.value = "";
+        
+        // Clear persistence on success
+        localStorage.removeItem("donorFormData");
+        localStorage.removeItem("donorPreviewBase64");
         
         fetchMyDonations(true); // Refresh history
       } else {
@@ -317,8 +365,16 @@ export default function DonorView() {
                       
                       {previewBase64 ? (
                         <div className="p-4 flex flex-col sm:flex-row items-center gap-6 relative z-20">
-                            <div className="relative w-32 h-32 rounded-xl overflow-hidden shadow-md border-2 border-white dark:border-slate-700 shrink-0">
+                            <div className="relative w-32 h-32 rounded-xl overflow-hidden shadow-md border-2 border-white dark:border-slate-700 shrink-0 group/img">
                               <Image src={previewBase64} alt="Food Preview" fill className="object-cover" />
+                              <button
+                                type="button"
+                                onClick={removeImage}
+                                className="absolute top-1.5 right-1.5 bg-black/60 hover:bg-black/80 text-white rounded-full p-1 backdrop-blur-sm transition-all z-30 opacity-80 hover:opacity-100"
+                                title="Remove Image"
+                              >
+                                <X size={14} />
+                              </button>
                             </div>
                             <div className="flex-1 w-full space-y-4 text-center sm:text-left">
                               <p className="text-sm text-slate-600 dark:text-slate-400 font-medium">Image uploaded. Ready for AI extraction.</p>

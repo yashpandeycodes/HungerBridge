@@ -56,6 +56,11 @@ export default function SignUpPage() {
 
       if (res.ok) {
         toast.success("Account created! Please verify your email.Please check your spam/junk folder if you don't see the mail.");
+        if (responseData.isExistingUnverified) {
+          setTimeout(() => {
+            toast.error("The fields can't be updated as the email is already registered.");
+          }, 600); // Delay so it doesn't overlap/hide the first toast
+        }
         router.replace(`/verify/${encodeURIComponent(data.email)}`);
       } else {
         toast.error(responseData.message || "Something went wrong!");
