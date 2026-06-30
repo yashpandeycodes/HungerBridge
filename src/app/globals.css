@@ -39,6 +39,10 @@
     --card-foreground: 222 25% 94%;
   }
 
+  html {
+    scroll-behavior: smooth;
+  }
+
   * {
     border-color: hsl(var(--border));
     box-sizing: border-box;
