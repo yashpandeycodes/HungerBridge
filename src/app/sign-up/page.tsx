@@ -56,6 +56,7 @@ export default function SignUpPage() {
 
       if (res.ok) {
         toast.success("Please verify your email by entering the OTP.Please check your spam/junk folder if you don't see the mail.");
+        alert("OTP sent to your email. Please check your inbox and spam/junk folder.");
         if (responseData.isExistingUnverified) {
           setTimeout(() => {
             toast.error("The fields can't be updated as the email is already registered.Check your email for the OTP to verify your account.");
