@@ -8,9 +8,8 @@ export async function GET() {
   await dbConnect();
   try {
     const session = await getServerSession(authOptions);
-    // For hackathon simplicity, we allow NGO or any logged-in user to see this, or restrict to a specific admin email.
-    if (!session || !session.user) {
-      return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 });
+    if (!session || !session.user || session.user.email !== 'yashpandey040709@gmail.com') {
+      return NextResponse.json({ success: false, message: 'Unauthorized. Admin access only.' }, { status: 401 });
     }
 
     // Fetch suspicious donations
@@ -28,8 +27,8 @@ export async function PATCH(request: Request) {
   await dbConnect();
   try {
     const session = await getServerSession(authOptions);
-    if (!session || !session.user) {
-      return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 });
+    if (!session || !session.user || session.user.email !== 'yashpandey040709@gmail.com') {
+      return NextResponse.json({ success: false, message: 'Unauthorized. Admin access only.' }, { status: 401 });
     }
 
     const { donationId, action } = await request.json();

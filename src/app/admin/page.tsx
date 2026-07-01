@@ -5,8 +5,21 @@ import { Button } from '@/components/ui/button';
 import { Loader2, ShieldAlert, CheckCircle, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 
+interface SuspiciousDonation {
+  _id: string;
+  trustScore: number;
+  donorId?: {
+    name?: string;
+    email?: string;
+  };
+  foodCategory: string;
+  foodSource: string;
+  quantity: string;
+  pickupLocation: string;
+}
+
 export default function AdminDashboard() {
-  const [donations, setDonations] = useState<any[]>([]);
+  const [donations, setDonations] = useState<SuspiciousDonation[]>([]);
   const [loading, setLoading] = useState(true);
   const [processingId, setProcessingId] = useState<string | null>(null);
 
@@ -14,7 +27,11 @@ export default function AdminDashboard() {
     try {
       const res = await fetch('/api/admin/moderate');
       const json = await res.json();
-      if (json.success) setDonations(json.data);
+      if (json.success) {
+        setDonations(json.data);
+      } else {
+        toast.error(json.message || "Unauthorized");
+      }
     } catch (e) {
       toast.error("Failed to load suspicious donations");
     } finally {
@@ -23,7 +40,7 @@ export default function AdminDashboard() {
   };
 
   useEffect(() => {
-    fetchSuspicious();
+    queueMicrotask(() => fetchSuspicious());
   }, []);
 
   const handleAction = async (id: string, action: 'APPROVE' | 'DELETE') => {

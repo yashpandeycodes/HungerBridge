@@ -55,11 +55,11 @@ export default function SignUpPage() {
       const responseData = await res.json();
 
       if (res.ok) {
-        toast.success("Account created! Please verify your email.Please check your spam/junk folder if you don't see the mail.");
+        toast.success("Please verify your email by entering the OTP.Please check your spam/junk folder if you don't see the mail.");
         if (responseData.isExistingUnverified) {
           setTimeout(() => {
-            toast.error("The fields can't be updated as the email is already registered.");
-          }, 600); // Delay so it doesn't overlap/hide the first toast
+            toast.error("The fields can't be updated as the email is already registered.Check your email for the OTP to verify your account.");
+          }, 100); // Delay so it doesn't overlap/hide the first toast
         }
         router.replace(`/verify/${encodeURIComponent(data.email)}`);
       } else {
