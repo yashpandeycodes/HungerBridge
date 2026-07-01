@@ -59,7 +59,8 @@ export default function SignUpPage() {
         if (responseData.isExistingUnverified) {
           setTimeout(() => {
             toast.error("The fields can't be updated as the email is already registered.Check your email for the OTP to verify your account.");
-          }, 100); // Delay so it doesn't overlap/hide the first toast
+          }, 100);
+           alert("The email is already registered but not verified. The fields can't be updated. Please check your email for the OTP to verify your account.");
         }
         router.replace(`/verify/${encodeURIComponent(data.email)}`);
       } else {
